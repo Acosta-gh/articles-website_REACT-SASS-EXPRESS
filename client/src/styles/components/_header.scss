@@ -1,3 +1,114 @@
-header{
-    background-color: red;
+.header {
+    background-color: $bg-color;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    &-burguer {
+        width: 3rem;
+        margin: auto 0;
+        font-size: 2rem;
+        display: flex;
+        justify-content: flex-start;
+        margin-left: 15px;
+
+        @media (min-width: $breakpoint-lg) and (max-width: $breakpoint-xl) {
+            background-color: red;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+
+        @media (min-width: $breakpoint-xl) {
+            background-color: blueviolet;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+    }
+
+    &-nav,
+    &-search {
+        background-color: $bg-color;
+        position: absolute;
+        top: 100%; // Positions the navigation menu and search field directly below the header | Posiciona el menú de navegación y el campo de búsqueda justo debajo del header
+        left: 0;
+        width: 100%;
+        padding: $header-padding;
+        font-size: $font-size-nav;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        overflow: hidden;
+        pointer-events: none;
+
+        p {
+            margin-top: 5px;
+        }
+    }
+
+    &-nav {
+        z-index: $z-index-hidden;
+
+        @media (min-width: $breakpoint-lg) and (max-width: $breakpoint-xl) {
+            z-index: $z-index-visible-nav;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        @media (min-width: $breakpoint-xl) {
+            z-index: $z-index-visible-nav;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        &.visible {
+            z-index: $z-index-visible-nav;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+
+        }
+    }
+
+    &-search {
+        border: none;
+        outline: none;
+        padding: 0.5rem;
+        font-size: $font-size-search;
+        z-index: $z-index-hidden;
+        padding: 1.3rem;
+        font-family: "Playfair Display", serif;
+        font-weight: 600;
+        color: #333;
+        line-height: 1.5;
+
+        &.visible {
+            z-index: $z-index-visible-search;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            
+        }
+    }
+
+    &-logo {
+        display: flex;
+        justify-content: center;
+        font-size: 3rem;
+        margin: auto;
+        padding: .7rem;
+    }
+
+    &-search_icon {
+        display: flex;
+        justify-content: flex-end;
+        font-size: 2rem;
+        margin: auto 0;
+        margin-right: 15px;
+    }
 }

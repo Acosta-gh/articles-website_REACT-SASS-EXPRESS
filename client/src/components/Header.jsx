@@ -61,6 +61,7 @@ function Header() {
                 className={`header-search ${isSearchVisible ? 'visible' : ''}`}
                 type='text'
                 placeholder='Search By...'
+                maxLength={30} 
             />
             <a href="/" className='header-logo'>
                 <PiGitlabLogoSimpleFill />

@@ -1,5 +1,9 @@
 // main.sass
 @import "./base/variables";
+@import "./base/reset";
+
+@import "./pages/error-page";
 
 @import "./components/header";
-@import "./base/reset";
+
+

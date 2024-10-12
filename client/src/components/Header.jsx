@@ -3,12 +3,12 @@ import Hamburger from 'hamburger-react';
 import { Link } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
 import { PiGitlabLogoSimpleFill } from "react-icons/pi";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 function Header() {
     const [isNavVisible, setIsNavVisible] = useState(false);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
-    
-    const [isOpen, setOpen] = useState(false); // https://hamburger-react.netlify.app/
+    const [isOpen, setOpen] = useState(false);
 
     const searchRef = useRef(null);
     const iconRef = useRef(null);
@@ -17,11 +17,11 @@ function Header() {
         setIsNavVisible(!isNavVisible);
     };
 
-    const toggleSearch = () => { 
+    const toggleSearch = () => {
         setIsSearchVisible(!isSearchVisible);
     };
 
-    useEffect(() => {  // Handles clicks outside the search field and the search icon | Maneja clics fuera del campo de búsqueda y el ícono de búsqueda
+    useEffect(() => { // Hides the search field if clicked outside. | Oculta el campo de búsqueda si se hace clic fuera de él; 
         const handleClickOutside = (event) => {
             if (
                 searchRef.current && !searchRef.current.contains(event.target) &&
@@ -42,24 +42,32 @@ function Header() {
             <div className='header-burguer' onClick={toggleNav}>
                 <Hamburger toggled={isOpen} toggle={setOpen} size={25} />
             </div>
-            <nav className={`header-nav ${isNavVisible ? 'visible' : ''}`}>
-                <Link to="/articles"><p>Our Articles</p></Link>
-                <Link to="/"><p>About Us</p></Link>
-                <Link to="/contact"><p>Contact Us</p></Link>
-            </nav>
-            <input 
-                ref={searchRef}
-                className={`header-search ${isSearchVisible ? 'visible' : ''}`} 
-                type='text' 
-                placeholder='Search By...' 
-            />
-          
-            <div className='header-logo'>
-                <PiGitlabLogoSimpleFill />
+
+            <div className={`header-burguer_desktop`} onClick={toggleNav}>
+                <p>Menu</p>
+                <i className={`header-burguer_desktop-arrow ${isNavVisible ? 'rotated' : ''}`}>
+                    <MdKeyboardArrowDown />
+                </i>
             </div>
-            <div 
-                className='header-search_icon' 
-                onClick={toggleSearch} 
+
+            <nav className={`header-nav ${isNavVisible ? 'visible' : ''}`}>
+                <Link to="/articles" onClick={toggleNav}><p>Our Articles</p></Link>
+                <Link to="/about" onClick={toggleNav}><p>About Us</p></Link>
+                <Link to="/contact" onClick={toggleNav}><p>Contact Us</p></Link>
+                <Link to="/account" onClick={toggleNav}><p>My Account</p></Link>
+            </nav>
+            <input
+                ref={searchRef}
+                className={`header-search ${isSearchVisible ? 'visible' : ''}`}
+                type='text'
+                placeholder='Search By...'
+            />
+            <a href="/" className='header-logo'>
+                <PiGitlabLogoSimpleFill />
+            </a>
+            <div
+                className='header-search_icon'
+                onClick={toggleSearch}
                 ref={iconRef}
             >
                 <LuSearch />

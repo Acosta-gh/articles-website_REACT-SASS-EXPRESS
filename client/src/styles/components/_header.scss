@@ -6,7 +6,8 @@
     top: 0;
     z-index: 10;
 
-    &-burguer {
+    &-burguer,
+    &-burguer_desktop {
         width: 3rem;
         margin: auto 0;
         font-size: 2rem;
@@ -14,27 +15,26 @@
         justify-content: flex-start;
         margin-left: 15px;
 
-        @media (min-width: $breakpoint-lg) and (max-width: $breakpoint-xl) {
-            background-color: red;
-            opacity: 0;
-            transform: translateY(-10px);
-            pointer-events: none;
-        }
+        user-select: none;
+        /* Para navegadores modernos */
+        -webkit-user-select: none;
+        /* Safari */
+        -moz-user-select: none;
+        /* Firefox */
+        -ms-user-select: none;
+        /* Internet Explorer/Edge */
+    }
 
-        @media (min-width: $breakpoint-xl) {
-            background-color: blueviolet;
-            opacity: 0;
-            transform: translateY(-10px);
-            pointer-events: none;
-        }
+    &-burguer_desktop {
+        display: none;
+
     }
 
     &-nav,
     &-search {
         background-color: $bg-color;
         position: absolute;
-        top: 100%; // Positions the navigation menu and search field directly below the header | Posiciona el menú de navegación y el campo de búsqueda justo debajo del header
-        left: 0;
+        top: 100%; // Positions the navigation menu and search field directly below the header | Posiciona el menú de navegación y el campo de búsqueda justo debajo del header        left: 0;
         width: 100%;
         padding: $header-padding;
         font-size: $font-size-nav;
@@ -43,35 +43,34 @@
         transition: opacity 0.3s ease, transform 0.3s ease;
         overflow: hidden;
         pointer-events: none;
-
         p {
             margin-top: 5px;
+            background-color: transparent; 
+            transition: background-color 0.2s ease; 
+    
+            &:hover {
+                background-color: #ffc7b6e0; 
+            }
         }
     }
 
     &-nav {
         z-index: $z-index-hidden;
 
-        @media (min-width: $breakpoint-lg) and (max-width: $breakpoint-xl) {
-            z-index: $z-index-visible-nav;
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
+        user-select: none;
 
-        @media (min-width: $breakpoint-xl) {
-            z-index: $z-index-visible-nav;
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
+        -webkit-user-select: none;
+        /* Safari */
+        -moz-user-select: none;
+        /* Firefox */
+        -ms-user-select: none;
+        /* Internet Explorer/Edge */
 
         &.visible {
             z-index: $z-index-visible-nav;
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
-
         }
     }
 
@@ -92,7 +91,6 @@
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
-            
         }
     }
 
@@ -110,5 +108,90 @@
         font-size: 2rem;
         margin: auto 0;
         margin-right: 15px;
+    }
+}
+
+// Media Queries
+@media (min-width: $breakpoint-lg) {
+
+    /*
+    .header {
+        &-burguer {
+            display: none;
+        }
+
+        &-nav {
+            opacity: 1;
+            position: static;
+            transform: translateY(0);
+            pointer-events: auto;
+            display: flex;
+            font-size: 1.5rem;
+            margin: auto;
+
+            p {
+                margin-right: 1rem;
+                font-size: 1.3rem;
+              
+            }
+        }
+    }
+    */
+    .header {
+        &-burguer {
+            display: none;
+        }
+
+        &-burguer_desktop {
+
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            width: 30%;
+
+            user-select: none;
+
+            -webkit-user-select: none;
+            /* Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* Internet Explorer/Edge */
+
+            &-arrow {
+                position: relative;
+                top: .4rem;
+                transition: transform 0.3s ease, top 0.3s ease;
+                margin-left: .2rem;
+
+                &.rotated {
+                    transform: rotate(180deg);
+                    top: .1rem;
+                }
+            }
+        }
+
+        &-search_icon {
+            cursor: pointer;
+        }
+    }
+}
+
+@media (min-width: $breakpoint-xl) {
+    .header {
+        padding-left: 7%;
+        padding-right: 7%;
+
+        &-search {
+            padding-left: 7%;
+            padding-right: 7%;
+        }
+
+        &-nav {
+            p {
+                padding-left: 6.5%;
+                padding-right: 6.5%;
+            }
+        }
     }
 }

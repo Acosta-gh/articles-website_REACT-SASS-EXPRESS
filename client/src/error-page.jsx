@@ -1,4 +1,5 @@
 import { useRouteError } from "react-router-dom";
+import { IoHomeSharp } from "react-icons/io5";
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -11,6 +12,7 @@ export default function ErrorPage() {
       <p>
         <i>{error.statusText || error.message}</i>
       </p>
+      <a href="/"><IoHomeSharp /> <span>Go Home</span></a>
     </div>
   );
 }

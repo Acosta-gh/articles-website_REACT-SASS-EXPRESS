@@ -1,38 +1,102 @@
 [
-    {
-      "id": 1,
-      "image": "https://picsum.photos/200?random=1",
-      "title": "Post 1",
-      "content": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem, adipisci!",
-      "author": "Autor 1"
-    },
-    {
-      "id": 2,
-      "image": "https://picsum.photos/200?random=2",
-      "title": "Post 2",
-      "content": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      "author": "Autor 2"
-    },
-    {
-      "id": 3,
-      "image": "https://picsum.photos/200?random=3",
-      "title": "Post 3",
-      "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      "author": "Autor 3"
-    },
-    {
-      "id": 4,
-      "image": "https://picsum.photos/200?random=4",
-      "title": "Post 4",
-      "content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-      "author": "Autor 4"
-    },
-    {
-      "id": 5,
-      "image": "https://picsum.photos/200?random=5",
-      "title": "Post 5",
-      "content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      "author": "Autor 5"
-    }
-  ]
-  
+  {
+    "id": 1,
+    "image": "https://picsum.photos/200?random=1",
+    "title": "Post 1",
+    "content": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem, adipisci!",
+    "author": "Autor 1",
+    "publishedDate": "2023-10-01T10:00:00Z",
+    "editedDate": "2023-10-01T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 2,
+    "image": "https://picsum.photos/200?random=2",
+    "title": "Post 2",
+    "content": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "author": "Autor 2",
+    "publishedDate": "2023-10-02T10:00:00Z",
+    "editedDate": "2023-10-02T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 3,
+    "image": "https://picsum.photos/200?random=3",
+    "title": "Post 3",
+    "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "author": "Autor 3",
+    "publishedDate": "2023-10-03T10:00:00Z",
+    "editedDate": "2023-10-03T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 4,
+    "image": "https://picsum.photos/200?random=4",
+    "title": "Post 4",
+    "content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "author": "Autor 4",
+    "publishedDate": "2023-10-04T10:00:00Z",
+    "editedDate": "2023-10-04T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 5,
+    "image": "https://picsum.photos/200?random=5",
+    "title": "Post 5",
+    "content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "author": "Autor 5",
+    "publishedDate": "2023-10-05T10:00:00Z",
+    "editedDate": "2023-10-05T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 6,
+    "image": "https://picsum.photos/200?random=6",
+    "title": "Post 6",
+    "content": "Curabitur pretium tincidunt lacus. Nulla gravida orci a odio, et viverra elit sagittis.",
+    "author": "Autor 6",
+    "publishedDate": "2023-10-06T10:00:00Z",
+    "editedDate": "2023-10-06T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 7,
+    "image": "https://picsum.photos/200?random=7",
+    "title": "Post 7",
+    "content": "In ac felis quis tortor malesuada pretium. Pellentesque habitant morbi tristique senectus et netus.",
+    "author": "Autor 7",
+    "publishedDate": "2023-10-07T10:00:00Z",
+    "editedDate": "2023-10-07T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 8,
+    "image": "https://picsum.photos/200?random=8",
+    "title": "Post 8",
+    "content": "Suspendisse potenti. Sed egestas, ante et vulputate volutpat, eros pede semper est.",
+    "author": "Autor 8",
+    "publishedDate": "2023-10-08T10:00:00Z",
+    "editedDate": "2023-10-08T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 9,
+    "image": "https://picsum.photos/200?random=9",
+    "title": "Post 9",
+    "content": "Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora.",
+    "author": "Autor 9",
+    "publishedDate": "2023-10-09T10:00:00Z",
+    "editedDate": "2023-10-09T10:00:00Z",
+    "deleted": false
+  },
+  {
+    "id": 10,
+    "image": "https://picsum.photos/200?random=10",
+    "title": "Post 10",
+    "content": "Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam.",
+    "author": "Autor 10",
+    "publishedDate": "2023-10-10T10:00:00Z",
+    "editedDate": "2023-10-10T10:00:00Z",
+    "deleted": false
+  }
+]

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
 import { PiGitlabLogoSimpleFill } from "react-icons/pi";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { FaBlog } from "react-icons/fa6";
 
 function Header() {
     const [isNavVisible, setIsNavVisible] = useState(false);
@@ -64,7 +65,7 @@ function Header() {
                 maxLength={30} 
             />
             <a href="/" className='header-logo'>
-                <PiGitlabLogoSimpleFill />
+            <FaBlog />
             </a>
             <div
                 className='header-search_icon'

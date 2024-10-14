@@ -1,8 +1,14 @@
 import React from 'react';
 
-const Post = ({ image, title, content, author }) => {
+const Post = ({ index, image, title, content, author, date , loading }) => {
+  if (loading) {
+    return (
+      <h1>Loading.....</h1>
+    );
+  }
+
   return (
-    <div className='post'>
+    <div className='post' key={index}> 
       <div>
         <img src={image} alt={title} />
       </div>
@@ -11,7 +17,7 @@ const Post = ({ image, title, content, author }) => {
         <p>{content}</p>
       </div>
       <div>
-        <i>{author}</i>
+        <i>{author} - {date}</i>
       </div>
     </div>
   );

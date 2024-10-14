@@ -2,9 +2,9 @@ $post-background-color: #f9f9f9;
 $post-title-color: #131212;
 $post-content-color: #363636;
 $post-author-color: #777;
-$post-border-radius: 8px;
+$post-border-radius: 20px;
 $post-padding: 16px;
-$post-margin: 16px 16px;
+$post-margin: 16px 6px;
 
 .post {
   //background-color: $post-background-color;
@@ -24,7 +24,6 @@ $post-margin: 16px 16px;
   h3 {
     color: $post-title-color;
     font-size: 1.25rem;
-    margin: 8px 0 4px; 
     font-weight: 700;
   }
 
@@ -32,13 +31,11 @@ $post-margin: 16px 16px;
     color: $post-content-color;
     font-size: 1rem;
     line-height: 1.5;
-    margin: 8px 0;
   }
 
   i {
     color: $post-author-color;
     font-size: 0.875rem;
     display: block;
-    margin-top: 12px;
   }
 }

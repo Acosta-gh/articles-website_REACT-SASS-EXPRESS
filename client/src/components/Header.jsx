@@ -2,12 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import Hamburger from 'hamburger-react';
 import { Link } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
-import { PiGitlabLogoSimpleFill } from "react-icons/pi";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { FaBlog } from "react-icons/fa6";
+import Arrow from "./Arrow";
 
 function Header() {
-    const [isNavVisible, setIsNavVisible] = useState(false);
+    const [isMenuOpen, setMenuOpen] = useState(false);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [isOpen, setOpen] = useState(false);
 
@@ -15,14 +14,14 @@ function Header() {
     const iconRef = useRef(null);
 
     const toggleNav = () => {
-        setIsNavVisible(!isNavVisible);
+        setMenuOpen(!isMenuOpen);
     };
 
     const toggleSearch = () => {
         setIsSearchVisible(!isSearchVisible);
     };
 
-    useEffect(() => { // Hides the search field if clicked outside. | Oculta el campo de búsqueda si se hace clic fuera de él; 
+    useEffect(() => {
         const handleClickOutside = (event) => {
             if (
                 searchRef.current && !searchRef.current.contains(event.target) &&
@@ -44,14 +43,11 @@ function Header() {
                 <Hamburger toggled={isOpen} toggle={setOpen} size={25} />
             </div>
 
-            <div className={`header-burguer_desktop`} onClick={toggleNav}>
-                <p>Menu</p>
-                <i className={`header-burguer_desktop-arrow ${isNavVisible ? 'rotated' : ''}`}>
-                    <MdKeyboardArrowDown />
-                </i>
+            <div className={`header-burguer_desktop`}>
+                    <Arrow onClick={toggleNav} text="Menu" />
             </div>
 
-            <nav className={`header-nav ${isNavVisible ? 'visible' : ''}`}>
+            <nav className={`header-nav ${isMenuOpen ? 'visible' : ''}`}>
                 <Link to="/articles" onClick={toggleNav}><p>Our Articles</p></Link>
                 <Link to="/about" onClick={toggleNav}><p>About Us</p></Link>
                 <Link to="/contact" onClick={toggleNav}><p>Contact Us</p></Link>
@@ -62,10 +58,10 @@ function Header() {
                 className={`header-search ${isSearchVisible ? 'visible' : ''}`}
                 type='text'
                 placeholder='Search By...'
-                maxLength={30} 
+                maxLength={30}
             />
             <a href="/" className='header-logo'>
-            <FaBlog />
+                <FaBlog />
             </a>
             <div
                 className='header-search_icon'

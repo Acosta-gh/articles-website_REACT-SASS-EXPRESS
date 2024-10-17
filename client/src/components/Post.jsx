@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Post = ({ index, image, title, content, author, date , loading }) => {
+const Post = ({ index, image, title, content, author, date , category ,loading }) => {
   if (loading) {
     return (
       <h1>Loading.....</h1>
@@ -13,8 +13,8 @@ const Post = ({ index, image, title, content, author, date , loading }) => {
         <img src={image} alt={title} />
       </div>
       <div>
-        <h3>{title}</h3>
-        <p>{content}</p>
+        <h3>{category}</h3>
+        <p>{title}</p>
       </div>
       <div>
         <i>{author} - {date}</i>

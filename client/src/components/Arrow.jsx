@@ -1,19 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 
-const Arrow = ({ onClick, text }) => {
-    const [isRotated, setIsRotated] = useState(false);
-
-    const handleClick = () => {
-        setIsRotated(prev => !prev); // Cambia el estado de rotación
-        if (onClick) {
-            onClick(); // Llama al callback si se proporciona
-        }
-    };
-
+const Arrow = ({ onClick, text, isRotated }) => {
     return (
-        <div className="arrow" onClick={handleClick}>
-            <span >{text}</span>
+        <div className="arrow" onClick={onClick}>
+            <span>{text}</span>
             <MdKeyboardArrowDown className={isRotated ? 'rotated' : ''} />
         </div>
     );

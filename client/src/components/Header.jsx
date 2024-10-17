@@ -9,6 +9,9 @@ function Header() {
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [isOpen, setOpen] = useState(false);
+    const [isAtTop, setIsAtTop] = useState(true);
+    
+    const [isRotated, setIsRotated] = useState(false); 
 
     const searchRef = useRef(null);
     const iconRef = useRef(null);
@@ -20,6 +23,22 @@ function Header() {
     const toggleSearch = () => {
         setIsSearchVisible(!isSearchVisible);
     };
+
+    const handleArrowClick = () => {
+        setIsRotated(prev => !prev);
+        toggleNav(); // Llama a la función toggleNav cuando se hace clic en el Arrow
+    };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsAtTop(window.scrollY === 0);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -38,13 +57,13 @@ function Header() {
     }, []);
 
     return (
-        <header className='header'>
+        <header className={`header ${isAtTop ? 'at-top' : 'fixed'}`}>
             <div className='header-burguer' onClick={toggleNav}>
                 <Hamburger toggled={isOpen} toggle={setOpen} size={25} />
             </div>
 
             <div className={`header-burguer_desktop`}>
-                    <Arrow onClick={toggleNav} text="Menu" />
+                <Arrow onClick={handleArrowClick} text="Menu" isRotated={isRotated} /> {/* Pasar isRotated como prop */}
             </div>
 
             <nav className={`header-nav ${isMenuOpen ? 'visible' : ''}`}>
@@ -55,7 +74,7 @@ function Header() {
             </nav>
             <input
                 ref={searchRef}
-                className={`header-search ${isSearchVisible ? 'visible' : ''}`}
+                className={`header-search ${isSearchVisible ? 'visible' : ''} `}
                 type='text'
                 placeholder='Search By...'
                 maxLength={30}

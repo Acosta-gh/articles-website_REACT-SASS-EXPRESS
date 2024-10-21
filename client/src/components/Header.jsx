@@ -10,11 +10,12 @@ function Header() {
     const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [isOpen, setOpen] = useState(false);
     const [isAtTop, setIsAtTop] = useState(true);
-    
-    const [isRotated, setIsRotated] = useState(false); 
+    const [isRotated, setIsRotated] = useState(false);
 
     const searchRef = useRef(null);
-    const iconRef = useRef(null);
+    const searchIconRef = useRef(null);
+    const navRef = useRef(null); 
+    const navIconRef = useRef(null); 
 
     const toggleNav = () => {
         setMenuOpen(!isMenuOpen);
@@ -26,7 +27,7 @@ function Header() {
 
     const handleArrowClick = () => {
         setIsRotated(prev => !prev);
-        toggleNav(); // Llama a la función toggleNav cuando se hace clic en el Arrow
+        toggleNav();
     };
 
     useEffect(() => {
@@ -44,9 +45,13 @@ function Header() {
         const handleClickOutside = (event) => {
             if (
                 searchRef.current && !searchRef.current.contains(event.target) &&
-                iconRef.current && !iconRef.current.contains(event.target)
+                searchIconRef.current && !searchIconRef.current.contains(event.target) &&
+                navRef.current && !navRef.current.contains(event.target) &&
+                navIconRef.current && !navIconRef.current.contains(event.target) 
             ) {
                 setIsSearchVisible(false);
+                setMenuOpen(false); 
+                setIsRotated(false); 
             }
         };
 
@@ -62,19 +67,20 @@ function Header() {
                 <Hamburger toggled={isOpen} toggle={setOpen} size={25} />
             </div>
 
-            <div className={`header-burguer_desktop`}>
-                <Arrow onClick={handleArrowClick} text="Menu" isRotated={isRotated} /> {/* Pasar isRotated como prop */}
+            <div className={`header-burguer_desktop`} ref={navIconRef}>
+                <Arrow onClick={handleArrowClick} text="Menu" isRotated={isRotated} /> 
             </div>
 
-            <nav className={`header-nav ${isMenuOpen ? 'visible' : ''}`}>
+            <nav className={`header-nav ${isMenuOpen ? 'visible' : ''}`} ref={navRef}>
                 <Link to="/articles" onClick={toggleNav}><p>Our Articles</p></Link>
                 <Link to="/about" onClick={toggleNav}><p>About Us</p></Link>
                 <Link to="/contact" onClick={toggleNav}><p>Contact Us</p></Link>
                 <Link to="/account" onClick={toggleNav}><p>My Account</p></Link>
-            </nav>
+            </nav> 
+
             <input
                 ref={searchRef}
-                className={`header-search ${isSearchVisible ? 'visible' : ''} `}
+                className={`header-search ${isSearchVisible ? 'visible' : ''}`}
                 type='text'
                 placeholder='Search By...'
                 maxLength={30}
@@ -85,7 +91,7 @@ function Header() {
             <div
                 className='header-search_icon'
                 onClick={toggleSearch}
-                ref={iconRef}
+                ref={searchIconRef}
             >
                 <LuSearch />
             </div>

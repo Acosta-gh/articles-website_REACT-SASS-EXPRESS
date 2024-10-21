@@ -1,10 +1,11 @@
 .header {
-
     &.at-top {}
 
     &.fixed {}
 
     background-color: $bg-color;
+
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;   
 
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -29,12 +30,17 @@
         -ms-user-select: none;
         /* Internet Explorer/Edge */
     }
+
     &-burguer_desktop {
         display: none;
     }
+
     &-nav,
     &-search {
         background-color: $bg-color;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;   
+
+
         position: absolute;
         top: 100%; // Positions the navigation menu and search field directly below the header | Posiciona el menú de navegación y el campo de búsqueda justo debajo del header        left: 0;
         width: 100%;
@@ -45,16 +51,19 @@
         transition: opacity 0.3s ease, transform 0.3s ease;
         overflow: hidden;
         pointer-events: none;
+
         p {
             margin-top: 5px;
             background-color: transparent;
             transition: background-color 0.2s ease;
             padding-left: 2rem;
+
             &:hover {
                 background-color: #ffc7b6e0;
             }
         }
     }
+
     &-nav {
         z-index: $z-index-hidden;
         user-select: none;
@@ -63,6 +72,7 @@
         -moz-user-select: none;
         /* Firefox */
         -ms-user-select: none;
+
         /* Internet Explorer/Edge */
         &.visible {
             z-index: $z-index-visible-nav;
@@ -71,6 +81,7 @@
             pointer-events: auto;
         }
     }
+
     &-search {
         border: none;
         outline: none;
@@ -82,6 +93,7 @@
         font-weight: 600;
         color: #333;
         line-height: 1.5;
+
         &.visible {
             z-index: $z-index-visible-search;
             opacity: 1;
@@ -89,6 +101,7 @@
             pointer-events: auto;
         }
     }
+
     &-logo {
         display: flex;
         justify-content: center;
@@ -98,6 +111,7 @@
         margin: auto;
         padding: .7rem;
     }
+
     &-search_icon {
         display: flex;
         justify-content: flex-end;
@@ -110,74 +124,82 @@
 
 // Media Queries
 @media (min-width: $breakpoint-lg) {
-
-    /*
     .header {
-        &-burguer {
-            display: none;
+        padding: 0 10%;
+
+        &-logo {
+            left: 10px;
         }
 
-        &-nav {
-            opacity: 1;
-            position: static;
-            transform: translateY(0);
-            pointer-events: auto;
-            display: flex;
-            font-size: 1.5rem;
-            margin: auto;
-
-            p {
-                margin-right: 1rem;
-                font-size: 1.3rem;
-              
-            }
-        }
-    }
-    */
-    .header {
         &-burguer {
             display: none;
         }
 
         &-burguer_desktop {
 
-
             display: flex;
             flex-direction: row;
-            width: 30%;
-
+            width: 7.5rem;
             user-select: none;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none;   /* Internet Explorer/Edge */
 
-            -webkit-user-select: none;
-            /* Safari */
-            -moz-user-select: none;
-            /* Firefox */
-            -ms-user-select: none;
-            /* Internet Explorer/Edge */
+            font-size: 1.7rem
         }
 
+        &-search{
+            padding-top: 0;
+            padding-left: 9%;
+            padding-right: 9%;
+        }
+
+        &-nav{
+          p{
+            
+            padding-left: 11%;
+            padding-right: 11%;
+            font-size: 1.6rem;
+          }
+           
+        }
         &-search_icon {
             cursor: pointer;
+            font-size: 1.7rem
         }
     }
 }
 
 @media (min-width: $breakpoint-xl) {
     .header {
-        padding-left: 7%;
-        padding-right: 7%;
+        padding: 0 14%;
 
-        &-search {
-            padding-right: 7%;
-            padding-left: 7%;
-        }
-
-        &-search_icon {
-            font-size: 1.5rem;
+        &-burguer {
+            display: none;
         }
 
         &-burguer_desktop {
-            font-size: 1.5rem;
+
+            display: flex;
+            flex-direction: row;
+            width: 7.5rem;
+            user-select: none;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none;   /* Internet Explorer/Edge */
+            font-size: 1.7rem;
+        }
+
+        &-search{
+           
+        }
+
+        &-nav{
+           
+        }
+        &-search_icon {
+            cursor: pointer;
+            font-size: 1.7rem;
         }
 
         &-nav {

@@ -7,6 +7,9 @@
     margin-left: 1.5rem;
     margin-top: 1.3rem;
 
+    position: relative;
+    z-index: 10;
+    
     .arrow {
       margin-right: 2rem;
       svg {
@@ -16,6 +19,20 @@
     }
   }
 
+  &-greetings{
+    padding: 1rem;
+    margin-left: .3rem;
+    p{
+      font-weight: 600;
+    }
+    h1{
+      margin-top: 1rem;
+      font-weight: 800;
+    }
+    i{
+      font-weight: 100;
+    }
+  }
   .dropdown {
     position: relative;
 
@@ -34,13 +51,13 @@
       opacity: 0;
       transform: translateY(-10px);
       transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-      visibility: hidden; // Ocultar por defecto
+      visibility: hidden; 
 
       margin-top: .7rem;
       &.show {
         opacity: 1;
         transform: translateY(0);
-        visibility: visible; // Hacer visible cuando está activo
+        visibility: visible; 
       }
     }
   }
@@ -53,3 +70,33 @@
     }
   }
 }
+
+@media (min-width: $breakpoint-lg) {
+  .home{
+    margin: 0 15%;
+
+    &-greetings{
+      margin-top: 1rem;
+      margin-left: .2rem;
+      p{
+      }
+      h1{
+      }
+      i{
+      }
+    }
+  }
+  .posts{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+   
+  }
+
+ 
+  
+}
+
+
+
+

@@ -4,98 +4,84 @@ import { Link } from 'react-router-dom';
 import { LuSearch } from "react-icons/lu";
 import { FaBlog } from "react-icons/fa6";
 import Arrow from "./Arrow";
+import { useSearchContext } from '../context/SearchContext';
 
 function Header() {
-    const [isMenuOpen, setMenuOpen] = useState(false);
-    const [isSearchVisible, setIsSearchVisible] = useState(false);
-    const [isBurguerOpen, setBurguerOpen] = useState(false);
-    const [isAtTop, setIsAtTop] = useState(true);
-    const [isRotated, setIsRotated] = useState(false);
+    const { searchTerm, setSearchTerm } = useSearchContext();
+    const [state, setState] = useState({
+        isMenuOpen: false,
+        isSearchVisible: false,
+        isBurguerOpen: false,
+        isAtTop: true,
+        isRotated: false,
+    });
 
     const searchRef = useRef(null);
-    const iconRef = useRef(null);
-    const navRef = useRef(null); // Referencia para el menú
-    const navIconMenuRef = useRef(null); // Referencia para el icono del menú
-    const navIconBurguerRef = useRef(null);
+    const headerRef = useRef(null);
 
-    const toggleNav = () => {
-        setMenuOpen(!isMenuOpen);
+    const toggleState = (key) => {
+        setState((prev) => ({ ...prev, [key]: !prev[key] }));
     };
 
-    const toggleSearch = () => {
-        setIsSearchVisible(!isSearchVisible);
-    };
-
-    const handleArrowClick = () => {
-        setIsRotated(prev => !prev);
-        toggleNav();
+    const closeAll = () => {
+        setState({
+            isMenuOpen: false,
+            isSearchVisible: false,
+            isBurguerOpen: false,
+            isAtTop: state.isAtTop,
+            isRotated: false,
+        });
     };
 
     useEffect(() => {
-        const handleScroll = () => {
-            setIsAtTop(window.scrollY === 0);
-        };
-
+        const handleScroll = () => setState((prev) => ({ ...prev, isAtTop: window.scrollY === 0 }));
         window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (
-                searchRef.current && !searchRef.current.contains(event.target) &&
-                iconRef.current && !iconRef.current.contains(event.target) &&
-                navRef.current && !navRef.current.contains(event.target) &&
-                navIconBurguerRef.current && !navIconBurguerRef.current.contains(event.target) &&
-                navIconMenuRef.current && !navIconMenuRef.current.contains(event.target) 
-            ) {
-                setIsSearchVisible(false);
-                setMenuOpen(false); 
-                setIsRotated(false); 
-                setBurguerOpen(false);
+            if (headerRef.current && !headerRef.current.contains(event.target)) {
+                closeAll();
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const handleSearchChange = (event) => setSearchTerm(event.target.value);
+
     return (
-        <header className={`header ${isAtTop ? 'at-top' : 'fixed'}`}>
-            <div className='header-burguer' onClick={toggleNav} ref={navIconBurguerRef}>
-                <Hamburger toggled={isBurguerOpen} toggle={setBurguerOpen} size={25} />
+        <header ref={headerRef} className={`header ${state.isAtTop ? 'at-top' : 'fixed'}`}>
+            <div className='header-burguer' onClick={() => toggleState('isBurguerOpen')}>
+                <Hamburger toggled={state.isBurguerOpen} toggle={() => toggleState('isBurguerOpen')} size={25} />
             </div>
 
-            <div className={`header-burguer_desktop`} ref={navIconMenuRef}>
-                <Arrow onClick={handleArrowClick} text="Menu" isRotated={isRotated} /> 
+            <div className='header-burguer_desktop'>
+                <Arrow onClick={() => { toggleState('isMenuOpen'); toggleState('isRotated'); }} text="Menu" isRotated={state.isRotated} />
             </div>
 
-            <nav className={`header-nav ${isMenuOpen ? 'visible' : ''}`} ref={navRef}>
-                <Link to="/articles" onClick={toggleNav}><p>Our Articles</p></Link>
-                <Link to="/about" onClick={toggleNav}><p>About Us</p></Link>
-                <Link to="/contact" onClick={toggleNav}><p>Contact Us</p></Link>
-                <Link to="/account" onClick={toggleNav}><p>My Account</p></Link>
+            <nav className={`header-nav ${state.isMenuOpen ? 'visible' : ''}`}>
+                {['Our Articles', 'About Us', 'Contact Us', 'My Account'].map((item, index) => (
+                    <Link key={index} to={`/${item.toLowerCase().replace(/\s/g, '')}`} onClick={closeAll}>
+                        <p>{item}</p>
+                    </Link>
+                ))}
             </nav>
 
             <input
                 ref={searchRef}
-                className={`header-search ${isSearchVisible ? 'visible' : ''}`}
+                className={`header-search ${state.isSearchVisible ? 'visible' : ''}`}
                 type='text'
                 placeholder='Search By...'
                 maxLength={30}
+                value={searchTerm}
+                onChange={handleSearchChange}
             />
-            <a href="/" className='header-logo'>
-                <FaBlog />
-            </a>
-            <div
-                className='header-search_icon'
-                onClick={toggleSearch}
-                ref={iconRef}
-            >
+            
+            <a href="/" className='header-logo'><FaBlog /></a>
+
+            <div className='header-search_icon' onClick={() => toggleState('isSearchVisible')}>
                 <LuSearch />
             </div>
         </header>

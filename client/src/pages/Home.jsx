@@ -16,15 +16,22 @@ const Home = () => {
   const [rotation, setRotation] = useState({ category: false, order: false });
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
-  const dropdownRef = useRef(null);
+  const dropdownRefs = useRef({}); 
 
   useEffect(() => {
     setPosts(data);
+
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      const dropdownKeys = Object.keys(dropdownRefs.current);
+      const isOutsideClick = dropdownKeys.every(key => {
+        const dropdown = dropdownRefs.current[key];
+        return dropdown && !dropdown.contains(event.target);
+      });
+      if (isOutsideClick) {
         setShowDropdown({ category: false, order: false });
       }
     };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -50,13 +57,17 @@ const Home = () => {
   );
 
   const toggleDropdown = (type) => {
-    setShowDropdown(prev => ({
-      category: type === 'category' ? !prev.category : false,
-      order: type === 'order' ? !prev.order : false
-    }));
+    setShowDropdown(prev => {
+      const isOpen = prev[type];
+      return {
+        category: type === 'category' ? !isOpen : false,
+        order: type === 'order' ? !isOpen : false
+      };
+    });
+
     setRotation(prev => ({
-      category: type === 'category' ? !prev.category : false,
-      order: type === 'order' ? !prev.order : false
+      category: type === 'category' ? !prev.category : prev.category,
+      order: type === 'order' ? !prev.order : prev.order
     }));
   };
 
@@ -94,7 +105,7 @@ const Home = () => {
       </Fade>
       <div className='home-category'>
         {['category', 'order'].map(type => (
-          <div className='dropdown' key={type} ref={type === 'category' ? dropdownRef : null}>
+          <div className='dropdown' key={type} ref={el => dropdownRefs.current[type] = el}>
             <Arrow
               text={type === 'category' ? currentCategory : currentOrder}
               onClick={() => toggleDropdown(type)}

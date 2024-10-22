@@ -12,6 +12,7 @@
 
     .arrow {
       margin-right: 2rem;
+
       svg {
         margin-bottom: 0.1rem;
         margin-left: 0.1rem;
@@ -19,29 +20,40 @@
     }
   }
 
-  &-greetings{
+  &-greetings {
     padding: 1rem;
     margin-left: .3rem;
-    p{
+
+    p {
       font-weight: 600;
     }
-    h1{
+
+    h1 {
       margin-top: 1rem;
       font-weight: 800;
     }
-    i{
+
+    i {
       font-weight: 100;
     }
   }
+
   .dropdown {
     position: relative;
+    
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
 
     .dropdown-menu {
       position: absolute;
       top: 100%;
       left: 0;
       width: 100%;
-      
+
       background-color: white;
 
       min-width: 8rem;
@@ -51,13 +63,14 @@
       opacity: 0;
       transform: translateY(-10px);
       transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-      visibility: hidden; 
+      visibility: hidden;
 
       margin-top: .7rem;
+
       &.show {
         opacity: 1;
         transform: translateY(0);
-        visibility: visible; 
+        visibility: visible;
       }
     }
   }
@@ -65,6 +78,7 @@
   .dropdown-item {
     cursor: pointer;
     padding: 10px;
+
     &:hover {
       background-color: #f0f0f0;
     }
@@ -72,37 +86,36 @@
 }
 
 @media (min-width: $breakpoint-lg) {
-  .home{
+  .home {
     margin: 0 15%;
 
-    &-greetings{
+    &-greetings {
       margin-top: 1rem;
       margin-left: .2rem;
-      p{
-      }
-      h1{
-      }
-      i{
-      }
+
+      p {}
+
+      h1 {}
+
+      i {}
     }
   }
-  .posts{
+
+  .posts {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-   
+
   }
 }
 
 @media (min-width: $breakpoint-xl) {
-  .home{
-    .posts{
+  .home {
+    .posts {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 1rem;
-     
+
     }
   }
 }
-
-

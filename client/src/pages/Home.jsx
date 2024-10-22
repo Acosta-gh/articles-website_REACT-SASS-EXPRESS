@@ -29,6 +29,7 @@ const Home = () => {
       });
       if (isOutsideClick) {
         setShowDropdown({ category: false, order: false });
+        setRotation({ category: false, order: false }); 
       }
     };
 

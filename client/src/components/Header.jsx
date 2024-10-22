@@ -8,14 +8,15 @@ import Arrow from "./Arrow";
 function Header() {
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isSearchVisible, setIsSearchVisible] = useState(false);
-    const [isOpen, setOpen] = useState(false);
+    const [isBurguerOpen, setBurguerOpen] = useState(false);
     const [isAtTop, setIsAtTop] = useState(true);
     const [isRotated, setIsRotated] = useState(false);
 
     const searchRef = useRef(null);
-    const searchIconRef = useRef(null);
-    const navRef = useRef(null); 
-    const navIconRef = useRef(null); 
+    const iconRef = useRef(null);
+    const navRef = useRef(null); // Referencia para el menú
+    const navIconMenuRef = useRef(null); // Referencia para el icono del menú
+    const navIconBurguerRef = useRef(null);
 
     const toggleNav = () => {
         setMenuOpen(!isMenuOpen);
@@ -45,13 +46,15 @@ function Header() {
         const handleClickOutside = (event) => {
             if (
                 searchRef.current && !searchRef.current.contains(event.target) &&
-                searchIconRef.current && !searchIconRef.current.contains(event.target) &&
+                iconRef.current && !iconRef.current.contains(event.target) &&
                 navRef.current && !navRef.current.contains(event.target) &&
-                navIconRef.current && !navIconRef.current.contains(event.target) 
+                navIconBurguerRef.current && !navIconBurguerRef.current.contains(event.target) &&
+                navIconMenuRef.current && !navIconMenuRef.current.contains(event.target) 
             ) {
                 setIsSearchVisible(false);
                 setMenuOpen(false); 
                 setIsRotated(false); 
+                setBurguerOpen(false);
             }
         };
 
@@ -63,11 +66,11 @@ function Header() {
 
     return (
         <header className={`header ${isAtTop ? 'at-top' : 'fixed'}`}>
-            <div className='header-burguer' onClick={toggleNav}>
-                <Hamburger toggled={isOpen} toggle={setOpen} size={25} />
+            <div className='header-burguer' onClick={toggleNav} ref={navIconBurguerRef}>
+                <Hamburger toggled={isBurguerOpen} toggle={setBurguerOpen} size={25} />
             </div>
 
-            <div className={`header-burguer_desktop`} ref={navIconRef}>
+            <div className={`header-burguer_desktop`} ref={navIconMenuRef}>
                 <Arrow onClick={handleArrowClick} text="Menu" isRotated={isRotated} /> 
             </div>
 
@@ -76,7 +79,7 @@ function Header() {
                 <Link to="/about" onClick={toggleNav}><p>About Us</p></Link>
                 <Link to="/contact" onClick={toggleNav}><p>Contact Us</p></Link>
                 <Link to="/account" onClick={toggleNav}><p>My Account</p></Link>
-            </nav> 
+            </nav>
 
             <input
                 ref={searchRef}
@@ -91,7 +94,7 @@ function Header() {
             <div
                 className='header-search_icon'
                 onClick={toggleSearch}
-                ref={searchIconRef}
+                ref={iconRef}
             >
                 <LuSearch />
             </div>

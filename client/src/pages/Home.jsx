@@ -3,7 +3,7 @@ import Post from "../components/Post";
 import Pagination from "../components/Pagination";
 import data from '../../../server/api/get/posts/posts.json';
 import Arrow from "../components/Arrow";
-import { Fade } from "react-awesome-reveal";
+import { Fade } from "react-awesome-reveal"; // https://www.npmjs.com/package/react-awesome-reveal
 import { Slide } from "react-awesome-reveal";
 
 const Home = () => {

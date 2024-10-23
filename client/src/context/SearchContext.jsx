@@ -1,6 +1,5 @@
 // https://dev.to/hey_yogini/usecontext-for-better-state-management-51hi
 
-// src/context/SearchContext.js
 import React, { createContext, useContext, useState } from 'react';
 
 const SearchContext = createContext();

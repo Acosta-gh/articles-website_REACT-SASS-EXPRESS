@@ -11,9 +11,9 @@ const Post = ({ index, image, title, content, author, date, category, loading })
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const month = months[date.getMonth()]; // Obtiene el nombre del mes
+    const month = months[date.getMonth()]; 
     const day = String(date.getDate()).padStart(2, '0'); // Obtiene el día y lo formatea
-    const year = date.getFullYear(); // Obtiene el año
+    const year = date.getFullYear(); 
     return `${month} ${day} ${year}`; // Retorna el formato "MMM DD YYYY"
   };
 

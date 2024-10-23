@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
                 element: <Articles />,
             },
             {
-                path: "privacy",
+                path: "privacypolicy",
                 element: <Privacy />,
             },
         ],

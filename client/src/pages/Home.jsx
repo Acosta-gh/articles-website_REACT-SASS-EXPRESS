@@ -7,6 +7,7 @@ import { Fade, Slide } from "react-awesome-reveal";
 import { useSearchContext } from "../context/SearchContext";
 
 const Home = () => {
+  // Context and state management
   const { searchTerm } = useSearchContext();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,6 +19,7 @@ const Home = () => {
   const [currentOrder, setCurrentOrder] = useState('Newest');
   const dropdownRefs = useRef({});
 
+  // Effect to load posts and handle outside click
   useEffect(() => {
     setPosts(data);
 
@@ -37,6 +39,7 @@ const Home = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Filtering and sorting posts
   const filterAndSortPosts = () => {
     return posts
       .filter(post =>
@@ -46,17 +49,19 @@ const Home = () => {
         )
       )
       .sort((a, b) =>
-        currentOrder === 'Newest' ?
-          new Date(b.publishedDate) - new Date(a.publishedDate) :
+        currentOrder === 'Newest' ? 
+          new Date(b.publishedDate) - new Date(a.publishedDate) : 
           new Date(a.publishedDate) - new Date(b.publishedDate)
       );
   };
 
+  // Current posts for pagination
   const currentPosts = filterAndSortPosts().slice(
     (currentPage - 1) * postsPerPage,
     currentPage * postsPerPage
   );
 
+  // Dropdown toggle logic
   const toggleDropdown = (type) => {
     setShowDropdown(prev => {
       const isOpen = prev[type];
@@ -72,6 +77,7 @@ const Home = () => {
     }));
   };
 
+  // Handle dropdown selection
   const handleSelect = (type, value) => {
     if (type === 'category') {
       setCurrentCategory(value);
@@ -87,12 +93,14 @@ const Home = () => {
     order: ['Newest', 'Oldest', 'Most Popular']
   };
 
+  // Greeting message based on the time of day
   const getGreetings = () => {
     const currentHour = new Date().getHours();
     return currentHour < 12 ? "Good Morning!👋" :
       currentHour < 17 ? "Good Afternoon 🌇" : "Good Evening 🌆";
   };
 
+  // Render component
   return (
     <div className='home'>
       <Fade triggerOnce duration={1500}>
@@ -104,6 +112,7 @@ const Home = () => {
           </div>
         </Slide>
       </Fade>
+
       <div className='home-category'>
         {['category', 'order'].map(type => (
           <div className='dropdown' key={type} ref={el => dropdownRefs.current[type] = el}>
@@ -124,6 +133,7 @@ const Home = () => {
           </div>
         ))}
       </div>
+
       <div className='posts'>
         <Fade triggerOnce duration={700}>
           {currentPosts.length > 0 ? (
@@ -144,10 +154,9 @@ const Home = () => {
               <p>No posts found matching your search criteria.</p>
             </div>
           )}
-
-
         </Fade>
       </div>
+
       <Pagination
         postsPerPage={postsPerPage}
         length={filterAndSortPosts().length}

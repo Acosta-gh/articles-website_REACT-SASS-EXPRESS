@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import NavLinks from './NavLinks';
 
 const Footer = () => {
-  const footerLinks = ['Our Articles', 'About Us', 'Contact Us', 'My Account', 'Privacy Policy'];
+  const footerLinks = ['Our Articles', 'About Us', 'Contact Us', 'Privacy Policy'];
 
   return (
     <footer className="footer">

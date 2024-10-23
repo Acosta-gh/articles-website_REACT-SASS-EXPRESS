@@ -16,7 +16,7 @@ const Home = () => {
   const [rotation, setRotation] = useState({ category: false, order: false });
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
-  const dropdownRefs = useRef({}); 
+  const dropdownRefs = useRef({});
 
   useEffect(() => {
     setPosts(data);
@@ -29,7 +29,7 @@ const Home = () => {
       });
       if (isOutsideClick) {
         setShowDropdown({ category: false, order: false });
-        setRotation({ category: false, order: false }); 
+        setRotation({ category: false, order: false });
       }
     };
 
@@ -45,10 +45,10 @@ const Home = () => {
           field.toLowerCase().includes(searchTerm.toLowerCase())
         )
       )
-      .sort((a, b) => 
-        currentOrder === 'Newest' ? 
-        new Date(b.publishedDate) - new Date(a.publishedDate) : 
-        new Date(a.publishedDate) - new Date(b.publishedDate)
+      .sort((a, b) =>
+        currentOrder === 'Newest' ?
+          new Date(b.publishedDate) - new Date(a.publishedDate) :
+          new Date(a.publishedDate) - new Date(b.publishedDate)
       );
   };
 
@@ -89,8 +89,8 @@ const Home = () => {
 
   const getGreetings = () => {
     const currentHour = new Date().getHours();
-    return currentHour < 12 ? "Good Morning!👋" : 
-           currentHour < 17 ? "Good Afternoon 🌇" : "Good Evening 🌆";
+    return currentHour < 12 ? "Good Morning!👋" :
+      currentHour < 17 ? "Good Afternoon 🌇" : "Good Evening 🌆";
   };
 
   return (
@@ -126,18 +126,26 @@ const Home = () => {
       </div>
       <div className='posts'>
         <Fade triggerOnce duration={700}>
-          {currentPosts.map(data => (
-            <Post
-              key={data.id}
-              image={data.image}
-              title={data.title}
-              content={data.content}
-              author={data.author}
-              date={data.editedDate || data.publishedDate}
-              category={data.category}
-              loading={loading}
-            />
-          ))}
+          {currentPosts.length > 0 ? (
+            currentPosts.map(data => (
+              <Post
+                key={data.id}
+                image={data.image}
+                title={data.title}
+                content={data.content}
+                author={data.author}
+                date={data.editedDate || data.publishedDate}
+                category={data.category}
+                loading={loading}
+              />
+            ))
+          ) : (
+            <div className='no-posts'>
+              <p>No posts found matching your search criteria.</p>
+            </div>
+          )}
+
+
         </Fade>
       </div>
       <Pagination

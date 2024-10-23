@@ -54,26 +54,42 @@ function Header() {
 
     return (
         <header ref={headerRef} className={`header ${state.isAtTop ? 'at-top' : 'fixed'}`}>
-        <div className='header-burguer' onClick={() => { 
-            setOpen(!isOpen); 
-            toggleState('isMenuOpen'); 
-        }}>
-            <Hamburger toggled={isOpen} toggle={setOpen} size={25} />
-        </div>
-    
-        <div className='header-burguer_desktop'>
-            <Arrow onClick={() => { toggleState('isMenuOpen'); toggleState('isRotated'); }} text="Menu" isRotated={state.isRotated} />
-        </div>
-    
-        <nav className={`header-nav ${state.isMenuOpen ? 'visible' : ''}`}>
-            {['Our Articles', 'About Us', 'Contact Us', 'My Account'].map((item, index) => (
-                <Link key={index} to={`/${item.toLowerCase().replace(/\s/g, '')}`} onClick={closeAll}>
-                    <p>{item}</p>
-                </Link>
-            ))}
-        </nav>
-    </header>
-    
+            <div className='header-burguer' onClick={() => {
+                setOpen(!isOpen);
+                toggleState('isMenuOpen');
+            }}>
+                <Hamburger toggled={isOpen} toggle={setOpen} size={25} />
+            </div>
+
+            <div className='header-burguer_desktop'>
+                <Arrow onClick={() => { toggleState('isMenuOpen'); toggleState('isRotated'); }} text="Menu" isRotated={state.isRotated} />
+            </div>
+
+            <nav className={`header-nav ${state.isMenuOpen ? 'visible' : ''}`}>
+                {['Our Articles', 'About Us', 'Contact Us', 'My Account'].map((item, index) => (
+                    <Link key={index} to={`/${item.toLowerCase().replace(/\s/g, '')}`} onClick={closeAll}>
+                        <p>{item}</p>
+                    </Link>
+                ))}
+            </nav>
+            <a href="/" className='header-logo'><FaBlog /></a>
+
+            <input
+                ref={searchRef}
+                className={`header-search ${state.isSearchVisible ? 'visible' : ''}`}
+                type='text'
+                placeholder='Search By...'
+                maxLength={30}
+                value={searchTerm}
+                onChange={handleSearchChange}
+            />
+
+            <div className='header-search_icon' onClick={() => toggleState('isSearchVisible')}>
+                <LuSearch />
+            </div>
+
+        </header>
+
     );
 }
 

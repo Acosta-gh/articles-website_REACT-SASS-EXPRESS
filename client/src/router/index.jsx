@@ -3,8 +3,8 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
-import Articles from "../pages/Articles";
 import Privacy from "../pages/Privacy";
+import Article from "../pages/Article"
 
 import ErrorPage from "../error-page";
 import Layout from "../components/Layout"; 
@@ -28,8 +28,12 @@ export const router = createBrowserRouter([
                 element: <Contact />,
             },
             {
-                path: "ourarticles",
-                element: <Articles />,
+                path: "article/:id", 
+                element: <Article />,
+            },
+            {
+                path: "privacypolicy",
+                element: <Privacy />,
             },
             {
                 path: "privacypolicy",

@@ -49,8 +49,8 @@ const Home = () => {
         )
       )
       .sort((a, b) =>
-        currentOrder === 'Newest' ? 
-          new Date(b.publishedDate) - new Date(a.publishedDate) : 
+        currentOrder === 'Newest' ?
+          new Date(b.publishedDate) - new Date(a.publishedDate) :
           new Date(a.publishedDate) - new Date(b.publishedDate)
       );
   };
@@ -90,7 +90,8 @@ const Home = () => {
 
   const dropdownItems = {
     category: ['All', 'Category 1', 'Category 2', 'Category 3'],
-    order: ['Newest', 'Oldest', 'Most Popular']
+    //order: ['Newest', 'Oldest', 'Most Popular']
+    order: ['Newest', 'Oldest']
   };
 
   // Greeting message based on the time of day
@@ -140,6 +141,7 @@ const Home = () => {
             currentPosts.map(data => (
               <Post
                 key={data.id}
+                index={data.id}
                 image={data.image}
                 title={data.title}
                 content={data.content}

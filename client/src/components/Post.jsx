@@ -1,11 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import jsonCategories from '../../../server/api/get/categories/categories.json';
 
-const Post = ({ key, index, image, title, content, author, date, category, loading }) => {
+
+const Post = ({ key, index, image, title, content, author, date, categoryId, loading }) => {
   if (loading) {
     return <h1>Loading.....</h1>;
   }
+
+  console.log('categoryId:', categoryId);
+console.log('jsonCategories:', jsonCategories);
+
 
   // Extract the date from the string 
   const extractDate = (dateString) => {
@@ -15,21 +21,24 @@ const Post = ({ key, index, image, title, content, author, date, category, loadi
 
   const publishedDate = extractDate(date);
 
+  // Find the category name based on the categoryId
+  const categoryName = jsonCategories.find(cat => cat.id === categoryId)?.name || 'Unknown Category';
+
   return (
-    <div className='post' key={key}>
+    <div className='post' key={key} data-category-id={categoryId}>
       <Link to={`/article/${index}`}>
         <div className='post-image'>
           <img src={image} alt={title} />
         </div>
         <div className='post-content'>
-          <h3><ReactMarkdown>{category}</ReactMarkdown></h3>
+          <h3>{categoryName}</h3>
           <h4><ReactMarkdown>{title}</ReactMarkdown></h4>
           <p><ReactMarkdown>{content}</ReactMarkdown></p>
         </div>
         <div className='post-bottom'>
-          <p><ReactMarkdown>{`${author}`}</ReactMarkdown></p>
-          <p><ReactMarkdown>{`—`}</ReactMarkdown></p>
-          <i><ReactMarkdown>{`${publishedDate}`}</ReactMarkdown></i>
+          <p><ReactMarkdown>{author}</ReactMarkdown></p>
+          <p>—</p>
+          <i><ReactMarkdown>{publishedDate}</ReactMarkdown></i>
         </div>
       </Link>
     </div>

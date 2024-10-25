@@ -5,11 +5,11 @@
     "title": "# The Beauty of Nature",
     "content": "Nature is a breathtaking spectacle that surrounds us, filled with vibrant colors, diverse ecosystems, and awe-inspiring landscapes.",
     "content_full": "Nature is a breathtaking spectacle that surrounds us, filled with vibrant colors, diverse ecosystems, and awe-inspiring landscapes. From the majestic mountains to the serene lakes, every element plays a crucial role in the balance of our environment.\n\n![Mountain Landscape](https://picsum.photos/400?random=2)\n\n### The Majesty of Mountains\nMountains are not just geological formations; they are symbols of strength and resilience. The Himalayas, for instance, are home to the world's highest peaks, including Mount Everest. These majestic giants attract adventurers and nature lovers alike, offering breathtaking views and challenging hikes.\n\n![Himalayas](https://picsum.photos/400?random=3)\n\n### The Serenity of Lakes\nLakes provide a tranquil escape from the hustle and bustle of daily life. Places like Lake Baikal in Siberia, the deepest freshwater lake in the world, are not only beautiful but also vital for biodiversity. They support various species and play a crucial role in the local ecosystem.\n\n![Lake Baikal](https://picsum.photos/400?random=4)\n\n### The Importance of Conservation\nAs we marvel at these natural wonders, it is essential to remember our responsibility to protect them. Climate change, pollution, and deforestation pose significant threats to our environment. By raising awareness and taking action, we can ensure that future generations will also have the opportunity to experience the beauty of nature.\n\n**Join the Movement!**\nLet’s work together to preserve our planet. Whether it’s through volunteering, supporting conservation organizations, or simply spreading the word, every little effort counts",
-    "author": "**Autor 1**",
-    "publishedDate": "_Publicado el 2023-10-01_",
-    "editedDate": "_Editado el 2023-10-01_",
+    "author": "Autor 1",
+    "publishedDate": "_2023-10-01_",
+    "editedDate": "_2023-10-01_",
     "deleted": false,
-    "category": "**Category 1**"
+    "categoryId": 1
   },
   {
     "id": 2,
@@ -17,11 +17,11 @@
     "title": "# The Wonders of the Ocean",
     "content":  "The ocean is a vast and mysterious world, teeming with life and beauty beneath its surface.",
     "content_full": "The ocean is a vast and mysterious world, teeming with life and beauty beneath its surface. Covering more than 70% of our planet, it is home to countless species, many of which remain undiscovered.\n\n![Coral Reef](https://picsum.photos/400?random=6)\n\n### The Diversity of Marine Life\nFrom the vibrant coral reefs to the deep-sea trenches, the ocean is a treasure trove of biodiversity. Coral reefs, often referred to as the 'rainforests of the sea,' are vital ecosystems that support a wide variety of marine life.\n\n![Marine Life](https://picsum.photos/400?random=7)\n\n### The Threats We Face\nUnfortunately, our oceans are facing unprecedented threats from pollution, overfishing, and climate change. Plastic waste is choking marine life, and rising temperatures are causing coral bleaching. It is crucial that we take action to protect these vital ecosystems.\n\n### How You Can Help\nYou can make a difference by reducing plastic use, supporting sustainable seafood, and participating in beach clean-ups. Every small action contributes to the health of our oceans. ",
-    "author": "**Autor 2**",
-    "publishedDate": "_Publicado el 2023-10-02_",
-    "editedDate": "_Editado el 2023-10-02_",
+    "author": "Autor 2",
+    "publishedDate": "_2023-10-02_",
+    "editedDate": "_2023-10-02_",
     "deleted": false,
-    "category": "**Category 2**"
+    "categoryId": 2
   },
   {
     "id": 3,
@@ -29,11 +29,11 @@
     "title": "# The Magic of Forests",
     "content": "Forests are the lungs of our planet, providing oxygen and habitat for countless species",
     "content_full": "Forests are the lungs of our planet, providing oxygen and habitat for countless species. They are essential for maintaining ecological balance and combating climate change.\n\n![Forest](https://picsum.photos/400?random=9)\n\n### The Role of Forests in Our Ecosystem\nForests play a critical role in regulating the climate, preserving biodiversity, and supporting human life. They absorb carbon dioxide, produce oxygen, and provide resources such as timber, food, and medicine.\n\n![Biodiversity in Forests](https://picsum.photos/400?random=10)\n\n### Threats to Our Forests\nDespite their importance, forests are under threat from deforestation, urbanization, and climate change. Every year, millions of acres of forest are lost, leading to habitat destruction and loss of biodiversity.\n\n### How to Protect Our Forests\nYou can help protect forests by supporting sustainable forestry practices, participating in reforestation projects, and advocating for policies that protect natural habitats. Every action counts in the fight against deforestation.",
-    "author": "**Autor 3**",
+    "author": "Autor 3",
     "publishedDate": "_Publicado el 2023-10-03_",
     "editedDate": "_Editado el 2023-10-03_",
     "deleted": false,
-    "category": "**Category 1**"
+    "categoryId": 3
   },
   {
     "id": 4,
@@ -41,11 +41,11 @@
     "title": "# The Impact of Climate Change",
     "content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
     "content_full": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Este mensaje pone de relieve las consecuencias de las acciones...",
-    "author": "**Autor 4**",
+    "author": "Autor 4",
     "publishedDate": "_Publicado el 2023-10-04_",
     "editedDate": "_Editado el 2023-10-04_",
     "deleted": false,
-    "category": "**Category 3**"
+    "categoryId": 4
   },
   {
     "id": 5,
@@ -53,11 +53,11 @@
     "title": "# The Importance of Biodiversity",
     "content": "Biodiversity is the variety of life on Earth, and it is crucial for the health of our planet.",
     "content_full": "Biodiversity is the variety of life on Earth, and it is crucial for the health of our planet. It encompasses the diversity of species, ecosystems, and genetic variations that exist in our world.\n\n![Biodiversity](https://picsum.photos/400?random=15)\n\n### Why Biodiversity Matters\nBiodiversity is essential for ecosystem services, including pollination, nutrient cycling, and climate regulation. It also provides resources for food, medicine, and materials that sustain human life.\n\n![Ecosystem Services](https://picsum.photos/400?random=16)\n\n### Threats to Biodiversity\nHuman activities, such as habitat destruction, pollution, and climate change, are leading to a rapid decline in biodiversity. This loss threatens the stability of ecosystems and the services they provide.\n\n### How to Support Biodiversity\nYou can support biodiversity by protecting natural habitats, reducing waste, and supporting conservation efforts. Every action contributes to the preservation of our planet's rich diversity.",
-    "author": "**Autor 5**",
+    "author": "Autor 5",
     "publishedDate": "_Publicado el 2023-10-05_",
     "editedDate": "_Editado el 2023-10-05_",
     "deleted": false,
-    "category": "**Category 2**"
+    "categoryId": 5
   },
   {
     "id": 6,
@@ -65,11 +65,11 @@
     "title": "# Post 6",
     "content": "Curabitur pretium tincidunt lacus. Nulla gravida orci a odio, et viverra elit sagittis.",
     "content_full": "Curabitur pretium tincidunt lacus. Nulla gravida orci a odio, et viverra elit sagittis. Este mensaje enfatiza la importancia de cuidar de nosotros mismos...",
-    "author": "**Autor 6**",
+    "author": "Autor 6",
     "publishedDate": "_Publicado el 2023-10-06_",
     "editedDate": "_Editado el 2023-10-06_",
     "deleted": false,
-    "category": "**Category 1**"
+    "categoryId": 6
   },
   {
     "id": 7,
@@ -77,11 +77,11 @@
     "title": "# Post 7",
     "content": "In ac felis quis tortor malesuada pretium. Pellentesque habitant morbi tristique senectus et netus.",
     "content_full": "In ac felis quis tortor malesuada pretium. Pellentesque habitant morbi tristique senectus et netus. Este contenido ilustra la importancia de la flexibilidad...",
-    "author": "**Autor 7**",
+    "author": "Autor 7",
     "publishedDate": "_Publicado el 2023-10-07_",
     "editedDate": "_Editado el 2023-10-07_",
     "deleted": false,
-    "category": "**Category 3**"
+    "categoryId": 7
   },
   {
     "id": 8,
@@ -89,11 +89,11 @@
     "title": "# Post 8",
     "content": "Suspendisse potenti. Sed egestas, ante et vulputate volutpat, eros pede semper est.",
     "content_full": "Suspendisse potenti. Sed egestas, ante et vulputate volutpat, eros pede semper est. Este texto destaca la importancia de estar siempre preparado...",
-    "author": "**Autor 8**",
+    "author": "Autor 8",
     "publishedDate": "_Publicado el 2023-10-08_",
     "editedDate": "_Editado el 2023-10-08_",
     "deleted": false,
-    "category": "**Category 2**"
+    "categoryId": 3
   },
   {
     "id": 9,
@@ -101,11 +101,11 @@
     "title": "# Post 9",
     "content": "Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora.",
     "content_full": "Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora. Este mensaje pone de manifiesto la importancia de la colaboración...",
-    "author": "**Autor 9**",
+    "author": "Autor 9",
     "publishedDate": "_Publicado el 2023-10-09_",
     "editedDate": "_Editado el 2023-10-09_",
     "deleted": false,
-    "category": "**Category 1**"
+    "category": 2
   },
   {
     "id": 10,
@@ -113,10 +113,10 @@
     "title": "# Post 10",
     "content": "Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam.",
     "content_full": "Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam. Este contenido resalta la importancia de la constancia y la determinación...",
-    "author": "**Autor 10**",
+    "author": "Autor 10",
     "publishedDate": "_Publicado el 2023-10-10_",
     "editedDate": "_Editado el 2023-10-10_",
     "deleted": false,
-    "category": "**Category 3**"
+    "category": 1
   }
 ]

@@ -5,6 +5,8 @@ import data from '../../../server/api/get/posts/posts.json';
 import Arrow from "../components/Arrow";
 import { Fade, Slide } from "react-awesome-reveal";
 import { useSearchContext } from "../context/SearchContext";
+import jsonCategories  from  '../../../server/api/get/categories/categories.json';
+import ReactMarkdown from 'react-markdown';
 
 const Home = () => {
   // Context and state management
@@ -18,7 +20,7 @@ const Home = () => {
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
   const dropdownRefs = useRef({});
-
+  
   // Effect to load posts and handle outside click
   useEffect(() => {
     setPosts(data);
@@ -41,19 +43,32 @@ const Home = () => {
 
   // Filtering and sorting posts
   const filterAndSortPosts = () => {
-    return posts
-      .filter(post =>
-        (currentCategory === 'All' || post.category === currentCategory) &&
-        [post.title, post.content, post.author].some(field =>
-          field.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
+    // Create an object that maps category IDs to their names
+    const categoryMap = jsonCategories.reduce((acc, category) => {
+        acc[category.id] = category.name;
+        return acc;
+    }, {});
+
+    return posts  
+      .filter(post => {
+        // Get the name of the category corresponding to the categoryId
+        const categoryName = categoryMap[post.categoryId];
+
+        // Filter by category and search term
+        return (
+          (currentCategory === 'All' || categoryName === currentCategory) &&
+          [post.title, post.content, post.author].some(field =>
+            field.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        );
+      })
       .sort((a, b) =>
-        currentOrder === 'Newest' ?
-          new Date(b.publishedDate) - new Date(a.publishedDate) :
-          new Date(a.publishedDate) - new Date(b.publishedDate)
+        currentOrder === 'Newest'
+          ? new Date(b.publishedDate) - new Date(a.publishedDate)
+          : new Date(a.publishedDate) - new Date(b.publishedDate)
       );
-  };
+};
+
 
   // Current posts for pagination
   const currentPosts = filterAndSortPosts().slice(
@@ -88,8 +103,9 @@ const Home = () => {
     setRotation({ category: false, order: false });
   };
 
+
   const dropdownItems = {
-    category: ['All', 'Category 1', 'Category 2', 'Category 3'],
+    category: ['All', ...jsonCategories.map(cat => cat.name)],
     //order: ['Newest', 'Oldest', 'Most Popular']
     order: ['Newest', 'Oldest']
   };
@@ -147,7 +163,7 @@ const Home = () => {
                 content={data.content}
                 author={data.author}
                 date={data.publishedDate}
-                category={data.category}
+                categoryId={data.categoryId}
                 loading={loading}
               />
             ))

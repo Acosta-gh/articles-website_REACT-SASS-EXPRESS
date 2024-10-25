@@ -1,0 +1,56 @@
+.article {
+    max-width: 800px;
+    margin: .5rem auto;
+
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; // Centrar los elementos horizontalmente
+
+    img {
+        width: auto;
+        height: 20rem;
+        border-radius: 8px;
+        margin-bottom: 20px;    
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: #333;
+        text-align: center;
+    }
+
+    p {
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #666;
+        margin-bottom: 10px;
+        text-align: left;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &.author,
+        &.published,
+        &.category {
+            font-size: 0.9rem;
+            color: #999;
+        }
+    }
+
+    .author {
+        margin-top: 20px;
+    }
+
+    .published {
+        margin-top: 5px;
+    }
+
+    .category {
+        margin-top: 5px;
+    }
+}

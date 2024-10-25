@@ -12,7 +12,7 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 10;
+  const postsPerPage = 5;
   const [showDropdown, setShowDropdown] = useState({ category: false, order: false });
   const [rotation, setRotation] = useState({ category: false, order: false });
   const [currentCategory, setCurrentCategory] = useState('All');
@@ -146,7 +146,7 @@ const Home = () => {
                 title={data.title}
                 content={data.content}
                 author={data.author}
-                date={data.editedDate || data.publishedDate}
+                date={data.publishedDate}
                 category={data.category}
                 loading={loading}
               />

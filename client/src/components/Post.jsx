@@ -10,7 +10,7 @@ const Post = ({ key, index, image, title, content, author, date, categoryId, loa
   }
 
   console.log('categoryId:', categoryId);
-console.log('jsonCategories:', jsonCategories);
+  console.log('jsonCategories:', jsonCategories);
 
 
   // Extract the date from the string 
@@ -27,15 +27,18 @@ console.log('jsonCategories:', jsonCategories);
   return (
     <div className='post' key={key} data-category-id={categoryId}>
       <Link to={`/article/${index}`}>
-        <div className='post-image'>
-          <img src={image} alt={title} />
-        </div>
-        <div className='post-content'>
-          <h3>{categoryName}</h3>
-          <h4><ReactMarkdown>{title}</ReactMarkdown></h4>
-          <p><ReactMarkdown>{content}</ReactMarkdown></p>
+        <div>
+          <div className='post-image'>
+            <img src={image} alt={title} />
+          </div>
+          <div className='post-content'>
+            <h3>{categoryName}</h3>
+            <h4><ReactMarkdown>{title}</ReactMarkdown></h4>
+            <p><ReactMarkdown>{content}</ReactMarkdown></p>
+          </div>
         </div>
         <div className='post-bottom'>
+          <p>By: </p>
           <p><ReactMarkdown>{author}</ReactMarkdown></p>
           <p>—</p>
           <i><ReactMarkdown>{publishedDate}</ReactMarkdown></i>

@@ -25,6 +25,7 @@
   &-greetings {
     padding: 1rem;
     margin-left: .3rem;
+    padding-top: 2rem;
 
     p {
       font-weight: 600;
@@ -107,7 +108,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-
+    grid-auto-rows: 1fr; /* Ensures each row is equal height */
   }
 }
 

@@ -8,51 +8,49 @@
     flex-direction: column;
     align-items: center;
 
-
     img {
+        display: flex;
+        margin: 2rem auto;
+
         border-radius: 8px;
         margin-bottom: 20px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
+        }
 
 
-
-    h1 {
+    &-title {
         font-size: 2rem;
         margin-bottom: 10px;
         color: #333;
         text-align: center;
     }
 
-    p {
+    &-content {
         font-size: 1rem;
         line-height: 1.5;
         color: #666;
         margin-bottom: 10px;
         text-align: left;
-
-        &:last-child {
-            margin-bottom: 0;
-        }
-
-        &.author,
-        &.published,
-        &.category {
-            font-size: 0.9rem;
-            color: #999;
-        }
-    }
-
-    .author {
-        margin-top: 20px;
-    }
-
-    .published {
-        margin-top: 5px;
-    }
-
-    .category {
-        margin-top: 5px;
+        h2, h3 {
+            margin-top: 1.5rem; 
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            text-align: center;
+          }
+      
+          h2 {
+            font-size: 1.5rem; 
+          }
+      
+          h3 {
+            font-size: 1.25rem; 
+          }
+      
+          img {
+            max-width: 100%; 
+            height: auto;
+            border-radius: 4px;
+          }
     }
 }
 
@@ -63,6 +61,12 @@
             height: 30rem;
             object-fit: cover;
         }
+
+    }
+}
+
+@media (min-width: $breakpoint-lg) {
+    .article{
 
     }
 }

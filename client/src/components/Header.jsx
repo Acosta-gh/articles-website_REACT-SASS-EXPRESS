@@ -86,7 +86,7 @@ const Header = () => {
                 <NavLinks links={headerLinks} onClick={closeAll} />
             </nav>
 
-            <Link to="/" className='header-logo'>
+            <Link to="/" className='header-logo' >
                 <FaBlog />
             </Link>
 

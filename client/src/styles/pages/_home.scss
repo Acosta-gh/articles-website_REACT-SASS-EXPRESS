@@ -1,6 +1,6 @@
 .home {
   min-height: 100vh;
-  
+
   &-category {
     font-family: "Roboto", sans-serif;
     display: flex;
@@ -43,7 +43,7 @@
 
   .dropdown {
     position: relative;
-    
+
     -webkit-user-select: none;
     /* Safari */
     -ms-user-select: none;
@@ -108,7 +108,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    grid-auto-rows: 1fr; /* Ensures each row is equal height */
+    grid-auto-rows: 1fr;
+    /* Ensures each row is equal height */
+
   }
 }
 

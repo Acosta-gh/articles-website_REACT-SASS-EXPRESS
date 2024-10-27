@@ -19,18 +19,18 @@ const Article = () => {
     return <p>Loading post...</p>;
   }
 
-  const publishedDate = post.publishedDate.replace(/[_*]/g, '').replace('Publicado el ', '','Published on ' );
+  const publishedDate = post.publishedDate.replace(/[_*]/g, '').replace('Publicado el ', '', 'Published on ');
   const categoryName = jsonCategories.find(cat => cat.id === post.categoryId)?.name || 'Unknown Category';
 
   return (
     <Fade triggerOnce duration={500}>
       <div className="article">
-        <img src={post.image} alt={post.title} className='article-banner'/>
-        <ReactMarkdown>{post.title}</ReactMarkdown>
-        <ReactMarkdown>{post.content_full}</ReactMarkdown>
-        <ReactMarkdown>{`By: ${post.author}`}</ReactMarkdown>
-        <ReactMarkdown>{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</ReactMarkdown>
-        <ReactMarkdown>{`Category: ${categoryName}`}</ReactMarkdown>
+        <img src={post.image} alt={post.title} className='article-banner' />
+        <ReactMarkdown className="article-title">{post.title}</ReactMarkdown>
+        <ReactMarkdown className="article-content">{post.content_full}</ReactMarkdown>
+        <ReactMarkdown className="article-author">{`By: ${post.author}`}</ReactMarkdown>
+        <ReactMarkdown className="article-date">{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</ReactMarkdown>
+        <ReactMarkdown className="article-category">{`Category: ${categoryName}`}</ReactMarkdown>
       </div>
     </Fade>
   );

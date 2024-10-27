@@ -62,11 +62,14 @@ const Home = () => {
           )
         );
       })
-      .sort((a, b) =>
-        currentOrder === 'Newest'
-          ? new Date(b.publishedDate) - new Date(a.publishedDate)
-          : new Date(a.publishedDate) - new Date(b.publishedDate)
-      );
+      .sort((a, b) => {
+        const dateA = new Date(a.publishedDate);
+        const dateB = new Date(b.publishedDate);
+        console.log('Sorting dates:', dateA, dateB); // Debugging log
+        return currentOrder === 'Newest'
+          ? dateB - dateA
+          : dateA - dateB;
+      });
 };
 
 

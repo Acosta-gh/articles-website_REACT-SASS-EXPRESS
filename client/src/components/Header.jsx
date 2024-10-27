@@ -6,6 +6,7 @@ import { FaBlog } from "react-icons/fa6";
 import Arrow from "./Arrow";
 import { useSearchContext } from '../context/SearchContext';
 import NavLinks from './NavLinks';
+import { useLocation } from 'react-router-dom';
 
 const Header = () => {
     const { searchTerm, setSearchTerm } = useSearchContext();
@@ -59,6 +60,9 @@ const Header = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const location = useLocation();
+    const isHome = location.pathname === '/';
+
     return (
         <header ref={headerRef} className={`header ${state.isAtTop ? 'at-top' : 'fixed'}`}>
             <div
@@ -72,13 +76,13 @@ const Header = () => {
             </div>
 
             <div className='header-burguer_desktop'>
-                <Arrow 
-                    onClick={() => { 
-                        toggleState('isMenuOpen'); 
-                        toggleState('isRotated'); 
-                    }} 
-                    text="Menu" 
-                    isRotated={state.isRotated} 
+                <Arrow
+                    onClick={() => {
+                        toggleState('isMenuOpen');
+                        toggleState('isRotated');
+                    }}
+                    text="Menu"
+                    isRotated={state.isRotated}
                 />
             </div>
 
@@ -100,9 +104,13 @@ const Header = () => {
                 onChange={handleSearchChange}
             />
 
-            <div className='header-search_icon' onClick={() => toggleState('isSearchVisible')}>
-                <LuSearch />
-            </div>
+            {isHome ? (
+                <div className='header-search_icon' onClick={() => toggleState('isSearchVisible')}>
+                    <LuSearch />
+                </div>
+            ) : (
+                <div className='header-search_icon invisible-placeholder'></div>
+            )}
         </header>
     );
 }

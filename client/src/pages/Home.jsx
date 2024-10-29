@@ -1,15 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Post from "../components/Post";
 import Pagination from "../components/Pagination";
-import data from '../../../server/api/get/posts/posts.json';
 import Arrow from "../components/Arrow";
 import { Fade, Slide } from "react-awesome-reveal";
 import { useSearchContext } from "../context/SearchContext";
-import jsonCategories  from  '../../../server/api/get/categories/categories.json';
 import ReactMarkdown from 'react-markdown';
 
 const Home = () => {
-  // Context and state management
   const { searchTerm } = useSearchContext();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -17,17 +14,25 @@ const Home = () => {
   const postsPerPage = 10;
   const [showDropdown, setShowDropdown] = useState({ category: false, order: false });
   const [rotation, setRotation] = useState({ category: false, order: false });
+  const [categories, setCategories] = useState([]);
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
   const dropdownRefs = useRef({});
-  
-  // Effect to load posts and handle outside click
+
+  // Fetch posts and categories
   useEffect(() => {
-    setPosts(data);
+    fetch('http://localhost:3000/api/post')
+      .then(response => response.json())
+      .then(data => setPosts(data))
+      .catch(error => console.error("Error fetching posts:", error));
+
+    fetch('http://localhost:3000/api/category')
+      .then(response => response.json())
+      .then(data => setCategories(data))
+      .catch(error => console.error("Error fetching categories:", error));
 
     const handleClickOutside = (event) => {
-      const dropdownKeys = Object.keys(dropdownRefs.current);
-      const isOutsideClick = dropdownKeys.every(key => {
+      const isOutsideClick = Object.keys(dropdownRefs.current).every(key => {
         const dropdown = dropdownRefs.current[key];
         return dropdown && !dropdown.contains(event.target);
       });
@@ -41,20 +46,16 @@ const Home = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Filtering and sorting posts
+  // Filter and sort posts
   const filterAndSortPosts = () => {
-    // Create an object that maps category IDs to their names
-    const categoryMap = jsonCategories.reduce((acc, category) => {
-        acc[category.id] = category.name;
-        return acc;
+    const categoryMap = categories.reduce((acc, category) => {
+      acc[category.id] = category.name;
+      return acc;
     }, {});
 
-    return posts  
+    return posts
       .filter(post => {
-        // Get the name of the category corresponding to the categoryId
         const categoryName = categoryMap[post.categoryId];
-
-        // Filter by category and search term
         return (
           (currentCategory === 'All' || categoryName === currentCategory) &&
           [post.title, post.content, post.author].some(field =>
@@ -63,64 +64,46 @@ const Home = () => {
         );
       })
       .sort((a, b) => {
-        const dateA = new Date(a.publishedDate);
-        const dateB = new Date(b.publishedDate);
-        console.log('Sorting dates:', dateA, dateB); // Debugging log
-        return currentOrder === 'Newest'
-          ? dateB - dateA
-          : dateA - dateB;
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return currentOrder === 'Newest' ? dateB - dateA : dateA - dateB;
       });
-};
+  };
 
-
-  // Current posts for pagination
   const currentPosts = filterAndSortPosts().slice(
     (currentPage - 1) * postsPerPage,
     currentPage * postsPerPage
   );
 
-  // Dropdown toggle logic
   const toggleDropdown = (type) => {
-    setShowDropdown(prev => {
-      const isOpen = prev[type];
-      return {
-        category: type === 'category' ? !isOpen : false,
-        order: type === 'order' ? !isOpen : false
-      };
-    });
-
+    setShowDropdown(prev => ({
+      category: type === 'category' ? !prev.category : false,
+      order: type === 'order' ? !prev.order : false
+    }));
     setRotation(prev => ({
       category: type === 'category' ? !prev.category : prev.category,
       order: type === 'order' ? !prev.order : prev.order
     }));
   };
 
-  // Handle dropdown selection
   const handleSelect = (type, value) => {
-    if (type === 'category') {
-      setCurrentCategory(value);
-    } else {
-      setCurrentOrder(value);
-    }
+    if (type === 'category') setCurrentCategory(value);
+    else setCurrentOrder(value);
     setShowDropdown({ category: false, order: false });
     setRotation({ category: false, order: false });
   };
 
-
   const dropdownItems = {
-    category: ['All', ...jsonCategories.map(cat => cat.name)],
-    //order: ['Newest', 'Oldest', 'Most Popular']
+    category: ['All', ...categories.map(cat => cat.name)],
     order: ['Newest', 'Oldest']
   };
 
-  // Greeting message based on the time of day
   const getGreetings = () => {
     const currentHour = new Date().getHours();
     return currentHour < 12 ? "Good Morning!👋" :
       currentHour < 17 ? "Good Afternoon 🌇" : "Good Evening 🌆";
   };
 
-  // Render component
   return (
     <div className='home'>
       <Fade triggerOnce duration={1500}>
@@ -163,9 +146,9 @@ const Home = () => {
                 index={data.id}
                 image={data.image}
                 title={data.title}
-                content={data.content}
+                content={data.content_thumbnail}
                 author={data.author}
-                date={data.publishedDate}
+                date={data.createdAt || new Date().toISOString()} 
                 categoryId={data.categoryId}
                 loading={loading}
               />

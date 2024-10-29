@@ -1,28 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import jsonCategories from '../../../server/api/get/categories/categories.json';
-
 
 const Post = ({ key, index, image, title, content, author, date, categoryId, loading }) => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/api/category')
+      .then(response => response.json())
+      .then(data => setCategories(data))
+      .catch(error => console.error("Error fetching categories:", error));
+  }, []);
+
   if (loading) {
     return <h1>Loading.....</h1>;
   }
 
-  console.log('categoryId:', categoryId);
-  console.log('jsonCategories:', jsonCategories);
+  // Format date with a fallback
+  const formattedDate = date ? new Date(date).toLocaleDateString() : 'Date not available';
 
-
-  // Extract the date from the string 
-  const extractDate = (dateString) => {
-    const match = dateString.match(/\d{4}-\d{2}-\d{2}/); // Regex to match a date in YYYY-MM-DD format
-    return match ? new Date(match[0]).toLocaleDateString() : 'Unknown';
-  };
-
-  const publishedDate = extractDate(date);
-
-  // Find the category name based on the categoryId
-  const categoryName = jsonCategories.find(cat => cat.id === categoryId)?.name || 'Unknown Category';
+  // Find category name based on categoryId
+  const categoryName = categories.find(cat => cat.id === categoryId)?.name || 'Unknown Category';
 
   return (
     <div className='post' key={key} data-category-id={categoryId}>
@@ -41,7 +39,7 @@ const Post = ({ key, index, image, title, content, author, date, categoryId, loa
           <p>By: </p>
           <p><ReactMarkdown>{author}</ReactMarkdown></p>
           <p>—</p>
-          <i><ReactMarkdown>{publishedDate}</ReactMarkdown></i>
+          <i><ReactMarkdown>{formattedDate}</ReactMarkdown></i>
         </div>
       </Link>
     </div>

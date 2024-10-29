@@ -1,26 +1,29 @@
-// Article.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import data from '../../../server/api/get/posts/posts.json';
-import jsonCategories from '../../../server/api/get/categories/categories.json';
 import ReactMarkdown from 'react-markdown';
-import { Fade, Slide } from "react-awesome-reveal";
+import { Fade } from "react-awesome-reveal";
 
 const Article = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const [categories, setCategories] = useState([]); 
 
   useEffect(() => {
-    const foundPost = data.find((item) => item.id.toString() === id);
-    setPost(foundPost);
+    fetch(`http://localhost:3000/api/post/${id}`)
+      .then(response => response.json())
+      .then(data => setPost(data))
+      .catch(error => console.error("Error fetching post:", error));
+
+    fetch('http://localhost:3000/api/category')
+      .then(response => response.json())
+      .then(data => setCategories(data)) 
+      .catch(error => console.error("Error fetching categories:", error));
   }, [id]);
 
-  if (!post) {
-    return <p>Loading post...</p>;
-  }
+  if (!post) return <p>Loading...</p>;
 
-  const publishedDate = post.publishedDate.replace(/[_*]/g, '').replace('Publicado el ', '', 'Published on ');
-  const categoryName = jsonCategories.find(cat => cat.id === post.categoryId)?.name || 'Unknown Category';
+  const publishedDate = post.createdAt.replace(/[_*]/g, '').replace('Publicado el ', '', 'Published on ');
+  const categoryName = categories.find(cat => cat.id === post.categoryId)?.name || 'Unknown Category';
 
   return (
     <Fade triggerOnce duration={500}>

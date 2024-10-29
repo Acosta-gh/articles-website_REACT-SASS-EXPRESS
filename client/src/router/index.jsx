@@ -8,6 +8,7 @@ import Article from "../pages/Article"
 
 import ErrorPage from "../error-page";
 import Layout from "../components/Layout"; 
+import AdminPanel from "../pages/AdminPanel";
 
 export const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
             {
                 path: "privacypolicy",
                 element: <Privacy />,
+            },
+            {
+                path: "adminpanel",
+                element: <AdminPanel />,
             },
         ],
     },

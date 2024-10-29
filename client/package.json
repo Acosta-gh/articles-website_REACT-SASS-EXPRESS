@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
+    "easymde": "^2.18.0",
     "hamburger-react": "^2.5.1",
     "react": "^18.3.1",
     "react-awesome-reveal": "^4.2.14",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
     "react-markdown": "^9.0.1",
+    "react-quill": "^2.0.0",
+    "react-simplemde-editor": "^5.2.0",
     "remark-gfm": "^4.0.0"
   },
   "devDependencies": {

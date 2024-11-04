@@ -5,8 +5,15 @@ const sequelize = require('./config/database');
 require('dotenv').config();
 
 const app = express();
+
+var cors = require('cors')
+app.use(cors());
+
+
+
 app.use(express.json());
 app.use("/api", router);
+
 
 const port = process.env.PORT || 3000;
 
@@ -16,7 +23,7 @@ const port = process.env.PORT || 3000;
         console.log('Database connection successful.');
     } catch (error) {
         console.error('Error connecting to the database:', error);
-        process.exit(1); 
+        process.exit(1);
     }
 
     try {

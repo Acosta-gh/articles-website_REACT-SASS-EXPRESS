@@ -40,8 +40,33 @@ const getPostById = async (req, res) => {
     }
 };
 
+const submitPost = async (req, res) => {
+    try {
+        const { title, image, content_thumbnail, content_full, author, categoryId } = req.body;
+
+        if (!title || !content_thumbnail || !author || !categoryId) {
+            return res.status(400).json({ message: 'Title, content_thumbnail, author, and categoryId are required' });
+        }
+
+        const newPost = await Post.create({
+            title,
+            image, 
+            content_thumbnail,
+            content_full, 
+            author,
+            categoryId
+        });
+
+        res.status(201).json(newPost);
+    } catch (error) {
+        console.error("Error creating post:", error);
+        res.status(500).json({ message: 'Error creating post' });
+    }
+};
+
 
 module.exports = {
     getAllPosts,
-    getPostById
+    getPostById,
+    submitPost
 };

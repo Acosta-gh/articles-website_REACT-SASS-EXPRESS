@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
 
 const Post = ({ key, index, image, title, content, author, date, categoryId, loading }) => {
   const [categories, setCategories] = useState([]);
@@ -31,15 +30,15 @@ const Post = ({ key, index, image, title, content, author, date, categoryId, loa
           </div>
           <div className='post-content'>
             <h3>{categoryName}</h3>
-            <h4><ReactMarkdown>{title}</ReactMarkdown></h4>
-            <p><ReactMarkdown>{content}</ReactMarkdown></p>
+            <h4>{title}</h4> 
+            <p>{content}</p> 
           </div>
         </div>
         <div className='post-bottom'>
           <p>By: </p>
-          <p><ReactMarkdown>{author}</ReactMarkdown></p>
+          <p>{author}</p> 
           <p>—</p>
-          <i><ReactMarkdown>{formattedDate}</ReactMarkdown></i>
+          <i>{formattedDate}</i> 
         </div>
       </Link>
     </div>

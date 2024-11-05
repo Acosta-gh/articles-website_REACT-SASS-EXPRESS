@@ -9,7 +9,7 @@ const Post = sequelize.define('Post', {
         allowNull: false,
     },
     image: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
     },
     content_thumbnail: {
@@ -17,7 +17,7 @@ const Post = sequelize.define('Post', {
         allowNull: false,
     },
     content_full: {
-        type: DataTypes.TEXT,
+        type: DataTypes.TEXT('long'),
         allowNull: true,
     },
     author: {

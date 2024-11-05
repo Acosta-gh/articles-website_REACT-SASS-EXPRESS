@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
 import { Fade } from "react-awesome-reveal";
 
 const Article = () => {
@@ -14,7 +13,7 @@ const Article = () => {
       .then(data => setPost(data))
       .catch(error => console.error("Error fetching post:", error));
 
-    fetch('http://localhost:3000/api/category')
+    fetch('http://localhost:3000/api/category') 
       .then(response => response.json())
       .then(data => setCategories(data)) 
       .catch(error => console.error("Error fetching categories:", error));
@@ -29,11 +28,11 @@ const Article = () => {
     <Fade triggerOnce duration={500}>
       <div className="article">
         <img src={post.image} alt={post.title} className='article-banner' />
-        <ReactMarkdown className="article-title">{post.title}</ReactMarkdown>
-        <ReactMarkdown className="article-content">{post.content_full}</ReactMarkdown>
-        <ReactMarkdown className="article-author">{`By: ${post.author}`}</ReactMarkdown>
-        <ReactMarkdown className="article-date">{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</ReactMarkdown>
-        <ReactMarkdown className="article-category">{`Category: ${categoryName}`}</ReactMarkdown>
+        <h1 className="article-title">{post.title}</h1>
+        <div className="article-content" dangerouslySetInnerHTML={{ __html: post.content_full }} />
+        <p className="article-author">{`By: ${post.author}`}</p>
+        <p className="article-date">{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</p>
+        <p className="article-category">{`Category: ${categoryName}`}</p>
       </div>
     </Fade>
   );

@@ -1,11 +1,13 @@
+// Card
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const Post = ({ key, index, image, title, content, author, date, categoryId, loading }) => {
+const Post = ({ key, index, image, title, content, content_highlight, author, date, categoryId, loading }) => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/category')
+    fetch('http://localhost:3000/category/')
       .then(response => response.json())
       .then(data => setCategories(data))
       .catch(error => console.error("Error fetching categories:", error));
@@ -31,7 +33,7 @@ const Post = ({ key, index, image, title, content, author, date, categoryId, loa
           <div className='post-content'>
             <h3>{categoryName}</h3>
             <h4>{title}</h4> 
-            <p>{content}</p> 
+            <p>{content_highlight}</p> 
           </div>
         </div>
         <div className='post-bottom'>

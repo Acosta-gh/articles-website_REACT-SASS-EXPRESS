@@ -1,146 +1,230 @@
-import React, { useState, useEffect } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import React, { useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
-function MyComponent() {
-  const [title, setTitle] = useState('');
-  const [image, setImage] = useState(''); 
-  const [contentThumbnail, setContentThumbnail] = useState('');
-  const [author, setAuthor] = useState('');
-  const [categoryId, setCategoryId] = useState(1); 
-  const [categories, setCategories] = useState([]); 
-  const [value, setValue] = useState('');
+function AdminPanel() {
+    const [formData, setFormData] = useState({
+        title: '',
+        content: '',
+        content_thumbnail: '',
+        image: '',
+        categoryId: '',
+    });
 
-  useEffect(() => {
-    fetch('http://localhost:3000/api/category')
-      .then((response) => response.json())
-      .then((data) => setCategories(data))  
-      .catch((error) => console.error("Error fetching categories:", error));
-  }, []); 
+    const [categoryFormData, setCategoryFormData] = useState({
+        name: '',
+    });
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ align: ["right", "center", "justify"] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
-    ],
-  };
+    const [categories, setCategories] = useState([]); // Para almacenar las categorías disponibles
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-      reader.readAsDataURL(file); 
-    }
-  };
+    useEffect(() => {
+        // Verificar si el usuario es admin
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                if (!decoded.isAdmin) {
+                    console.log('No es admin', decoded);
+                    window.location.href = '/';
+                } else {
+                    // Cargar las categorías disponibles
+                    fetchCategories();
+                }
+            } catch (error) {
+                console.error('Error al decodificar el token', error);
+                window.location.href = '/';
+            }
+        } else {
+            window.location.href = '/';
+        }
+    }, []);
 
-  const handleSubmit = async () => {
-    console.log("Contenido enviado:", value);
-    try {
-      const response = await fetch('http://localhost:3000/api/post', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: title,
-          image: image, 
-          content_thumbnail: contentThumbnail,
-          content_full: value, 
-          author: author,
-          categoryId: categoryId
-        }),
-      });
+    // Función para cargar las categorías desde la API
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/category/'); // Ajusta la URL de tu API
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error('Error al cargar las categorías', error);
+        }
+    };
 
-      if (!response.ok) {
-        throw new Error('Error en la solicitud');
-      }
+    // Manejar cambios en los campos del formulario de posts
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            
+        });
+    };
 
-      const data = await response.json();
-      console.log('Post creado:', data);
+    // Manejar cambios en los campos del formulario de categorías
+    const handleCategoryChange = (e) => {
+        const { name, value } = e.target;
+        setCategoryFormData({
+            ...categoryFormData,
+            [name]: value,
+        });
+    };
 
-      setTitle('');
-      setImage('');
-      setContentThumbnail('');
-      setAuthor('');
-      setValue('');
-    } catch (error) {
-      console.error('Error al enviar el post:', error);
-    }
-  };
+    // Manejar el envío del formulario de posts
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  return (
-    <div>
-      <input
-        type="text"
-        placeholder="Título del post"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        style={{ marginBottom: '10px', width: '100%' }}
-      />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        style={{ marginBottom: '10px', width: '100%' }}
-      />
-      <input
-        type="text"
-        placeholder="Contenido del thumbnail"
-        value={contentThumbnail}
-        onChange={(e) => setContentThumbnail(e.target.value)}
-        style={{ marginBottom: '10px', width: '100%' }}
-      />
-      <input
-        type="text"
-        placeholder="Nombre del autor"
-        value={author}
-        onChange={(e) => setAuthor(e.target.value)}
-        style={{ marginBottom: '10px', width: '100%' }}
-      />
-      
-      <select 
-        value={categoryId} 
-        onChange={(e) => setCategoryId(Number(e.target.value))}
-        style={{ marginBottom: '10px', width: '100%' }}
-      >
-        {categories.length > 0 ? (
-          categories.map(category => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))
-        ) : (
-          <option disabled>Cargando categorías...</option>
-        )}
-      </select>
+        const token = localStorage.getItem('token');
+        const decoded = jwtDecode(token);
+        const authorId = decoded.id; // Obtener el ID del usuario autenticado
 
-      <ReactQuill
-        modules={modules}
-        value={value}
-        onChange={setValue}
-        placeholder="Enter the message..........."
-      />
-      <button onClick={handleSubmit} style={{ marginTop: '10px' }}>
-        Enviar
-      </button>
+        try {
+            const response = await fetch('http://localhost:3000/post/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    author: authorId, // Asignar el ID del autor
+                }),
+            });
 
-      <style>
-        {`
-          .ql-editor img {
-            max-width: 300px;
-            max-height: 200px;
-            object-fit: cover;
-          }
-        `}
-      </style>
-    </div>
-  );
+            if (response.ok) {
+                alert('Post creado exitosamente');
+                // Limpiar el formulario después de crear el post
+                setFormData({
+                    title: '',
+                    content: '',
+                    content_thumbnail: '',
+                    image: '',
+                    categoryId: '',
+                });
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error al crear el post', error);
+            alert('Error al crear el post');
+        }
+    };
+
+    // Manejar el envío del formulario de categorías
+    const handleCategorySubmit = async (e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch('http://localhost:3000/category/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    name: categoryFormData.name,
+                }),
+            });
+
+            if (response.ok) {
+                alert('Categoría creada exitosamente');
+                // Limpiar el formulario después de crear la categoría
+                setCategoryFormData({
+                    name: '',
+                });
+                // Recargar la lista de categorías
+                fetchCategories();
+            } else {
+                const errorData = await response.json();
+                alert(`Error: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Error al crear la categoría', error);
+            alert('Error al crear la categoría');
+        }
+    };
+
+    return (
+        <div>
+            <h1>Panel de Administrador</h1>
+
+            {/* Formulario para crear posts */}
+            <h2>Crear Post</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Título:</label>
+                    <input
+                        type="text"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Contenido:</label>
+                    <textarea
+                        name="content"
+                        value={formData.content}
+                        onChange={handleChange}
+                        required
+                    />  [name]
+                </div>
+                <div>
+                    <label>Miniatura del contenido:</label>
+                    <input
+                        type="text"
+                        name="content_thumbnail"
+                        value={formData.content_thumbnail}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Imagen (opcional):</label>
+                    <input
+                        type="text"
+                        name="image"
+                        value={formData.image}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div>
+                    <label>Categoría:</label>
+                    <select
+                        name="categoryId"
+                        value={formData.categoryId}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Selecciona una categoría</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <button type="submit">Crear Post</button>
+            </form>
+
+            {/* Formulario para crear categorías */}
+            <h2>Crear Categoría</h2>
+            <form onSubmit={handleCategorySubmit}>
+                <div>
+                    <label>Nombre de la categoría:</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={categoryFormData.name}
+                        onChange={handleCategoryChange}
+                        required
+                    />
+                </div>
+                <button type="submit">Crear Categoría</button>
+            </form>
+        </div>
+    );
 }
 
-export default MyComponent;
+export default AdminPanel;

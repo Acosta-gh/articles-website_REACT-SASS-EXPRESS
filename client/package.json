@@ -13,11 +13,11 @@
     "@emotion/react": "^11.13.3",
     "easymde": "^2.18.0",
     "hamburger-react": "^2.5.1",
+    "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-awesome-reveal": "^4.2.14",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
-    "react-markdown": "^9.0.1",
     "react-quill": "^2.0.0",
     "react-simplemde-editor": "^5.2.0",
     "remark-gfm": "^4.0.0",
@@ -35,6 +35,11 @@
     "globals": "^15.9.0",
     "react-router-dom": "^6.26.2",
     "sass-embedded": "^1.79.4",
-    "vite": "^5.4.10"
-  }
+    "vite": "^5.4.14"
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "eslint.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

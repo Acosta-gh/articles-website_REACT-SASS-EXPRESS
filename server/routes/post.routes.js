@@ -1,10 +1,15 @@
-// routes/post.routes.js
-const express = require('express');
-const router = express.Router();
-const postController = require('../controllers/post.controller'); 
+const express = require("express");
+const { getAllPosts, getPostById, createPost, editPost, deletePost } = require("../controllers/post.controller")
 
-router.get('/', postController.getAllPosts); 
-router.post('/', postController.submitPost); 
-router.get('/:id', postController.getPostById); 
+const router = express.Router()
 
-module.exports = router;
+//const authMiddleware = require("../middlewares/auth.middleware")
+const adminMiddleware = require("../middlewares/admin.middleware")
+
+router.post("/", adminMiddleware, createPost)
+router.get("/", getAllPosts)
+router.get("/:id", getPostById)
+router.put("/:id", adminMiddleware, editPost)
+router.delete("/:id",  adminMiddleware, deletePost)
+
+module.exports = router

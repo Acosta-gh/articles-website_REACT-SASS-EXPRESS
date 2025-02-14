@@ -1,47 +1,78 @@
-// models/post.model.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-const Category = require('./category.model');
+const sequelize = require('../config/database')
+
+const Category = require('./category.model')
+const User = require('./user.model')
 
 const Post = sequelize.define('Post', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
     title: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+            notEmpty: true,
+            len: [1, 255],
+        },
     },
-    image: {
+    content: {
         type: DataTypes.TEXT,
-        allowNull: true,
+        allowNull: false,
+        validate: {
+            notEmpty: true,
+            len: [1, 499],
+        },
     },
     content_thumbnail: {
         type: DataTypes.TEXT,
         allowNull: false,
-    },
-    content_full: {
-        type: DataTypes.TEXT('long'),
-        allowNull: true,
+        validate: {
+            notEmpty: true,
+            len: [1, 99],
+        },
     },
     author: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER, 
         allowNull: false,
+        references: {
+            model: User, 
+            key: 'id', 
+        },
     },
-    status: {
-        type: DataTypes.ENUM('active', 'archived', 'deleted'),
-        defaultValue: 'active',
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     categoryId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Category,
-            key: 'id',
-        }
-    }
+            model: Category, 
+            key: 'id',       
+        },
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
+    tableName: 'post',
     timestamps: true,
-    tableName: 'post'
+    underscored: true,
 });
 
-Post.belongsTo(Category, { foreignKey: 'categoryId', as: 'category' });
-Category.hasMany(Post, { foreignKey: 'categoryId' });
+Post.belongsTo(Category, { foreignKey: 'categoryId' })
+Category.hasMany(Post, { foreignKey: 'categoryId' })
+Post.belongsTo(User, { foreignKey: 'author' })
+User.hasMany(Post, { foreignKey: 'author' })
 
-module.exports = Post;
+module.exports = Post

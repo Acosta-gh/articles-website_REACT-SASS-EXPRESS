@@ -1,3 +1,5 @@
+// Articulo impreso en su totalidad
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Fade } from "react-awesome-reveal";
@@ -8,12 +10,12 @@ const Article = () => {
   const [categories, setCategories] = useState([]); 
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/post/${id}`)
+    fetch(`http://localhost:3000/post/${id}`)
       .then(response => response.json())
       .then(data => setPost(data))
       .catch(error => console.error("Error fetching post:", error));
 
-    fetch('http://localhost:3000/api/category') 
+    fetch('http://localhost:3000/category/') 
       .then(response => response.json())
       .then(data => setCategories(data)) 
       .catch(error => console.error("Error fetching categories:", error));
@@ -29,7 +31,7 @@ const Article = () => {
       <div className="article">
         <img src={post.image} alt={post.title} className='article-banner' />
         <h1 className="article-title">{post.title}</h1>
-        <div className="article-content" dangerouslySetInnerHTML={{ __html: post.content_full }} />
+        <div className="article-content" dangerouslySetInnerHTML={{ __html: post.content }} />
         <p className="article-author">{`By: ${post.author}`}</p>
         <p className="article-date">{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</p>
         <p className="article-category">{`Category: ${categoryName}`}</p>

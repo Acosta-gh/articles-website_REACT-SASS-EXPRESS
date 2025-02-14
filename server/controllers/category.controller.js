@@ -1,16 +1,49 @@
-// controllers/category.controller.js
-const Category = require('../models/category.model');
+const { Category } = require("../models")
 
 const getAllCategories = async (req, res) => {
     try {
-        const categories = await Category.findAll();
-        return res.json(categories); 
+        const categories = await Category.findAll()
+        res.status(200).json(categories)
     } catch (error) {
-        console.error('Error fetching categories:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error: error.message })
     }
-};
+}
 
-module.exports = {
-    getAllCategories,
-};
+const getCatoryById = async (req, res) => {
+    try {
+        const category = await Category.findByPk(req.params.id)
+        if (!category) {
+            return res.status(400).json({ error: "❌ La categoría especificada no existe." })
+        }
+        res.status(200).json(category)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+const createCategory = async (req, res) => {
+    try {
+        const category = await Category.create(req.body)
+        res.status(201).json(category)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
+const deleteCategory = async (req, res) => {
+    try {
+        const category = await Category.findOne({
+            where: { id: req.params.id }
+        });
+
+        if (!category) {
+            return res.status(400).json({ error: "❌ La categoría especificada no existe." })
+        }
+
+        await category.destroy();
+
+        res.status(200).json({ message: "✅ Categoría eliminada correctamente." });
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+module.exports = { getAllCategories, getCatoryById, createCategory, deleteCategory }

@@ -4,33 +4,38 @@ import Pagination from "../components/Pagination";
 import Arrow from "../components/Arrow";
 import { Fade, Slide } from "react-awesome-reveal";
 import { useSearchContext } from "../context/SearchContext";
-import ReactMarkdown from 'react-markdown';
 
 const Home = () => {
+  // Obtén el término de búsqueda del contexto de búsqueda
   const { searchTerm } = useSearchContext();
+
+  // Estados para almacenar los posts, el estado de carga, la página actual, etc.
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 10;
+  const postsPerPage = 10; // Número de posts por página
   const [showDropdown, setShowDropdown] = useState({ category: false, order: false });
   const [rotation, setRotation] = useState({ category: false, order: false });
   const [categories, setCategories] = useState([]);
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
-  const dropdownRefs = useRef({});
+  const dropdownRefs = useRef({}); // Referencias para los dropdowns
 
-  // Fetch posts and categories
+  // Efecto para obtener los posts y las categorías al montar el componente
   useEffect(() => {
-    fetch('http://localhost:3000/api/post')
+    // Obtener los posts desde la API
+    fetch('http://localhost:3000/post/')
       .then(response => response.json())
       .then(data => setPosts(data))
       .catch(error => console.error("Error fetching posts:", error));
 
-    fetch('http://localhost:3000/api/category')
+    // Obtener las categorías desde la API
+    fetch('http://localhost:3000/category/')
       .then(response => response.json())
       .then(data => setCategories(data))
       .catch(error => console.error("Error fetching categories:", error));
 
+    // Manejar clics fuera de los dropdowns para cerrarlos
     const handleClickOutside = (event) => {
       const isOutsideClick = Object.keys(dropdownRefs.current).every(key => {
         const dropdown = dropdownRefs.current[key];
@@ -46,8 +51,9 @@ const Home = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Filter and sort posts
+  // Función para filtrar y ordenar los posts según la categoría y el término de búsqueda
   const filterAndSortPosts = () => {
+    // Crear un mapa de categorías para acceder rápidamente a los nombres
     const categoryMap = categories.reduce((acc, category) => {
       acc[category.id] = category.name;
       return acc;
@@ -70,11 +76,13 @@ const Home = () => {
       });
   };
 
+  // Obtener los posts actuales según la página actual
   const currentPosts = filterAndSortPosts().slice(
     (currentPage - 1) * postsPerPage,
     currentPage * postsPerPage
   );
 
+  // Función para alternar la visibilidad de los dropdowns
   const toggleDropdown = (type) => {
     setShowDropdown(prev => ({
       category: type === 'category' ? !prev.category : false,
@@ -86,6 +94,7 @@ const Home = () => {
     }));
   };
 
+  // Función para manejar la selección de una opción en los dropdowns
   const handleSelect = (type, value) => {
     if (type === 'category') setCurrentCategory(value);
     else setCurrentOrder(value);
@@ -93,11 +102,13 @@ const Home = () => {
     setRotation({ category: false, order: false });
   };
 
+  // Opciones disponibles en los dropdowns
   const dropdownItems = {
     category: ['All', ...categories.map(cat => cat.name)],
     order: ['Newest', 'Oldest']
   };
 
+  // Función para obtener un saludo según la hora del día
   const getGreetings = () => {
     const currentHour = new Date().getHours();
     return currentHour < 12 ? "Good Morning!👋" :
@@ -106,6 +117,7 @@ const Home = () => {
 
   return (
     <div className='home'>
+      {/* Animación de entrada para el saludo */}
       <Fade triggerOnce duration={1500}>
         <Slide triggerOnce duration={900}>
           <div className='home-greetings'>
@@ -116,20 +128,32 @@ const Home = () => {
         </Slide>
       </Fade>
 
+      {/* Dropdowns para filtrar por categoría y ordenar */}
       <div className='home-category'>
-        {['category', 'order'].map(type => (
-          <div className='dropdown' key={type} ref={el => dropdownRefs.current[type] = el}>
+        {['category', 'order'].map(type => ( // Itera sobre los tipos de dropdowns: 'category' y 'order'
+          <div
+            className='dropdown'
+            key={type} 
+            ref={el => dropdownRefs.current[type] = el} // Referencia para manejar clics fuera del dropdown
+          >
+            {/* Componente Arrow: Representa el botón que abre/cierra el dropdown */}
             <Arrow
-              text={type === 'category' ? currentCategory : currentOrder}
-              onClick={() => toggleDropdown(type)}
-              isRotated={rotation[type]}
+              text={type === 'category' ? currentCategory : currentOrder} // El texto de la flecha será categoría u orden
+              onClick={() => toggleDropdown(type)} // Alterna la visibilidad del dropdown al hacer clic
+              isRotated={rotation[type]} // Controla si la flecha está rotada (indica si el dropdown está abierto)
             />
+
+            {/* Menú desplegable */}
             <div className={`dropdown-menu ${showDropdown[type] ? 'show' : ''}`}>
-              {dropdownItems[type]
-                .filter(item => item !== (type === 'category' ? currentCategory : currentOrder))
-                .map((item, index) => (
-                  <div key={index} onClick={() => handleSelect(type, item)} className="dropdown-item">
-                    {item}
+              {dropdownItems[type] // Accede a las opciones del dropdown (categorías u órdenes)
+                .filter(item => item !== (type === 'category' ? currentCategory : currentOrder)) // Filtra la opción seleccionada actualmente
+                .map((item, index) => ( // Itera sobre las opciones filtradas
+                  <div
+                    key={index} 
+                    onClick={() => handleSelect(type, item)} // Maneja la selección de una opción
+                    className="dropdown-item" // Estilo para cada opción del dropdown
+                  >
+                    {item} {/* Muestra el texto de la opción */}
                   </div>
                 ))}
             </div>
@@ -137,6 +161,7 @@ const Home = () => {
         ))}
       </div>
 
+      {/* Lista de posts */}
       <div className='posts'>
         <Fade triggerOnce duration={700}>
           {currentPosts.length > 0 ? (
@@ -146,9 +171,10 @@ const Home = () => {
                 index={data.id}
                 image={data.image}
                 title={data.title}
-                content={data.content_thumbnail}
+                content={data.content}
+                content_highlight={data.content_thumbnail}
                 author={data.author}
-                date={data.createdAt || new Date().toISOString()} 
+                date={data.createdAt || new Date().toISOString()}
                 categoryId={data.categoryId}
                 loading={loading}
               />
@@ -161,6 +187,7 @@ const Home = () => {
         </Fade>
       </div>
 
+      {/* Componente de paginación */}
       <Pagination
         postsPerPage={postsPerPage}
         length={filterAndSortPosts().length}

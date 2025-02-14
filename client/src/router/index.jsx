@@ -5,15 +5,17 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import Privacy from "../pages/Privacy";
 import Article from "../pages/Article"
+import Sign from "../pages/Sign"
+import Logout from "../pages/Logout"
+import AdminPanel from "../pages/AdminPanel"
 
 import ErrorPage from "../error-page";
-import Layout from "../components/Layout"; 
-import AdminPanel from "../pages/AdminPanel";
+import Layout from "../components/Layout";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Layout />, 
+        element: <Layout />,
         errorElement: <ErrorPage />,
         children: [
             {
@@ -29,7 +31,7 @@ export const router = createBrowserRouter([
                 element: <Contact />,
             },
             {
-                path: "article/:id", 
+                path: "article/:id",
                 element: <Article />,
             },
             {
@@ -41,9 +43,18 @@ export const router = createBrowserRouter([
                 element: <Privacy />,
             },
             {
+                path: "sign",
+                element: <Sign />,
+            },
+            {
+                path: "logout",
+                element: <Logout />,
+            }, 
+            {
                 path: "adminpanel",
                 element: <AdminPanel />,
             },
+
         ],
     },
 ]);

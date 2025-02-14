@@ -51,10 +51,10 @@ function AdminPanel() {
 
     // Manejar cambios en los campos del formulario de posts
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target; //Obtenmos name de los inputs
         setFormData({
             ...formData,
-            
+            [name]: value //De  esta manera la función handle change será dinamica para todos los inputs por igual
         });
     };
 

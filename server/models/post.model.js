@@ -26,7 +26,7 @@ const Post = sequelize.define('Post', {
             len: [1, 499],
         },
     },
-    content_thumbnail: {
+    content_highligth: {
         type: DataTypes.TEXT,
         allowNull: false,
         validate: {

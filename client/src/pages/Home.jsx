@@ -172,7 +172,7 @@ const Home = () => {
                 image={data.image}
                 title={data.title}
                 content={data.content}
-                content_highlight={data.content_thumbnail}
+                content_highlight={data.content_highligth}
                 author={data.author}
                 date={data.createdAt || new Date().toISOString()}
                 categoryId={data.categoryId}

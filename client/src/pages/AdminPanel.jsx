@@ -5,7 +5,7 @@ function AdminPanel() {
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        content_thumbnail: '',
+        content_highligth: '',
         image: '',
         categoryId: '',
     });
@@ -174,8 +174,8 @@ function AdminPanel() {
                     <label>Miniatura del contenido:</label>
                     <input
                         type="text"
-                        name="content_thumbnail"
-                        value={formData.content_thumbnail}
+                        name="content_highligth"
+                        value={formData.content_highligth}
                         onChange={handleChange}
                         required
                     />

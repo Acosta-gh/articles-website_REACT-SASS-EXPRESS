@@ -1,5 +1,3 @@
-// Articulo impreso en su totalidad
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Fade } from "react-awesome-reveal";
@@ -26,10 +24,12 @@ const Article = () => {
   const publishedDate = post.createdAt.replace(/[_*]/g, '').replace('Publicado el ', '', 'Published on ');
   const categoryName = categories.find(cat => cat.id === post.categoryId)?.name || 'Unknown Category';
 
+  const imageUrl = post.image ? `http://localhost:3000/uploads/${post.image}` : null;
+
   return (
     <Fade triggerOnce duration={500}>
       <div className="article">
-        <img src={post.image} alt={post.title} className='article-banner' />
+        {imageUrl && <img src={imageUrl} alt={post.title} className='article-banner' />}
         <h1 className="article-title">{post.title}</h1>
         <div className="article-content" dangerouslySetInnerHTML={{ __html: post.content }} />
         <p className="article-author">{`By: ${post.author}`}</p>

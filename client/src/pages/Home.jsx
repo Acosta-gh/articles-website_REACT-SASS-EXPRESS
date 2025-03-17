@@ -5,6 +5,7 @@ import Arrow from "../components/Arrow";
 import { Fade, Slide } from "react-awesome-reveal";
 import { useSearchContext } from "../context/SearchContext";
 
+
 const Home = () => {
   // Obtén el término de búsqueda del contexto de búsqueda
   const { searchTerm } = useSearchContext();
@@ -133,7 +134,7 @@ const Home = () => {
         {['category', 'order'].map(type => ( // Itera sobre los tipos de dropdowns: 'category' y 'order'
           <div
             className='dropdown'
-            key={type} 
+            key={type}
             ref={el => dropdownRefs.current[type] = el} // Referencia para manejar clics fuera del dropdown
           >
             {/* Componente Arrow: Representa el botón que abre/cierra el dropdown */}
@@ -149,7 +150,7 @@ const Home = () => {
                 .filter(item => item !== (type === 'category' ? currentCategory : currentOrder)) // Filtra la opción seleccionada actualmente
                 .map((item, index) => ( // Itera sobre las opciones filtradas
                   <div
-                    key={index} 
+                    key={index}
                     onClick={() => handleSelect(type, item)} // Maneja la selección de una opción
                     className="dropdown-item" // Estilo para cada opción del dropdown
                   >
@@ -165,20 +166,24 @@ const Home = () => {
       <div className='posts'>
         <Fade triggerOnce duration={700}>
           {currentPosts.length > 0 ? (
-            currentPosts.map(data => (
-              <Post
-                key={data.id}
-                index={data.id}
-                image={data.image}
-                title={data.title}
-                content={data.content}
-                content_highlight={data.content_highligth}
-                author={data.authorUser?.name || "Unknown"}
-                date={data.createdAt || new Date().toISOString()}
-                categoryId={data.categoryId}
-                loading={loading}
-              />
-            ))
+            currentPosts.map(data => {
+              const imageUrl = data.image ? `http://localhost:3000/uploads/${data.image}` : null;
+
+              return (
+                <Post
+                  key={data.id}
+                  index={data.id}
+                  image={imageUrl} 
+                  title={data.title}
+                  content={data.content}
+                  content_highlight={data.content_highligth}
+                  author={data.authorUser?.name || "Unknown"}
+                  date={data.createdAt || new Date().toISOString()}
+                  categoryId={data.categoryId}
+                  loading={loading}
+                />
+              );
+            })
           ) : (
             <div className='no-posts'>
               <p>No posts found matching your search criteria.</p>

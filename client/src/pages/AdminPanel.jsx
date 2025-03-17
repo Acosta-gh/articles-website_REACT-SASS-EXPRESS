@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef} from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 function AdminPanel() {
@@ -6,7 +6,6 @@ function AdminPanel() {
         title: '',
         content: '',
         content_highligth: '',
-        image: '',
         categoryId: '',
     });
 
@@ -18,6 +17,13 @@ function AdminPanel() {
     const [posts, setPosts] = useState([]); // Para almacenar los posts disponibles
     const [editingPost, setEditingPost] = useState(null); // Para almacenar el post a editar
 
+    const [file, setFile] = useState(null);
+    const fileInputRef = useRef(null);
+
+    const handleFile = (e) => {
+        setFile(e.target.files[0]);
+    };
+
     useEffect(() => {
         // Verificar si el usuario es admin
         const token = localStorage.getItem('token');
@@ -28,7 +34,7 @@ function AdminPanel() {
                     console.log('No es admin', decoded);
                     window.location.href = '/';
                 } else {
-                 
+
                     fetchCategories();
                     fetchPosts();
                 }
@@ -41,7 +47,7 @@ function AdminPanel() {
         }
     }, []);
 
-    
+
     // función para cargar las categorías desde la API
     const fetchCategories = async () => {
         try {
@@ -91,10 +97,13 @@ function AdminPanel() {
             title: post.title,
             content: post.content,
             content_highligth: post.content_highligth,
-            image: post.image || '',
             categoryId: post.categoryId,
         });
-        setEditingPost(post); // Establecer el post que se está editando
+        setFile(null); // Limpiar la imagen seleccionada
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''; // Limpiar el input file
+        }
+        setEditingPost(post);
     };
 
     // Manejar cambios en los campos del formulario de posts
@@ -121,45 +130,52 @@ function AdminPanel() {
 
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token);
-        const authorId = decoded.id; // Obtener el ID del usuario autenticado
+        const authorId = decoded.id;
 
         const url = editingPost ? `http://localhost:3000/post/${editingPost.id}` : 'http://localhost:3000/post/';
         const method = editingPost ? 'PUT' : 'POST';
+
+        // Crear FormData
+        const formDataToSend = new FormData();
+        formDataToSend.append('title', formData.title);
+        formDataToSend.append('content', formData.content);
+        formDataToSend.append('content_highligth', formData.content_highligth);
+        formDataToSend.append('categoryId', formData.categoryId);
+        formDataToSend.append('author', authorId);
+
+        if (file) {
+            formDataToSend.append('image', file); // Agregar imagen si está presente
+        }
 
         try {
             const response = await fetch(url, {
                 method: method,
                 headers: {
-                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    ...formData,
-                    author: authorId, // Asignar el ID del autor
-                }),
+                body: formDataToSend, // Enviar como FormData
             });
 
             if (response.ok) {
-                const newPost = await response.json(); // Obtener los datos del nuevo post
+                const newPost = await response.json();
                 alert(editingPost ? 'Post actualizado exitosamente' : 'Post creado exitosamente');
 
-                // Limpiar el formulario después de crear o editar el post
                 setFormData({
                     title: '',
                     content: '',
                     content_highligth: '',
-                    image: '',
                     categoryId: '',
                 });
 
-                // Actualizar la lista de posts
+                setFile(null); // Limpiar la imagen seleccionada
+
                 if (editingPost) {
-                    setPosts(posts.map(post => post.id === newPost.id ? newPost : post)); // Actualizar el post editado
+                    setPosts(posts.map(post => post.id === newPost.id ? newPost : post));
                 } else {
-                    setPosts((prevPosts) => [newPost, ...prevPosts]); // Agregar el nuevo post
+                    setPosts((prevPosts) => [newPost, ...prevPosts]);
                 }
 
-                setEditingPost(null); // Limpiar el post en edición
+                setEditingPost(null);
             } else {
                 const errorData = await response.json();
                 alert(`Error: ${errorData.message}`);
@@ -169,6 +185,7 @@ function AdminPanel() {
             alert('Error al crear o editar el post');
         }
     };
+
 
 
     // Manejar el envío del formulario de categorías
@@ -244,12 +261,12 @@ function AdminPanel() {
                     />
                 </div>
                 <div>
-                    <label>Imagen (opcional):</label>
-                    <input
-                        type="text"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
+                    <label>Imagen:</label>
+                    <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        onChange={handleFile} 
+                        accept="image/*" 
                     />
                 </div>
                 <div>

@@ -27,8 +27,11 @@ const getPostById = async (req, res) => {
 
 const createPost = async (req, res) => {
     try {
+        console.log(req.file); // <-- Verifica la información del archivo subido
+        console.log(req.body); // <-- Verifica que los datos del formulario lleguen bien
+
         const { categoryId } = req.body;
-        const image = req.file ? req.file.filename : null; // nombre del archivo subido
+        const image = req.file ? req.file.filename : null; // Aquí obtienes el nombre
 
         const category = await Category.findByPk(categoryId);
         if (!category) {
@@ -46,6 +49,7 @@ const createPost = async (req, res) => {
     }
 };
 
+
 const deletePost = async (req, res) => {
     try {
         const post = await Post.findByPk(req.params.id)
@@ -62,13 +66,17 @@ const deletePost = async (req, res) => {
 
 const editPost = async (req, res) => {
     try {
+        console.log(req.file);
+        console.log(req.body);
+
         const post = await Post.findByPk(req.params.id);
         if (!post) {
             return res.status(404).json({ error: "❌ Post no encontrado." });
         }
 
         const { categoryId } = req.body;
-        const image = req.file ? req.file.filename : post.image; // si hay un archivo, usamos el nuevo, si no, mantenemos el viejo
+        
+        const image = req.file ? req.file.filename : post.image;// si hay un archivo, usamos el nuevo, si no, mantenemos el viejo
 
         const category = await Category.findByPk(categoryId);
         if (!category) {

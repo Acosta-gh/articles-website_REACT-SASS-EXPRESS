@@ -173,7 +173,7 @@ const Home = () => {
                 title={data.title}
                 content={data.content}
                 content_highlight={data.content_highligth}
-                author={data.author}
+                author={data.authorUser?.name || "Unknown"}
                 date={data.createdAt || new Date().toISOString()}
                 categoryId={data.categoryId}
                 loading={loading}

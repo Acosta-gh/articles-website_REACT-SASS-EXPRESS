@@ -8,6 +8,7 @@ import Article from "../pages/Article"
 import Sign from "../pages/Sign"
 import Logout from "../pages/Logout"
 import AdminPanel from "../pages/AdminPanel"
+import MyAccount from "../pages/MyAccount"
 
 import ErrorPage from "../error-page";
 import Layout from "../components/Layout";
@@ -53,6 +54,10 @@ export const router = createBrowserRouter([
             {
                 path: "adminpanel",
                 element: <AdminPanel />,
+            },
+            {
+                path: "myaccount",
+                element: <MyAccount />,
             },
 
         ],

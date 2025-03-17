@@ -72,7 +72,7 @@ const Post = sequelize.define('Post', {
 
 Post.belongsTo(Category, { foreignKey: 'categoryId' })
 Category.hasMany(Post, { foreignKey: 'categoryId' })
-Post.belongsTo(User, { foreignKey: 'author' })
+Post.belongsTo(User, { foreignKey: 'author', as: 'authorUser' }) 
 User.hasMany(Post, { foreignKey: 'author' })
 
 module.exports = Post

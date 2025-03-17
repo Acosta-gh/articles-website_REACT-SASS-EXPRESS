@@ -4,23 +4,34 @@ const jwt = require("jsonwebtoken")
 
 const createUser = async (req, res) => {
     try {
-        const { password, email } = req.body
+        const { name, password, email } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        console.log(password)
-        console.log(email)
-        const itExists = await User.findOne({ where: { email: email } })
+        console.log(password);
+        console.log(email);
+        const itExists = await User.findOne({ where: { email: email } });
         if (itExists) {
-            return res.status(400).json({ error: "❌ El mail ya se encuentra registrado." })
+            return res.status(400).json({ error: "❌ El mail ya se encuentra registrado." });
         }
 
-        await User.create({ email: email, password: hashedPassword, isAdmin: 0 })
+        const newUser = await User.create({ name: name, email: email, password: hashedPassword, isAdmin: 0 });
 
-        res.status(200).json({ message: "✅ Usuario creado satisfactoriamente.", email: req.body.email })
+        const token = jwt.sign(
+            { id: newUser.id, name:name, email: newUser.email, isAdmin: newUser.isAdmin },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.status(200).json({
+            message: "✅ Usuario creado satisfactoriamente.",
+            email: newUser.email,
+            token: token
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
     }
-}
+};
+
 
 const deleteUser = async (req, res) => {
     try {
@@ -76,7 +87,7 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ error: "❌ Contraseña incorrecta." });
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, name:user.name ,email: user.email, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(200).json({ message: "✅ Inicio de sesión exitoso.", token });
     } catch (error) {

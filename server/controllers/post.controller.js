@@ -1,14 +1,20 @@
-const { Post, Category } = require("../models");
-
+const { Post, Category , User } = require("../models");
 
 const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.findAll()
-        res.status(200).json(posts)
+        const posts = await Post.findAll({
+            include: {
+                model: User,
+                as: 'authorUser', // Le damos un alias para evitar conflictos
+                attributes: ['name'] // Solo obtenemos el nombre del autor
+            }
+        });
+
+        res.status(200).json(posts);
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
     }
-}
+};
 
 const getPostById = async (req, res) => {
     try {
@@ -21,17 +27,22 @@ const getPostById = async (req, res) => {
 
 const createPost = async (req, res) => {
     try {
-        const { categoryId } = req.body
+        const { categoryId } = req.body;
+        const image = req.file ? req.file.filename : null; // nombre del archivo subido
 
-        const category = await Category.findByPk(categoryId)
+        const category = await Category.findByPk(categoryId);
         if (!category) {
-            return res.status(400).json({ error: "❌ La categoría especificada no existe." })
+            return res.status(400).json({ error: "❌ La categoría especificada no existe." });
         }
 
-        const post = await Post.create(req.body)
-        res.status(201).json(post)
+        const post = await Post.create({
+            ...req.body,
+            image 
+        });
+
+        res.status(201).json(post);
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -51,29 +62,28 @@ const deletePost = async (req, res) => {
 
 const editPost = async (req, res) => {
     try {
-        const post = await Post.findByPk(req.params.id)
-
+        const post = await Post.findByPk(req.params.id);
         if (!post) {
-            return res.status(404).json({ error: "❌ Post no encontrado." })
+            return res.status(404).json({ error: "❌ Post no encontrado." });
         }
-        
-        const { categoryId } = req.body
 
-        const category = await Category.findByPk(categoryId)
+        const { categoryId } = req.body;
+        const image = req.file ? req.file.filename : post.image; // si hay un archivo, usamos el nuevo, si no, mantenemos el viejo
+
+        const category = await Category.findByPk(categoryId);
         if (!category) {
-            return res.status(400).json({ error: "❌ La categoría especificada no existe." })
+            return res.status(400).json({ error: "❌ La categoría especificada no existe." });
         }
 
-        const { id: id, ...restBody } = req.body;
+        await post.update({
+            ...req.body,
+            image // actualizamos la imagen si hay una nueva
+        });
 
-        const updatedPost = { ...post.toJSON(), ...restBody };
-
-        await post.update(updatedPost)
-
-        res.status(201).json(post)
-
+        res.status(201).json(post);
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        res.status(500).json({ error: error.message });
     }
-}
+};
+
 module.exports = { getAllPosts, getPostById, createPost, editPost, deletePost }

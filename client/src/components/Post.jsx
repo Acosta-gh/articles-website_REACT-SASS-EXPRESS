@@ -32,15 +32,15 @@ const Post = ({ key, index, image, title, content, content_highlight, author, da
           </div>
           <div className='post-content'>
             <h3>{categoryName}</h3>
-            <h4>{title}</h4> 
-            <p>{content_highlight}</p> 
+            <h4>{title}</h4>
+            <p>{content_highlight}</p>
           </div>
         </div>
         <div className='post-bottom'>
           <p>By: </p>
-          <p>{author}</p> 
+          <p>{author}</p>
           <p>—</p>
-          <i>{formattedDate}</i> 
+          <i>{formattedDate}</i>
         </div>
       </Link>
     </div>

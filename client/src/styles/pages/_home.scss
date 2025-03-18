@@ -88,6 +88,10 @@
   }
 }
 
+.no-posts {
+  margin: 1rem;
+}
+
 @media (min-width: $breakpoint-lg) {
   .home {
     margin: 0 15%;
@@ -112,7 +116,10 @@
     /* Ensures each row is equal height */
 
   }
+
 }
+
+
 
 @media (min-width: $breakpoint-xl) {
   .home {

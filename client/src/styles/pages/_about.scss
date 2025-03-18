@@ -1,7 +1,8 @@
-.privacy-policy {
+.about{
+    margin: 1rem auto;
+    min-height: 80vh;
     max-width: 800px;
-    margin: 0 auto;
-    margin-bottom: 2rem;
+    margin: 1rem auto;
     padding: 2rem;
     background-color: #f9f9f9;
     //border: 1px solid #eaeaea;
@@ -21,5 +22,9 @@
       margin: 0.5rem 0;
       line-height: 1.6;
     }
-  }
-  
+
+    img{
+        margin: 1rem 0;
+        border-radius: 15px;
+    }
+}

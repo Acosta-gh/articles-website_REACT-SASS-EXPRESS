@@ -1,9 +1,22 @@
-import React from 'react'
+import React from 'react';
 
 const Contact = () => {
   return (
-    <div>Contact</div>
-  )
-}
+    <section className="contact">
+      <div className="contact-content">
+        <h1>Contact Us</h1>
+        <p>
+          Have a question, suggestion, or just want to say hello? We'd love to hear from you!  
+          Feel free to reach out via email or follow us on social media.
+        </p>
+        <div className="contact-info">
+          <p><strong>Email:</strong> contact@ourblog.com</p>
+          <p><strong>Instagram:</strong> @ourblog</p>
+          <p><strong>Facebook:</strong> facebook.com/ourblog</p>
+        </div>
+      </div>
+    </section>
+  );
+};
 
-export default Contact
+export default Contact;

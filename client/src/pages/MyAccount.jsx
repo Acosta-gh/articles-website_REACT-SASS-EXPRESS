@@ -46,7 +46,7 @@ function Profile() {
       )}
 
       {/* Botón de logout para todos los usuarios */}
-      <button onClick={handleLogout} className='button'>Logout</button>
+      <button onClick={handleLogout} className='button'>Log out</button>
     </div>
   );
 }

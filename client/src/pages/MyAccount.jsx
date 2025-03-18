@@ -30,23 +30,23 @@ function Profile() {
   };
 
   if (!user) {
-    return <div>Cargando...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
     <div className='myaccount'>
-      <h1>Perfil de Usuario</h1>
+      <h1>User</h1>
       <p><strong>ID:</strong> {user.id}</p>
       <p><strong>Name:</strong> {user.name}</p>
       <p><strong>Email:</strong> {user.email}</p>
 
       {/* Si el usuario es admin, mostrar el botón de Admin Panel */}
       {user.isAdmin && (
-        <button onClick={() => navigate('/adminpanel')} className='button'>Ir al Panel de Admin</button>
+        <button onClick={() => navigate('/adminpanel')} className='button'>Go to admin panel</button>
       )}
 
       {/* Botón de logout para todos los usuarios */}
-      <button onClick={handleLogout} className='button'>Cerrar sesión</button>
+      <button onClick={handleLogout} className='button'>Logout</button>
     </div>
   );
 }

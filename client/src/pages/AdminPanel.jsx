@@ -271,12 +271,12 @@ function AdminPanel() {
     return (
         <div className='adminpanel'>
             <section className='adminpanel-create_post'>
-                <h1>Panel de Administrador</h1>
+                <h1>Admin Panel</h1>
                 {/* Formulario para crear posts */}
-                <h2>{editingPost ? 'Editar Post' : 'Crear Post'}</h2>
+                <h2>{editingPost ? 'Edit Post' : 'Create Post'}</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
-                        <label>Título:</label>
+                        <label>Title:</label>
                         <input
                             type="text"
                             name="title"
@@ -286,7 +286,7 @@ function AdminPanel() {
                         />
                     </div>
                     <div>
-                        <label>Contenido: (Markdown)</label>
+                        <label>Content: (Markdown)</label>
                         <textarea
                             name="content"
                             value={formData.content}
@@ -295,7 +295,7 @@ function AdminPanel() {
                         />
                     </div>
                     <div>
-                        <label>Contenido Destacado (Markdown) (Resumen):</label>
+                        <label>Featured Content (Markdown) (Summary):</label>
                         <textarea
                             type="text"
                             name="content_highligth"
@@ -305,7 +305,7 @@ function AdminPanel() {
                         />
                     </div>
                     <div>
-                        <label>Imagen Banner:</label>
+                        <label>Image Banner:</label>
                         <input
                             type="file"
                             ref={fileInputRef}
@@ -314,14 +314,14 @@ function AdminPanel() {
                         />
                     </div>
                     <div>
-                        <label>Categoría:</label>
+                        <label>Category:</label>
                         <select
                             name="categoryId"
                             value={formData.categoryId}
                             onChange={handleChange}
                             required
                         >
-                            <option value="">Selecciona una categoría</option>
+                            <option value="">Select a category</option>
                             {categories.map((category) => (
                                 <option key={category.id} value={category.id}>
                                     {category.name}
@@ -329,15 +329,15 @@ function AdminPanel() {
                             ))}
                         </select>
                     </div>
-                    <button className='button' type="submit">{editingPost ? 'Editar Post' : 'Crear Post'}</button>
+                    <button className='button' type="submit">{editingPost ? 'Edit Post' : 'Create Post'}</button>
                 </form>
             </section>
             {/* Formulario para crear categorías */}
             <section className='adminpanel-create_category'>
-                <h2>Crear Categoría</h2>
+                <h2>Create Category</h2>
                 <form onSubmit={handleCategorySubmit}>
                     <div>
-                        <label>Nombre de la categoría:</label>
+                        <label>Category name:</label>
                         <input
                             type="text"
                             name="name"
@@ -346,12 +346,12 @@ function AdminPanel() {
                             required
                         />
                     </div>
-                    <button className='button' type="submit">Crear Categoría</button>
+                    <button className='button' type="submit">Create Category</button>
                 </form>
             </section>
             <hr></hr>
             {/* Lista posts en la DB */}
-            <h2>Posts Creados Anteriormente</h2>
+            <h2>Previously created posts</h2>
             <section className='adminpanel-list_posts'>
                 <div className="posts-container">
                     {posts.length > 0 ? (
@@ -364,33 +364,33 @@ function AdminPanel() {
                                     <p>{post.content_highligth}</p>
                                     <i>{categories.find(category => category.id === post.categoryId)?.name}</i>
                                     <div className="button-container">
-                                        <button className='button' onClick={() => handleEditPost(post)}>Editar</button>
-                                        <button className='button' onClick={() => deletePost(post.id)}>Borrar</button>
+                                        <button className='button' onClick={() => handleEditPost(post)}>Edit</button>
+                                        <button className='button' onClick={() => deletePost(post.id)}>Delete</button>
                                     </div>
                                 </div>
                             );
                         })
                     ) : (
-                        <p>No hay posts disponibles.</p>
+                        <p>No posts available</p>
                     )}
                 </div>
             </section>
             {/* Lista Categorias en la DB */}
             <section className='adminpanel-list_categories'>
-                <h3>Categorías Creadas Anteriormente</h3>
+                <h3>Previously created categories</h3>
                 <div className="categories-container">
                     {categories.length > 0 ? (
                         categories.map((category) => (
                             <div key={category.id} className="category-card">
                                 <h4>{category.name}</h4>
                                 <div className="button-container">
-                                    <button className='button' onClick={() => handleEditCategory(category)}>Editar</button>
-                                    <button className='button' onClick={() => deleteCategory(category.id)}>Borrar</button>
+                                    <button className='button' onClick={() => handleEditCategory(category)}>Edit</button>
+                                    <button className='button' onClick={() => deleteCategory(category.id)}>Delete</button>
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <p>No hay categorías disponibles.</p>
+                        <p>No categories available</p>
                     )}
                 </div>
             </section>

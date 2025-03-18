@@ -16,15 +16,15 @@ function LoginSignup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        const url = inOrUp === "in" 
-            ? 'http://localhost:3000/user/login' 
+
+        const url = inOrUp === "in"
+            ? 'http://localhost:3000/user/login'
             : 'http://localhost:3000/user/register';
-    
-        const bodyData = inOrUp === "in" 
-            ? { email, password } 
+
+        const bodyData = inOrUp === "in"
+            ? { email, password }
             : { name, email, password }; // Enviar 'name' solo si se está registrando
-    
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -33,16 +33,16 @@ function LoginSignup() {
                 },
                 body: JSON.stringify(bodyData),
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 console.log(data);
-                
+
                 if (data.token) {
                     localStorage.setItem('token', data.token);
                 }
-    
+
                 window.location.href = '/myaccount';
             } else {
                 setError(data.error || 'Error en el proceso');
@@ -51,7 +51,7 @@ function LoginSignup() {
             setError('Error de conexión');
         }
     };
-    
+
     const toggleInOrUp = () => {
         setInOrUp(prev => (prev === "in" ? "up" : "in"));
         setName('');
@@ -62,12 +62,12 @@ function LoginSignup() {
 
     return (
         <div className='sign'>
-            <h2>{inOrUp === "in" ? "Iniciar sesión" : "Registrarse"}</h2>
+            <h2>{inOrUp === "in" ? "Log in" : "Sign up"}</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit} className='sign-form'>
                 {inOrUp === "up" && (
                     <div className='sign-form-section'>
-                        <label>Nombre:</label>
+                        <label>Name:</label>
                         <input
                             type="text"
                             value={name}
@@ -75,8 +75,8 @@ function LoginSignup() {
                         />
                     </div>
                 )}
-               <div className='sign-form-section'>
-                    <label>Correo:</label>
+                <div className='sign-form-section'>
+                    <label>Email:</label>
                     <input
                         type="email"
                         value={email}
@@ -84,7 +84,7 @@ function LoginSignup() {
                     />
                 </div>
                 <div className='sign-form-section'>
-                    <label>Contraseña:</label>
+                    <label>Password:</label>
                     <input
                         type="password"
                         value={password}
@@ -92,11 +92,11 @@ function LoginSignup() {
                     />
                 </div>
                 <button type="submit">
-                    {inOrUp === "in" ? "Iniciar sesión" : "Registrarse"}
+                    {inOrUp === "in" ? "Sign in" : "Register"}
                 </button>
             </form>
             <p onClick={toggleInOrUp} style={{ cursor: 'pointer', color: 'blue' }}>
-                {inOrUp === "in" ? "¿No tienes una cuenta? Regístrate" : "¿Ya tienes una cuenta? Inicia sesión"}
+                {inOrUp === "in" ? "Don't have an account? Sign up" : "Already have an account? Log in"}
             </p>
         </div>
     );

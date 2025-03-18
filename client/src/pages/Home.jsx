@@ -173,7 +173,7 @@ const Home = () => {
                 <Post
                   key={data.id}
                   index={data.id}
-                  image={imageUrl} 
+                  image={imageUrl}  
                   title={data.title}
                   content={data.content}
                   content_highlight={data.content_highligth}

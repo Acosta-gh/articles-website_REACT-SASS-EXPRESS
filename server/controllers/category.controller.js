@@ -8,6 +8,24 @@ const getAllCategories = async (req, res) => {
         res.status(500).json({ error: error.message })
     }
 }
+const editCategory = async (req, res) => {
+    try {
+        const category = await Category.findByPk(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({ error: "❌ Categoría no encontrada." });
+        }
+
+        const { name } = req.body;
+
+        await category.update({ name });
+
+        res.json({ message: "✅ Categoría actualizada correctamente.", category });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 const getCatoryById = async (req, res) => {
     try {
@@ -46,4 +64,4 @@ const deleteCategory = async (req, res) => {
         res.status(500).json({ error: error.message })
     }
 }
-module.exports = { getAllCategories, getCatoryById, createCategory, deleteCategory }
+module.exports = { getAllCategories, getCatoryById, createCategory, deleteCategory, editCategory }

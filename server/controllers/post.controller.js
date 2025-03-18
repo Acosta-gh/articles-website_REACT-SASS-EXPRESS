@@ -4,13 +4,15 @@ const path = require('path');
 
 const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.findAll({
+        const posts = await Post.findAll(
+        {
             include: {
                 model: User,
                 as: 'authorUser', // Le damos un alias para evitar conflictos
                 attributes: ['name'] // Solo obtenemos el nombre del autor
             }
-        });
+        }
+    );
 
         res.status(200).json(posts);
     } catch (error) {
@@ -20,7 +22,18 @@ const getAllPosts = async (req, res) => {
 
 const getPostById = async (req, res) => {
     try {
-        const post = await Post.findByPk(req.params.id)
+        const post = await Post.findByPk(req.params.id,
+            {
+                include: {
+                    model: User,
+                    as: 'authorUser', // Le damos un alias para evitar conflictos
+                    attributes: ['name'] // Solo obtenemos el nombre del autor
+                }
+            }
+        )
+        if (!post) {
+            return res.status(404).json({ error: "❌ Post no encontrado." });
+        }
         res.status(200).json(post)
     } catch (error) {
         res.status(500).json({ error: error.message })

@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 function AdminPanel() {
@@ -30,6 +30,14 @@ function AdminPanel() {
         if (token) {
             try {
                 const decoded = jwtDecode(token);
+                const currentTime = Math.floor(Date.now() / 1000);
+
+                if (decoded.exp && decoded.exp < currentTime) {
+                    alert('Token expirado');
+                    window.location.href = '/logout';
+                    return;
+                }
+
                 if (!decoded.isAdmin) {
                     console.log('No es admin', decoded);
                     window.location.href = '/';
@@ -62,7 +70,7 @@ function AdminPanel() {
     //Función para obtener los posts creados anteriormente
     const fetchPosts = async () => {
         try {
-            const response = await fetch("http://localhost:3000/post/") // 
+            const response = await fetch("http://localhost:3000/post/") // ajusta la URL de una API
             const data = await response.json();
             setPosts(data);
         } catch (err) {
@@ -74,7 +82,7 @@ function AdminPanel() {
         if (!window.confirm("¿Seguro que quieres eliminar este post?")) return;
         const token = localStorage.getItem("token")
         try {
-            const response = await fetch(`http://localhost:3000/post/${id}`, {
+            const response = await fetch(`http://localhost:3000/post/${id}`, { // ajusta la URL de una API
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -92,7 +100,7 @@ function AdminPanel() {
         }
     };
 
-    const handleEdit = (post) => {
+    const handleEditPost = (post) => {
         setFormData({
             title: post.title,
             content: post.content,
@@ -105,6 +113,45 @@ function AdminPanel() {
         }
         setEditingPost(post);
     };
+
+    const handleEditCategory = async (category) => {
+        const result = confirm(`¿Deseas editar ${category.name}?`);
+        if (result) {
+            const name = prompt("¿Cuál es el nuevo nombre de la categoría?", category.name);
+            if (name) {
+                try {
+                    const response = await fetch(`http://localhost:3000/category/${category.id}`, { // ajusta la URL de una API
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ name }) 
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error("Error al actualizar la categoría");
+                    }
+    
+                    setCategories((prevCategories) =>
+                        prevCategories.map((cat) =>
+                            cat.id === category.id ? { ...cat, name } : cat
+                        )
+                    );
+    
+                    alert("Categoría actualizada correctamente.");
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Hubo un problema al actualizar la categoría.");
+                }
+            } else {
+                alert("Debes ingresar un nombre.");
+            }
+        } else {
+            alert("Cancelaste.");
+        }
+    };
+    
+
 
     // Manejar cambios en los campos del formulario de posts
     const handleChange = (e) => {
@@ -132,7 +179,7 @@ function AdminPanel() {
         const decoded = jwtDecode(token);
         const authorId = decoded.id;
 
-        const url = editingPost ? `http://localhost:3000/post/${editingPost.id}` : 'http://localhost:3000/post/';
+        const url = editingPost ? `http://localhost:3000/post/${editingPost.id}` : 'http://localhost:3000/post/'; // ajusta la URL de una API
         const method = editingPost ? 'PUT' : 'POST';
 
         // Crear FormData
@@ -186,8 +233,6 @@ function AdminPanel() {
         }
     };
 
-
-
     // Manejar el envío del formulario de categorías
     const handleCategorySubmit = async (e) => {
         e.preventDefault();
@@ -195,7 +240,7 @@ function AdminPanel() {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch('http://localhost:3000/category/', {
+            const response = await fetch('http://localhost:3000/category/', { // ajusta la URL de una API
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -227,7 +272,6 @@ function AdminPanel() {
     return (
         <div>
             <h1>Panel de Administrador</h1>
-
             {/* Formulario para crear posts */}
             <h2>{editingPost ? 'Editar Post' : 'Crear Post'}</h2>
             <form onSubmit={handleSubmit}>
@@ -262,11 +306,11 @@ function AdminPanel() {
                 </div>
                 <div>
                     <label>Imagen:</label>
-                    <input 
-                        type="file" 
-                        ref={fileInputRef} 
-                        onChange={handleFile} 
-                        accept="image/*" 
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFile}
+                        accept="image/*"
                     />
                 </div>
                 <div>
@@ -311,12 +355,26 @@ function AdminPanel() {
                         <li key={post.id}>
                             <h3>{post.title}</h3>
                             <p>{post.content_highligth}</p>
-                            <button onClick={() => handleEdit(post)}>Editar</button>
+                            <button onClick={() => handleEditPost(post)}>Editar</button>
                             <button onClick={() => deletePost(post.id)}>X</button>
                         </li>
                     ))
                 ) : (
                     <p>No hay posts disponibles.</p>
+                )}
+            </ul>
+            <h3>Categorías Creadas Anteriormente</h3>
+            <ul>
+                {categories.length > 0 ? (
+                    categories.map((category) => (
+                        <li key={category.id}>
+                            {category.name}
+                            <button onClick={() => handleEditCategory(category)}>Editar</button>
+                            <button onClick={() => deleteCategory(category.id)}>X</button>
+                        </li>
+                    ))
+                ) : (
+                    <li>No hay categorías</li>
                 )}
             </ul>
         </div>

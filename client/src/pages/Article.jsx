@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Fade } from "react-awesome-reveal";
+import { marked } from 'marked'; 
 
 const Article = () => {
   const { id } = useParams();
@@ -26,13 +27,16 @@ const Article = () => {
 
   const imageUrl = post.image ? `http://localhost:3000/uploads/${post.image}` : null;
 
+  //  Markdown a HTML usando marked
+  const contentHTML = post.content ? marked(post.content) : '';
+
   return (
     <Fade triggerOnce duration={500}>
       <div className="article">
         {imageUrl && <img src={imageUrl} alt={post.title} className='article-banner' />}
         <h1 className="article-title">{post.title}</h1>
-        <div className="article-content" dangerouslySetInnerHTML={{ __html: post.content }} />
-        <p className="article-author">{`By: ${post.author}`}</p>
+        <div className="article-content" dangerouslySetInnerHTML={{ __html: contentHTML }} />
+        <p className="article-author">{`By: ${post.authorUser?.name}`}</p>
         <p className="article-date">{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</p>
         <p className="article-category">{`Category: ${categoryName}`}</p>
       </div>

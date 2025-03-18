@@ -215,7 +215,8 @@ function AdminPanel() {
                 setFile(null); // Limpiar la imagen seleccionada
 
                 if (editingPost) {
-                    setPosts(posts.map(post => post.id === newPost.id ? newPost : post));
+                    //setPosts(posts.map(post => post.id === newPost.id ? newPost : post));
+                    fetchPosts();
                 } else {
                     setPosts((prevPosts) => [newPost, ...prevPosts]);
                 }
@@ -251,7 +252,7 @@ function AdminPanel() {
 
             if (response.ok) {
                 alert('Categoría creada exitosamente');
-                // Limpiar el formulario después de crear la categoría
+
                 setCategoryFormData({
                     name: '',
                 });
@@ -349,26 +350,32 @@ function AdminPanel() {
                 </form>
             </section>
             <hr></hr>
+            {/* Lista posts en la DB */}
             <h2>Posts Creados Anteriormente</h2>
             <section className='adminpanel-list_posts'>
                 <div className="posts-container">
                     {posts.length > 0 ? (
-                        posts.map((post) => (
-                            <div key={post.id} className="post-card">
-                                <h3>{post.title}</h3>
-                                <p>{post.content_highligth}</p>
-                                <i>{categories.find(category => category.id === post.categoryId)?.name}</i>
-                                <div className="button-container">
-                                    <button className='button' onClick={() => handleEditPost(post)}>Editar</button>
-                                    <button className='button' onClick={() => deletePost(post.id)}>Borrar</button>
+                        posts.map((post) => {
+                            const imageUrl = post.image ? `http://localhost:3000/uploads/${post.image}` : null;
+                            return (
+                                <div key={post.id} className="post-card">
+                                    {imageUrl && <img src={imageUrl} alt={post.title} className="post-image" />}
+                                    <h3>{post.title}</h3>
+                                    <p>{post.content_highligth}</p>
+                                    <i>{categories.find(category => category.id === post.categoryId)?.name}</i>
+                                    <div className="button-container">
+                                        <button className='button' onClick={() => handleEditPost(post)}>Editar</button>
+                                        <button className='button' onClick={() => deletePost(post.id)}>Borrar</button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            );
+                        })
                     ) : (
                         <p>No hay posts disponibles.</p>
                     )}
                 </div>
             </section>
+            {/* Lista Categorias en la DB */}
             <section className='adminpanel-list_categories'>
                 <h3>Categorías Creadas Anteriormente</h3>
                 <div className="categories-container">

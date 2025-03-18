@@ -3,8 +3,27 @@
     flex-direction: column;
 
     margin: 2rem 5%;
+
+    input,
+    textarea,
+    select {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: .5rem;
+        width: 20rem;
+    }
+
+    textarea {
+        width: 35rem;
+        height: 4rem;
+    }
+
+    textarea[name="content"] {
+        height: 15rem;
+    }
+
     .adminpanel-create_post {
-        
 
         form {
             div {
@@ -13,87 +32,104 @@
             }
         }
     }
-    .adminpanel-create_category{
-        
-        div{
+
+    .adminpanel-create_category {
+
+        div {
             display: flex;
             flex-direction: column;
         }
     }
+
     .adminpanel-list_posts {
         .posts-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem; /* Espacio entre las cards */
+            gap: 1rem;
+
         }
-    
+
         .post-card {
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 15px;
             padding: 1rem;
-            width: 300px; /* Ancho de cada card */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para efecto de card */
+            width: 300px;
+
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
             transition: transform 0.2s, box-shadow 0.2s;
-    
-          
+
+
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            overflow: hidden;
+
+            .post-image {
+                height: 10rem;
+                width: 100%;
+            }
+
             h3 {
                 margin-top: 0;
                 font-size: 1.5rem;
             }
-    
+
             p {
                 color: #555;
             }
-    
+
             i {
                 display: block;
                 margin: 0.5rem 0;
                 color: #888;
             }
-    
+
             .button-container {
                 display: flex;
                 gap: 0.5rem;
                 margin-top: 1rem;
-    
+
             }
+
         }
     }
+
     .adminpanel-list_categories {
         h3 {
             margin-bottom: 1.5rem;
             font-size: 1.8rem;
             color: #333;
         }
-    
+
         .categories-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem; /* Espacio entre las cards */
+            gap: 1rem;
         }
-    
+
         .category-card {
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 10px;
             padding: 1rem;
-            width: 250px; /* Ancho de cada card */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para efecto de card */
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s, box-shadow 0.2s;
-    
+
             h4 {
                 margin: 0;
                 font-size: 1.2rem;
                 color: #444;
             }
-    
+
             .button-container {
                 display: flex;
                 gap: 0.5rem;
                 margin-top: 1rem;
-    
-                
+
+
             }
         }
     }

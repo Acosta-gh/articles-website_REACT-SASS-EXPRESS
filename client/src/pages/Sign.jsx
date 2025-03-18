@@ -61,12 +61,12 @@ function LoginSignup() {
     };
 
     return (
-        <div>
+        <div className='sign'>
             <h2>{inOrUp === "in" ? "Iniciar sesión" : "Registrarse"}</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className='sign-form'>
                 {inOrUp === "up" && (
-                    <div>
+                    <div className='sign-form-section'>
                         <label>Nombre:</label>
                         <input
                             type="text"
@@ -75,7 +75,7 @@ function LoginSignup() {
                         />
                     </div>
                 )}
-                <div>
+               <div className='sign-form-section'>
                     <label>Correo:</label>
                     <input
                         type="email"
@@ -83,7 +83,7 @@ function LoginSignup() {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
-                <div>
+                <div className='sign-form-section'>
                     <label>Contraseña:</label>
                     <input
                         type="password"

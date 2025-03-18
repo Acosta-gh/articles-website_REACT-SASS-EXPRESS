@@ -125,19 +125,19 @@ function AdminPanel() {
                         headers: {
                             "Content-Type": "application/json"
                         },
-                        body: JSON.stringify({ name }) 
+                        body: JSON.stringify({ name })
                     });
-    
+
                     if (!response.ok) {
                         throw new Error("Error al actualizar la categoría");
                     }
-    
+
                     setCategories((prevCategories) =>
                         prevCategories.map((cat) =>
                             cat.id === category.id ? { ...cat, name } : cat
                         )
                     );
-    
+
                     alert("Categoría actualizada correctamente.");
                 } catch (error) {
                     console.error("Error:", error);
@@ -150,8 +150,6 @@ function AdminPanel() {
             alert("Cancelaste.");
         }
     };
-    
-
 
     // Manejar cambios en los campos del formulario de posts
     const handleChange = (e) => {
@@ -270,113 +268,125 @@ function AdminPanel() {
     };
 
     return (
-        <div>
-            <h1>Panel de Administrador</h1>
-            {/* Formulario para crear posts */}
-            <h2>{editingPost ? 'Editar Post' : 'Crear Post'}</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Título:</label>
-                    <input
-                        type="text"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Contenido:</label>
-                    <textarea
-                        name="content"
-                        value={formData.content}
-                        onChange={handleChange}
-                        required
-                    />  [name]
-                </div>
-                <div>
-                    <label>Texto Destacado:</label>
-                    <input
-                        type="text"
-                        name="content_highligth"
-                        value={formData.content_highligth}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Imagen:</label>
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFile}
-                        accept="image/*"
-                    />
-                </div>
-                <div>
-                    <label>Categoría:</label>
-                    <select
-                        name="categoryId"
-                        value={formData.categoryId}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Selecciona una categoría</option>
-                        {categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <button type="submit">{editingPost ? 'Editar Post' : 'Crear Post'}</button>
-            </form>
-
+        <div className='adminpanel'>
+            <section className='adminpanel-create_post'>
+                <h1>Panel de Administrador</h1>
+                {/* Formulario para crear posts */}
+                <h2>{editingPost ? 'Editar Post' : 'Crear Post'}</h2>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>Título:</label>
+                        <input
+                            type="text"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Contenido: (Markdown)</label>
+                        <textarea
+                            name="content"
+                            value={formData.content}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Contenido Destacado (Markdown) (Resumen):</label>
+                        <textarea
+                            type="text"
+                            name="content_highligth"
+                            value={formData.content_highligth}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label>Imagen Banner:</label>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFile}
+                            accept="image/*"
+                        />
+                    </div>
+                    <div>
+                        <label>Categoría:</label>
+                        <select
+                            name="categoryId"
+                            value={formData.categoryId}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Selecciona una categoría</option>
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <button className='button' type="submit">{editingPost ? 'Editar Post' : 'Crear Post'}</button>
+                </form>
+            </section>
             {/* Formulario para crear categorías */}
-            <h2>Crear Categoría</h2>
-            <form onSubmit={handleCategorySubmit}>
-                <div>
-                    <label>Nombre de la categoría:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={categoryFormData.name}
-                        onChange={handleCategoryChange}
-                        required
-                    />
-                </div>
-                <button type="submit">Crear Categoría</button>
-            </form>
+            <section className='adminpanel-create_category'>
+                <h2>Crear Categoría</h2>
+                <form onSubmit={handleCategorySubmit}>
+                    <div>
+                        <label>Nombre de la categoría:</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={categoryFormData.name}
+                            onChange={handleCategoryChange}
+                            required
+                        />
+                    </div>
+                    <button className='button' type="submit">Crear Categoría</button>
+                </form>
+            </section>
             <hr></hr>
             <h2>Posts Creados Anteriormente</h2>
-            <ul>
-                {posts.length > 0 ? (
-                    posts.map((post) => (
-                        <li key={post.id}>
-                            <h3>{post.title}</h3>
-                            <p>{post.content_highligth}</p>
-                            <button onClick={() => handleEditPost(post)}>Editar</button>
-                            <button onClick={() => deletePost(post.id)}>X</button>
-                        </li>
-                    ))
-                ) : (
-                    <p>No hay posts disponibles.</p>
-                )}
-            </ul>
-            <h3>Categorías Creadas Anteriormente</h3>
-            <ul>
-                {categories.length > 0 ? (
-                    categories.map((category) => (
-                        <li key={category.id}>
-                            {category.name}
-                            <button onClick={() => handleEditCategory(category)}>Editar</button>
-                            <button onClick={() => deleteCategory(category.id)}>X</button>
-                        </li>
-                    ))
-                ) : (
-                    <li>No hay categorías</li>
-                )}
-            </ul>
+            <section className='adminpanel-list_posts'>
+                <div className="posts-container">
+                    {posts.length > 0 ? (
+                        posts.map((post) => (
+                            <div key={post.id} className="post-card">
+                                <h3>{post.title}</h3>
+                                <p>{post.content_highligth}</p>
+                                <i>{categories.find(category => category.id === post.categoryId)?.name}</i>
+                                <div className="button-container">
+                                    <button className='button' onClick={() => handleEditPost(post)}>Editar</button>
+                                    <button className='button' onClick={() => deletePost(post.id)}>Borrar</button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No hay posts disponibles.</p>
+                    )}
+                </div>
+            </section>
+            <section className='adminpanel-list_categories'>
+                <h3>Categorías Creadas Anteriormente</h3>
+                <div className="categories-container">
+                    {categories.length > 0 ? (
+                        categories.map((category) => (
+                            <div key={category.id} className="category-card">
+                                <h4>{category.name}</h4>
+                                <div className="button-container">
+                                    <button className='button' onClick={() => handleEditCategory(category)}>Editar</button>
+                                    <button className='button' onClick={() => deleteCategory(category.id)}>Borrar</button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No hay categorías disponibles.</p>
+                    )}
+                </div>
+            </section>
         </div>
     );
 }

@@ -34,7 +34,7 @@ function Profile() {
   }
 
   return (
-    <div>
+    <div className='myaccount'>
       <h1>Perfil de Usuario</h1>
       <p><strong>ID:</strong> {user.id}</p>
       <p><strong>Name:</strong> {user.name}</p>
@@ -42,11 +42,11 @@ function Profile() {
 
       {/* Si el usuario es admin, mostrar el botón de Admin Panel */}
       {user.isAdmin && (
-        <button onClick={() => navigate('/adminpanel')}>Ir al Panel de Admin</button>
+        <button onClick={() => navigate('/adminpanel')} className='button'>Ir al Panel de Admin</button>
       )}
 
       {/* Botón de logout para todos los usuarios */}
-      <button onClick={handleLogout}>Cerrar sesión</button>
+      <button onClick={handleLogout} className='button'>Cerrar sesión</button>
     </div>
   );
 }

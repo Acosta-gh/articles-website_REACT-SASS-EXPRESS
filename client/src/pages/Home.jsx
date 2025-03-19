@@ -9,7 +9,7 @@ import { useSearchContext } from "../context/SearchContext";
 const Home = () => {
   // Obtén el término de búsqueda del contexto de búsqueda
   const { searchTerm } = useSearchContext();
-
+  console.log("Search term:", searchTerm);
   // Estados para almacenar los posts, el estado de carga, la página actual, etc.
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ const Home = () => {
         return (
           (currentCategory === 'All' || categoryName === currentCategory) &&
           [post.title, post.content, post.author].some(field =>
-            field.toLowerCase().includes(searchTerm.toLowerCase())
+            (field && typeof field === 'string' && field.toLowerCase().includes(searchTerm.toLowerCase()))
           )
         );
       })

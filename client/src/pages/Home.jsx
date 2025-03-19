@@ -121,7 +121,7 @@ const Home = () => {
       {/* Animación de entrada para el saludo */}
       <Fade triggerOnce duration={1500}>
         <Slide triggerOnce duration={900}>
-          <div className='home-greetings'>
+          <div className='home__greetings'>
             <p>{getGreetings()}</p>
             <h1>Posts-Worthy Reads</h1>
             <i>Stories to Inspire Your Thoughts</i>
@@ -130,7 +130,7 @@ const Home = () => {
       </Fade>
 
       {/* Dropdowns para filtrar por categoría y ordenar */}
-      <div className='home-category'>
+      <div className='home__filters'>
         {['category', 'order'].map(type => ( // Itera sobre los tipos de dropdowns: 'category' y 'order'
           <div
             className='dropdown'
@@ -145,14 +145,14 @@ const Home = () => {
             />
 
             {/* Menú desplegable */}
-            <div className={`dropdown-menu ${showDropdown[type] ? 'show' : ''}`}>
+            <div className={`dropdown__menu ${showDropdown[type] ? 'dropdown__menu-show' : ''}`}>
               {dropdownItems[type] // Accede a las opciones del dropdown (categorías u órdenes)
                 .filter(item => item !== (type === 'category' ? currentCategory : currentOrder)) // Filtra la opción seleccionada actualmente
                 .map((item, index) => ( // Itera sobre las opciones filtradas
                   <div
                     key={index}
                     onClick={() => handleSelect(type, item)} // Maneja la selección de una opción
-                    className="dropdown-item" // Estilo para cada opción del dropdown
+                    className="dropdown__item" // Estilo para cada opción del dropdown
                   >
                     {item} {/* Muestra el texto de la opción */}
                   </div>
@@ -163,12 +163,11 @@ const Home = () => {
       </div>
 
       {/* Lista de posts */}
-      <div className='posts'>
+      <div className='home__posts'>
         <Fade triggerOnce duration={700}>
           {currentPosts.length > 0 ? (
             currentPosts.map(data => {
               const imageUrl = data.image ? `http://localhost:3000/uploads/${data.image}` : null;
-
               return (
                 <Post
                   key={data.id}
@@ -185,7 +184,7 @@ const Home = () => {
               );
             })
           ) : (
-            <div className='no-posts'>
+            <div className='home__no-posts'>
               <p>No posts found matching your search criteria.</p>
             </div>
           )}

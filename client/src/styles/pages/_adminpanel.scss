@@ -23,7 +23,7 @@
         height: 15rem;
     }
 
-    .adminpanel-create_post {
+    .admin-panel__create-post {
 
         form {
             div {
@@ -33,7 +33,7 @@
         }
     }
 
-    .adminpanel-create_category {
+    .admin-panel__create-category {
 
         div {
             display: flex;
@@ -41,15 +41,15 @@
         }
     }
 
-    .adminpanel-list_posts {
-        .posts-container {
+    .admin-panel__post-list {
+        .admin-panel__posts-container {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
 
         }
 
-        .post-card {
+        .admin-panel__post-card {
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 15px;
@@ -66,7 +66,7 @@
             white-space: normal;
             overflow: hidden;
 
-            .post-image {
+            .admin-panel__post-image {
                 height: 10rem;
                 width: 100%;
             }
@@ -86,7 +86,7 @@
                 color: #888;
             }
 
-            .button-container {
+            .admin-panel__button-container {
                 display: flex;
                 gap: 0.5rem;
                 margin-top: 1rem;
@@ -96,20 +96,20 @@
         }
     }
 
-    .adminpanel-list_categories {
+    .admin-panel__category-list {
         h3 {
             margin-bottom: 1.5rem;
             font-size: 1.8rem;
             color: #333;
         }
 
-        .categories-container {
+        .admin-panel__categories-container {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
         }
 
-        .category-card {
+        .admin-panel__category-card {
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -124,7 +124,7 @@
                 color: #444;
             }
 
-            .button-container {
+            .admin-panel__button-container {
                 display: flex;
                 gap: 0.5rem;
                 margin-top: 1rem;

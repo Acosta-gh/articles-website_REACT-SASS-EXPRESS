@@ -33,12 +33,12 @@ const Article = () => {
   return (
     <Fade triggerOnce duration={500}>
       <div className="article">
-        {imageUrl && <img src={imageUrl} alt={post.title} className='article-banner' />}
-        <h1 className="article-title">{post.title}</h1>
-        <div className="article-content" dangerouslySetInnerHTML={{ __html: contentHTML }} />
-        <p className="article-author">{`By: ${post.authorUser?.name}`}</p>
-        <p className="article-date">{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</p>
-        <p className="article-category">{`Category: ${categoryName}`}</p>
+        {imageUrl && <img src={imageUrl} alt={post.title} className='article__banner' />}
+        <h1 className="article__title">{post.title}</h1>
+        <div className="article__content" dangerouslySetInnerHTML={{ __html: contentHTML }} />
+        <p className="article__author">{`By: ${post.authorUser?.name}`}</p>
+        <p className="article__date">{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</p>
+        <p className="article__category">{`Category: ${categoryName}`}</p>
       </div>
     </Fade>
   );

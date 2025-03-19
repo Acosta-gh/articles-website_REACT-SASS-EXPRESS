@@ -52,6 +52,7 @@ function LoginSignup() {
         }
     };
 
+    //Verifica si nos estamos registrando o logeando, mi intento de hacer un dos en uno.
     const toggleInOrUp = () => {
         setInOrUp(prev => (prev === "in" ? "up" : "in"));
         setName('');
@@ -61,12 +62,12 @@ function LoginSignup() {
     };
 
     return (
-        <div className='sign'>
+        <div className={`sign sign--${inOrUp}`}>
             <h2>{inOrUp === "in" ? "Log in" : "Sign up"}</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit} className='sign-form'>
+            <form onSubmit={handleSubmit} className='sign__form'>
                 {inOrUp === "up" && (
-                    <div className='sign-form-section'>
+                    <div className='sign__form-section'>
                         <label>Name:</label>
                         <input
                             type="text"
@@ -75,7 +76,7 @@ function LoginSignup() {
                         />
                     </div>
                 )}
-                <div className='sign-form-section'>
+                <div className='sign__form-section'>
                     <label>Email:</label>
                     <input
                         type="email"
@@ -83,7 +84,7 @@ function LoginSignup() {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
-                <div className='sign-form-section'>
+                <div className='sign__form-section'>
                     <label>Password:</label>
                     <input
                         type="password"

@@ -17,10 +17,8 @@ const Post = ({ key, index, image, title, content, content_highlight, author, da
     return <h1>Loading.....</h1>;
   }
 
-  // Format date with a fallback
   const formattedDate = date ? new Date(date).toLocaleDateString() : 'Date not available';
 
-  // Find category name based on categoryId
   const categoryName = categories.find(cat => cat.id === categoryId)?.name || 'Unknown Category';
 
   return (

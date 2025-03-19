@@ -8,7 +8,7 @@
     flex-direction: column;
     align-items: center;
 
-    img {
+    &__banner{
         display: flex;
         margin: 2rem auto;
 
@@ -18,14 +18,14 @@
         }
 
 
-    &-title {
+    &__title {
         font-size: 2rem;
         margin-bottom: 10px;
         color: #333;
         text-align: center;
     }
 
-    &-content {
+    &__content {
         font-size: 1rem;
         line-height: 1.5;
         color: #666;
@@ -56,7 +56,7 @@
 
 @media (min-width: $breakpoint-lg) {
     .article {
-        &-banner {
+        &__banner {
             width: 60rem;
             height: 30rem;
             object-fit: cover;

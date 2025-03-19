@@ -1,7 +1,7 @@
 .home {
   min-height: 100vh;
 
-  &-category {
+  &__filters {
     font-family: "Roboto", sans-serif;
     display: flex;
     margin: 6px;
@@ -22,7 +22,7 @@
     }
   }
 
-  &-greetings {
+  &__greetings {
     padding: 1rem;
     margin-left: .3rem;
     padding-top: 2rem;
@@ -51,7 +51,7 @@
     user-select: none;
     /* Standard syntax */
 
-    .dropdown-menu {
+    .dropdown__menu {
       position: absolute;
       top: 100%;
       left: 0;
@@ -70,7 +70,7 @@
 
       margin-top: .7rem;
 
-      &.show {
+      &-show {
         opacity: 1;
         transform: translateY(0);
         visibility: visible;
@@ -78,7 +78,7 @@
     }
   }
 
-  .dropdown-item {
+  .dropdown__item {
     cursor: pointer;
     padding: 10px;
 
@@ -88,7 +88,7 @@
   }
 }
 
-.no-posts {
+.home__no-posts {
   margin: 1rem;
 }
 
@@ -96,7 +96,7 @@
   .home {
     margin: 0 15%;
 
-    &-greetings {
+    &__greetings {
       margin-top: 1rem;
       margin-left: .2rem;
 
@@ -108,7 +108,7 @@
     }
   }
 
-  .posts {
+  .home__posts {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
@@ -123,7 +123,7 @@
 
 @media (min-width: $breakpoint-xl) {
   .home {
-    .posts {
+    .home__posts {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 1rem;

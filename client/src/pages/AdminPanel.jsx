@@ -33,7 +33,7 @@ function AdminPanel() {
                 const currentTime = Math.floor(Date.now() / 1000);
 
                 if (decoded.exp && decoded.exp < currentTime) {
-                    alert('Token expirado');
+                    alert('Expired Token');
                     window.location.href = '/logout';
                     return;
                 }
@@ -79,7 +79,7 @@ function AdminPanel() {
     }
 
     const deletePost = async (id) => {
-        if (!window.confirm("¿Seguro que quieres eliminar este post?")) return;
+        if (!window.confirm("Are you sure you want to delete this post?")) return;
         const token = localStorage.getItem("token")
         try {
             const response = await fetch(`http://localhost:3000/post/${id}`, { // ajusta la URL de una API
@@ -115,9 +115,9 @@ function AdminPanel() {
     };
 
     const handleEditCategory = async (category) => {
-        const result = confirm(`¿Deseas editar ${category.name}?`);
+        const result = confirm(`Do you want to edit ${category.name}?`);
         if (result) {
-            const name = prompt("¿Cuál es el nuevo nombre de la categoría?", category.name);
+            const name = prompt("What's the new category's name?", category.name);
             if (name) {
                 try {
                     const response = await fetch(`http://localhost:3000/category/${category.id}`, { // ajusta la URL de una API
@@ -138,16 +138,16 @@ function AdminPanel() {
                         )
                     );
 
-                    alert("Categoría actualizada correctamente.");
+                    alert("Category updated!");
                 } catch (error) {
                     console.error("Error:", error);
-                    alert("Hubo un problema al actualizar la categoría.");
+                    alert("Error while updating the category");
                 }
             } else {
-                alert("Debes ingresar un nombre.");
+                alert("You must type a name");
             }
         } else {
-            alert("Cancelaste.");
+            alert("Cancelled.");
         }
     };
 
@@ -203,7 +203,7 @@ function AdminPanel() {
 
             if (response.ok) {
                 const newPost = await response.json();
-                alert(editingPost ? 'Post actualizado exitosamente' : 'Post creado exitosamente');
+                alert(editingPost ? 'Post updated!' : 'Post created!');
 
                 setFormData({
                     title: '',
@@ -214,12 +214,7 @@ function AdminPanel() {
 
                 setFile(null); // Limpiar la imagen seleccionada
 
-                if (editingPost) {
-                    //setPosts(posts.map(post => post.id === newPost.id ? newPost : post));
-                    fetchPosts();
-                } else {
-                    setPosts((prevPosts) => [newPost, ...prevPosts]);
-                }
+                fetchPosts(); // Actualizamos la lista de posts 
 
                 setEditingPost(null);
             } else {
@@ -228,7 +223,7 @@ function AdminPanel() {
             }
         } catch (error) {
             console.error('Error al crear o editar el post', error);
-            alert('Error al crear o editar el post');
+            alert('Error while updating/creating the post');
         }
     };
 
@@ -251,7 +246,7 @@ function AdminPanel() {
             });
 
             if (response.ok) {
-                alert('Categoría creada exitosamente');
+                alert('Category created!');
 
                 setCategoryFormData({
                     name: '',
@@ -264,13 +259,13 @@ function AdminPanel() {
             }
         } catch (error) {
             console.error('Error al crear la categoría', error);
-            alert('Error al crear la categoría');
+            alert('Error while creating the category');
         }
     };
 
     return (
         <div className='adminpanel'>
-            <section className='adminpanel-create_post'>
+            <section className='admin-panel__create-post'>
                 <h1>Admin Panel</h1>
                 {/* Formulario para crear posts */}
                 <h2>{editingPost ? 'Edit Post' : 'Create Post'}</h2>
@@ -333,7 +328,7 @@ function AdminPanel() {
                 </form>
             </section>
             {/* Formulario para crear categorías */}
-            <section className='adminpanel-create_category'>
+            <section className='admin-panel__create-category'>
                 <h2>Create Category</h2>
                 <form onSubmit={handleCategorySubmit}>
                     <div>
@@ -352,18 +347,18 @@ function AdminPanel() {
             <hr></hr>
             {/* Lista posts en la DB */}
             <h2>Previously created posts</h2>
-            <section className='adminpanel-list_posts'>
-                <div className="posts-container">
+            <section className='admin-panel__post-list'>
+                <div className="admin-panel__posts-container">
                     {posts.length > 0 ? (
                         posts.map((post) => {
                             const imageUrl = post.image ? `http://localhost:3000/uploads/${post.image}` : null;
                             return (
-                                <div key={post.id} className="post-card">
-                                    {imageUrl && <img src={imageUrl} alt={post.title} className="post-image" />}
+                                <div key={post.id} className="admin-panel__post-card">
+                                    {imageUrl && <img src={imageUrl} alt={post.title} className="admin-panel__post-image" />}
                                     <h3>{post.title}</h3>
                                     <p>{post.content_highligth}</p>
                                     <i>{categories.find(category => category.id === post.categoryId)?.name}</i>
-                                    <div className="button-container">
+                                    <div className="admin-panel__button-container">
                                         <button className='button' onClick={() => handleEditPost(post)}>Edit</button>
                                         <button className='button' onClick={() => deletePost(post.id)}>Delete</button>
                                     </div>
@@ -376,14 +371,14 @@ function AdminPanel() {
                 </div>
             </section>
             {/* Lista Categorias en la DB */}
-            <section className='adminpanel-list_categories'>
+            <section className='admin-panel__category-list'>
                 <h3>Previously created categories</h3>
-                <div className="categories-container">
+                <div className="admin-panel__categories-container">
                     {categories.length > 0 ? (
                         categories.map((category) => (
-                            <div key={category.id} className="category-card">
+                            <div key={category.id} className="admin-panel__category-card">
                                 <h4>{category.name}</h4>
-                                <div className="button-container">
+                                <div className="admin-panel__button-container">
                                     <button className='button' onClick={() => handleEditCategory(category)}>Edit</button>
                                     <button className='button' onClick={() => deleteCategory(category.id)}>Delete</button>
                                 </div>

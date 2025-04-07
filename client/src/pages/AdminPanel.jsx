@@ -290,7 +290,7 @@ function AdminPanel() {
                         />
                     </div>
                     <div>
-                        <label>Featured Content (Markdown) (Summary):</label>
+                        <label>Featured Content (Summary):</label>
                         <textarea
                             type="text"
                             name="content_highligth"

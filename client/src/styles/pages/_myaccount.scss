@@ -1,5 +1,13 @@
 .myaccount{
     min-height: 80vh;
     margin: 2rem 5%;
-  
+    &__posts{
+        display: flex;
+        flex-wrap: wrap;
+        margin: 1rem;
+        .post{
+            width: 20rem;
+            margin: 1rem;
+        }
+    }
 }

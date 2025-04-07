@@ -35,11 +35,11 @@ const Post = sequelize.define('Post', {
         },
     },
     author: {
-        type: DataTypes.INTEGER, 
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: User, 
-            key: 'id', 
+            model: User,
+            key: 'id',
         },
     },
     image: {
@@ -50,8 +50,8 @@ const Post = sequelize.define('Post', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Category, 
-            key: 'id',       
+            model: Category,
+            key: 'id',
         },
     },
     createdAt: {
@@ -69,10 +69,5 @@ const Post = sequelize.define('Post', {
     timestamps: true,
     underscored: true,
 });
-
-Post.belongsTo(Category, { foreignKey: 'categoryId' })
-Category.hasMany(Post, { foreignKey: 'categoryId' })
-Post.belongsTo(User, { foreignKey: 'author', as: 'authorUser' }) 
-User.hasMany(Post, { foreignKey: 'author' })
 
 module.exports = Post

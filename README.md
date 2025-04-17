@@ -19,10 +19,8 @@ El blog tiene como objetivo proporcionar una experiencia de usuario similar a la
 - **Frontend**:
   - React.js
   - React Router DOM
-  - Axios para las peticiones HTTP
   - CSS Modules / SASS para los estilos
-  - Material-UI (o cualquier otro framework de UI de tu preferencia)
-  
+ 
 - **Backend**:
   - Node.js
   - Express.js

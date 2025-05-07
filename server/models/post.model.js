@@ -34,7 +34,7 @@ const Post = sequelize.define('Post', {
             len: [1, 149],
         },
     },
-    author: {
+    author: { //Autor id, no el nombre.
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {

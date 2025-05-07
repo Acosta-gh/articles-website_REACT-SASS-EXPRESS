@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
+//const POSTS_PER_PAGE = 10;
+//const API = "http://127.0.0.1:3000";
+
 function AdminPanel() {
     const [formData, setFormData] = useState({
         title: '',
@@ -33,7 +36,6 @@ function AdminPanel() {
                 const currentTime = Math.floor(Date.now() / 1000);
 
                 if (decoded.exp && decoded.exp < currentTime) {
-                    alert('Expired Token');
                     window.location.href = '/logout';
                     return;
                 }
@@ -263,6 +265,10 @@ function AdminPanel() {
         }
     };
 
+    const handleLogout = () => {
+        window.location.href = '/logout';
+    }
+
     return (
         <div className='adminpanel'>
             <section className='admin-panel__create-post'>
@@ -344,6 +350,7 @@ function AdminPanel() {
                     <button className='button' type="submit">Create Category</button>
                 </form>
             </section>
+            <button onClick={handleLogout}>Logout</button>
             <hr></hr>
             {/* Lista posts en la DB */}
             <h2>Previously created posts</h2>

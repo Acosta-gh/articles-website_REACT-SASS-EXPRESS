@@ -3,7 +3,7 @@ const { Bookmark, User, Post } = require("../models");
 const createBookmark = async (req, res) => {
     try {
         const { idPost } = req.params;
-        const userId = req.user.id; // Obtenido del token JWT
+        const userId = req.user.id; // Obtenido del token JWT gracias al middleware
 
         const user = await User.findByPk(userId);
         const post = await Post.findByPk(idPost);

@@ -10,10 +10,10 @@ const authMiddleware = (req, res, next) => {
 
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = verified; 
+        req.user = verified; //Si el token es válido, su contenido (el payload) se guarda en req.user
         next();
     } catch (error) {
-        return res.status(400).json({ error: "❌ Token no válido." });
+        return res.status(400).json({ error: "❌ Token no válido.",error });
     }
 };
 

@@ -10,7 +10,6 @@ export default function ErrorPage() {
       <h1>404 Not Found</h1>
       <p>Sorry, the page you are looking for does not exist.</p>
       <p>
-        <i>{error.statusText || error.message}</i>
       </p>
       <a href="/"><IoHomeSharp /> <span>Go Home</span></a>
     </div>

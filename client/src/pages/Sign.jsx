@@ -41,6 +41,13 @@ function LoginSignup() {
 
                 if (data.token) {
                     localStorage.setItem('token', data.token);
+                    /*
+                    localStorage.setItem('user', JSON.stringify({
+                        name: data.user?.name || name,
+                        email: data.user?.email || email,
+                        image: data.user?.image || null
+                    }));
+                    */
                 }
 
                 window.location.href = '/myaccount';

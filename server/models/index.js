@@ -1,6 +1,6 @@
 const sequelize = require("../config/database");
 
-const Post = require("./post.model"); 
+const Post = require("./post.model");
 const Category = require("./category.model");
 const User = require("./user.model");
 const Bookmark = require("./bookmark.model");
@@ -19,13 +19,15 @@ Comment.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
 User.hasMany(Comment, { foreignKey: 'userId', as: 'comments' });
 Comment.belongsTo(User, { foreignKey: 'userId', as: 'author' });
 
+Comment.hasMany(Comment, { as: "childrenComment", foreignKey: 'commentId' })
+Comment.belongsTo(Comment, { as: "parentComment", foreignKey: 'commentId' })
 
-// Relaciones muchos a muchos
 User.belongsToMany(Post, {
   through: Bookmark,
   foreignKey: 'userId',
   as: 'savedPosts',
 });
+
 Post.belongsToMany(User, {
   through: Bookmark,
   foreignKey: 'postId',

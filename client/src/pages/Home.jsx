@@ -1,74 +1,72 @@
+// Imports y constantes
 import React, { useEffect, useState, useRef } from 'react';
 import Post from "../components/Post";
 import Pagination from "../components/Pagination";
 import Arrow from "../components/Arrow";
 import { Fade, Slide } from "react-awesome-reveal";
 import { useSearchContext } from "../context/SearchContext";
+import { fetchPosts } from '../api/postService';
+import { fetchCategories } from '../api/categoryService';
+import LoadingScreen from "../components/LoadingScreen"
 
-//const POSTS_PER_PAGE = 10;
-//const API = "http://127.0.0.1:3000";
+const POSTS_PER_PAGE = 10;
 
+//Componente Home
 const Home = () => {
-  // Obtenemos el término de búsqueda del contexto global
   const { searchTerm } = useSearchContext();
 
-  // Estados para manejar datos y UI
+  // Estados
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 10;
-
   const [showDropdown, setShowDropdown] = useState({ category: false, order: false });
   const [rotation, setRotation] = useState({ category: false, order: false });
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
-
-  // Refs para detectar clics fuera de los dropdowns
+  const [isLoading, setIsLoading] = useState(true)
   const dropdownRefs = useRef({});
 
+  // Carga inicial
   useEffect(() => {
-    fetchPosts(); // Carga los posts
-    fetchCategories();// Carga las categorías
-    setupOutsideClickListener();// Agrega listener para cerrar dropdowns al hacer clic fuera
-    return cleanupOutsideClickListener; // Limpieza del listener
+    loadPosts();
+    loadCategories();
+    setIsLoading(false)
+    const cleanup = setupOutsideClick(dropdownRefs, closeAllDropdowns);
+    return cleanup;
   }, []);
-
-  // Función para obtener los posts desde el backend
-  const fetchPosts = () => {
-    fetch('http://localhost:3000/post/')
-      .then(res => res.json())
-      .then(data => setPosts(data))
-      .catch(err => console.error("Error fetching posts:", err));
-  };
-
-  // Función para obtener las categorías desde el backend
-  const fetchCategories = () => {
-    fetch('http://localhost:3000/category/')
-      .then(res => res.json())
-      .then(data => setCategories(data))
-      .catch(err => console.error("Error fetching categories:", err));
-  };
-
-  // Listener para detectar clics fuera de los dropdowns
-  const setupOutsideClickListener = () => {
+  const setupOutsideClick = (refs, callback) => {  
     const handleClickOutside = (event) => {
-      const isOutside = Object.values(dropdownRefs.current).every(
+      const isOutside = Object.values(refs.current).every(
         ref => ref && !ref.contains(event.target)
       );
-      if (isOutside) {
-        closeAllDropdowns();
-      }
+      if (isOutside) callback();
     };
     document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   };
 
-  // Limpia el event listener al desmontar el componente
-  const cleanupOutsideClickListener = () => {
-    document.removeEventListener('mousedown', setupOutsideClickListener);
+  // 📞 Fetch Functions
+  const loadPosts = async () => {
+    try {
+      const data = await fetchPosts();
+      setPosts(data);
+    } catch (err) {
+      console.error("Error loading posts:", err);
+    }
+  };
+  const loadCategories = async () => {
+    try {
+      const data = await fetchCategories();
+      setCategories(data);
+    } catch (err) {
+      console.error("Error loading categories:", err);
+    }
   };
 
-  // Cierra todos los dropdowns y reinicia su rotación
+  // 🖐️ Hanlders
   const closeAllDropdowns = () => {
     setShowDropdown({ category: false, order: false });
     setRotation({ category: false, order: false });
@@ -80,70 +78,49 @@ const Home = () => {
     setRotation({ category: false, order: false, [type]: newVisibility });
   };
 
-  // Manejador para cuando el usuario selecciona una opción del dropdown
   const handleSelect = (type, value) => {
     if (type === 'category') setCurrentCategory(value);
     if (type === 'order') setCurrentOrder(value);
     closeAllDropdowns();
   };
 
-  // Filtra y ordena los posts de acuerdo a la búsqueda, categoría y orden
+  // 👷 Auxiliares
   const getFilteredSortedPosts = () => {
-    // Crea un mapa para acceder al nombre de la categoría a partir de su ID
-    // Ejemplo: { 1: "Tech", 2: "Science" }
     const categoryMap = categories.reduce((acc, c) => ({ ...acc, [c.id]: c.name }), {});
-
-    // Filtra los posts según la categoría actual y el término de búsqueda
     const filtered = posts.filter(post => {
-      // Obtiene el nombre de la categoría del post actual
       const categoryName = categoryMap[post.categoryId] || '';
-
-      // Verifica si el post coincide con la categoría seleccionada
       const matchesCategory = currentCategory === 'All' || categoryName === currentCategory;
-
-      // Verifica si el término de búsqueda aparece en el título, contenido o autor
       const matchesSearch = [post.title, post.content, post.author].some(field =>
         typeof field === 'string' && field.toLowerCase().includes(searchTerm.toLowerCase())
       );
-
-      // Retorna true si el post coincide tanto con la categoría como con el término de búsqueda
       return matchesCategory && matchesSearch;
     });
 
-    // Ordena los posts filtrados por fecha de creación
     return filtered.sort((a, b) => {
       const dateA = new Date(a.createdAt);
       const dateB = new Date(b.createdAt);
-
-      // Si el orden actual es 'Newest', muestra primero los más recientes
-      // Si es 'Oldest', muestra primero los más antiguos
       return currentOrder === 'Newest' ? dateB - dateA : dateA - dateB;
     });
   };
-
-
-  // Devuelve los posts de la página actual
   const getCurrentPosts = () => {
     const sorted = getFilteredSortedPosts();
-    const start = (currentPage - 1) * postsPerPage;
-    return sorted.slice(start, start + postsPerPage);
+    const start = (currentPage - 1) * POSTS_PER_PAGE;
+    return sorted.slice(start, start + POSTS_PER_PAGE);
   };
-
-  // Retorna saludo según la hora del día
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning! 👋";
     if (hour < 17) return "Good Afternoon 🌇";
     return "Good Evening 🌆";
   };
-
-  // Opciones para los dropdowns
   const dropdownItems = {
     category: ['All', ...categories.map(c => c.name)],
     order: ['Newest', 'Oldest']
   };
 
-  // Renderizado del componente principal
+
+  if (isLoading) return <LoadingScreen></LoadingScreen>
+  
   return (
     <div className='home'>
       <Fade triggerOnce duration={1500}>
@@ -211,7 +188,7 @@ const Home = () => {
       </div>
 
       <Pagination
-        postsPerPage={postsPerPage}
+        postsPerPage={POSTS_PER_PAGE}
         length={getFilteredSortedPosts().length}
         handlePagination={setCurrentPage}
         currentPage={currentPage}

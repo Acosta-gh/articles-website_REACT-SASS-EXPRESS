@@ -3,32 +3,32 @@ const { Comment, Post, User } = require("../models");
 
 const createComment = async (req, res) => {
     try {
-        const { postId, content, userId } = req.body;
+        const { postId, commentId, content, userId } = req.body;
 
         if (!postId || !content || !userId) {
             return res.status(400).json({ message: "Campos obligatorios inexistentes" });
         }
+
         const post = await Post.findByPk(postId);
         if (!post) {
             return res.status(404).json({ message: "El postId no se encontró." });
         }
+
+        else if (commentId) {
+            const comment = await Comment.findByPk(commentId);
+            if (!comment) {
+                return res.status(404).json({ message: "El commentId no se encontró." });
+            }
+        }
+
         const user = await User.findByPk(userId);
         if (!user) {
             return res.status(404).json({ message: "El userId no se encontró" });
         }
 
+        const newComment = await Comment.create({ userId, postId, content, commentId});
 
-        // Crear comentario
-        const newComment = await Comment.create({ userId, postId, content });
-        // Incluir información del autor o post
-        const commentWithRelations = await Comment.findByPk(newComment.id, {
-            include: [
-                { model: User, as: 'author', attributes: ['id', 'name', 'email'] },
-                { model: Post, as: 'post', attributes: ['id', 'title'] }
-            ]
-        });
-
-        res.status(201).json(commentWithRelations);
+        res.status(201).json(newComment);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Error creating comment.", error });
@@ -41,7 +41,43 @@ const getCommentsByPost = async (req, res) => {
         if (!postId) {
             return res.status(400).json({ message: "Post ID is required." });
         }
-        const comments = await Comment.findAll({ where: { postId } });
+        const comments = await Comment.findAll({
+            where: { postId, commentId: null },
+            order: [['createdAt', 'DESC']],
+            include: [
+                {
+                    model: User,
+                    as: 'author',
+                    attributes: ['id', 'name', 'email', 'image']
+                },
+                {
+                    model: Comment,
+                    as: 'childrenComment',
+                    include: [
+                        {
+                            model: User,
+                            as: 'author',
+                            attributes: ['id', 'name', 'email', 'image']
+                        },
+                        /*
+                        {
+                            model: Comment,
+                            as: 'childrenComment',
+                            include: [
+                                {
+                                    model: User,
+                                    as: 'author',
+                                    attributes: ['id', 'name', 'email', 'image']
+                                }
+                            ]
+                        }
+                        */
+                    ]
+                }
+            ]
+        });
+        
+
         res.status(200).json(comments);
     } catch (error) {
         res.status(500).json({ message: "Error fetching comments.", error });
@@ -63,7 +99,6 @@ const deleteComment = async (req, res) => {
         res.status(500).json({ message: "Error deleting comment.", error });
     }
 }
-
 
 module.exports = {
     createComment,

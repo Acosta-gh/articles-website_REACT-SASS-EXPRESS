@@ -1,13 +1,87 @@
-.myaccount{
-    min-height: 80vh;
+.myaccount {
     margin: 2rem 5%;
-    &__posts{
+    min-height: 100vh;
+    &__posts {
         display: flex;
         flex-wrap: wrap;
         margin: 1rem;
-        .post{
+        .post {
             width: 20rem;
             margin: 1rem;
         }
     }
+
+    &__filters {
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        margin: 6px;
+        font-weight: 500;
+        margin-left: 1.5rem;
+        margin-top: 1.3rem;
+
+        position: relative;
+        z-index: 1;
+
+        .arrow {
+            margin-right: 2rem;
+
+            svg {
+                margin-bottom: 0.1rem;
+                margin-left: 0.1rem;
+            }
+        }
+    }
+
+    &__greetings {
+        padding: 1rem;
+        margin-left: .3rem;
+        padding-top: 2rem;
+
+        p {
+            font-weight: 600;
+        }
+
+        h1 {
+            margin-top: 1rem;
+            font-weight: 800;
+        }
+
+        i {
+            font-weight: 100;
+        }
+    }
+
+    .myaccount__no-posts {
+        margin: 1rem;
+    }
+
+    @media (min-width: $breakpoint-lg) {
+
+        margin: 0 15%;
+
+        &__greetings {
+            margin-top: 1rem;
+            margin-left: .2rem;
+        }
+
+        .myaccount__posts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            grid-auto-rows: 1fr;
+            /* Ensures each row is equal height */
+        }
+
+    }
+
+    @media (min-width: $breakpoint-xl) {
+        .myaccount__posts {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+
+        }
+
+    }
+
 }

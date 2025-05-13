@@ -1,31 +1,31 @@
+// Imports y constantes
 import React, { useEffect, useState, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { fetchPosts } from '../api/postService';
+import { fetchCategories } from '../api/categoryService';
 
 //const POSTS_PER_PAGE = 10;
-//const API = "http://127.0.0.1:3000";
+const API = "http://127.0.0.1:3000";
 
 function AdminPanel() {
+    // Estados
     const [formData, setFormData] = useState({
         title: '',
         content: '',
         content_highligth: '',
         categoryId: '',
     });
-
     const [categoryFormData, setCategoryFormData] = useState({
         name: '',
     });
-
     const [categories, setCategories] = useState([]); // Para almacenar las categorías disponibles
     const [posts, setPosts] = useState([]); // Para almacenar los posts disponibles
     const [editingPost, setEditingPost] = useState(null); // Para almacenar el post a editar
-
+    const [banner, setBanner] = useState(null);
     const [file, setFile] = useState(null);
-    const fileInputRef = useRef(null);
-
-    const handleFile = (e) => {
-        setFile(e.target.files[0]);
-    };
+    //Refs
+    const bannerInputRef = useRef(null);
+    const imageInputRef = useRef(null);
 
     useEffect(() => {
         // Verificar si el usuario es admin
@@ -34,19 +34,16 @@ function AdminPanel() {
             try {
                 const decoded = jwtDecode(token);
                 const currentTime = Math.floor(Date.now() / 1000);
-
                 if (decoded.exp && decoded.exp < currentTime) {
                     window.location.href = '/logout';
                     return;
                 }
-
                 if (!decoded.isAdmin) {
                     console.log('No es admin', decoded);
                     window.location.href = '/';
                 } else {
-
-                    fetchCategories();
-                    fetchPosts();
+                    loadCategories();
+                    loadPosts();
                 }
             } catch (error) {
                 console.error('Error al decodificar el token', error);
@@ -57,34 +54,28 @@ function AdminPanel() {
         }
     }, []);
 
-
-    // función para cargar las categorías desde la API
-    const fetchCategories = async () => {
+    // 📞 Fetch Functions
+    const loadCategories = async () => {
         try {
-            const response = await fetch('http://localhost:3000/category/'); // ajusta la URL de una API
-            const data = await response.json();
+            const data = await fetchCategories();
             setCategories(data);
         } catch (error) {
             console.error('Error al cargar las categorías', error);
         }
     };
-
-    //Función para obtener los posts creados anteriormente
-    const fetchPosts = async () => {
+    const loadPosts = async () => {
         try {
-            const response = await fetch("http://localhost:3000/post/") // ajusta la URL de una API
-            const data = await response.json();
+            const data = await fetchPosts();
             setPosts(data);
         } catch (err) {
             console.error(err)
         }
     }
-
     const deletePost = async (id) => {
         if (!window.confirm("Are you sure you want to delete this post?")) return;
         const token = localStorage.getItem("token")
         try {
-            const response = await fetch(`http://localhost:3000/post/${id}`, { // ajusta la URL de una API
+            const response = await fetch(`${API}/post/${id}`, { // ajusta la URL de una API
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -102,6 +93,7 @@ function AdminPanel() {
         }
     };
 
+    // 🖐️ Hanlders
     const handleEditPost = (post) => {
         setFormData({
             title: post.title,
@@ -109,20 +101,19 @@ function AdminPanel() {
             content_highligth: post.content_highligth,
             categoryId: post.categoryId,
         });
-        setFile(null); // Limpiar la imagen seleccionada
-        if (fileInputRef.current) {
-            fileInputRef.current.value = ''; // Limpiar el input file
+        setBanner(null); // Limpiar la imagen seleccionada
+        if (bannerInputRef.current) {
+            bannerInputRef.current.value = ''; // Limpiar el input banner
         }
         setEditingPost(post);
     };
-
     const handleEditCategory = async (category) => {
         const result = confirm(`Do you want to edit ${category.name}?`);
         if (result) {
             const name = prompt("What's the new category's name?", category.name);
             if (name) {
                 try {
-                    const response = await fetch(`http://localhost:3000/category/${category.id}`, { // ajusta la URL de una API
+                    const response = await fetch(`${API}/category/${category.id}`, { 
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json"
@@ -139,7 +130,6 @@ function AdminPanel() {
                             cat.id === category.id ? { ...cat, name } : cat
                         )
                     );
-
                     alert("Category updated!");
                 } catch (error) {
                     console.error("Error:", error);
@@ -152,36 +142,54 @@ function AdminPanel() {
             alert("Cancelled.");
         }
     };
-
-    // Manejar cambios en los campos del formulario de posts
-    const handleChange = (e) => {
+    const handleChange = (e) => {  // Manejar cambios en los campos del formulario de posts
         const { name, value } = e.target; //Obtenmos name de los inputs
         setFormData({
             ...formData,
             [name]: value //De  esta manera la función handle change será dinamica para todos los inputs por igual
         });
     };
-
-    // Manejar cambios en los campos del formulario de categorías
-    const handleCategoryChange = (e) => {
+    const handleCategoryChange = (e) => { // Manejar cambios en los campos del formulario de categorías
         const { name, value } = e.target;
         setCategoryFormData({
             ...categoryFormData,
             [name]: value,
         });
     };
-
-    // Manejar el envío del formulario de posts
-    const handleSubmit = async (e) => {
+    const handleUploadPicture = async (e) => {
         e.preventDefault();
-
+        const token = localStorage.getItem('token');
+        const formDataToSend = new FormData();
+        formDataToSend.append('image', file);
+        try {
+            const response = await fetch(`${API}/post/imageIntoPost`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formDataToSend,
+            });
+            const data = await response.json();
+            console.log(data.message);
+            console.log(data.url);
+            console.log(data.markdown);
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                content: prevFormData.content + '\n' + data.markdown
+            }));
+            setFile(null);
+            imageInputRef.current.value = null;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const handleSubmit = async (e) => { // Manejar el envío del formulario de posts
+        e.preventDefault();
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token);
         const authorId = decoded.id;
-
-        const url = editingPost ? `http://localhost:3000/post/${editingPost.id}` : 'http://localhost:3000/post/'; // ajusta la URL de una API
+        const url = editingPost ? `${API}/post/${editingPost.id}` : `${API}/post/`; 
         const method = editingPost ? 'PUT' : 'POST';
-
         // Crear FormData
         const formDataToSend = new FormData();
         formDataToSend.append('title', formData.title);
@@ -190,8 +198,8 @@ function AdminPanel() {
         formDataToSend.append('categoryId', formData.categoryId);
         formDataToSend.append('author', authorId);
 
-        if (file) {
-            formDataToSend.append('image', file); // Agregar imagen si está presente
+        if (banner) {
+            formDataToSend.append('image', banner); // Agregar imagen si está presente
         }
 
         try {
@@ -214,9 +222,10 @@ function AdminPanel() {
                     categoryId: '',
                 });
 
-                setFile(null); // Limpiar la imagen seleccionada
+                setBanner(null); // Limpiar la imagen seleccionada
+                bannerInputRef.current.value = null;
 
-                fetchPosts(); // Actualizamos la lista de posts 
+                loadPosts(); // Actualizamos la lista de posts 
 
                 setEditingPost(null);
             } else {
@@ -228,15 +237,11 @@ function AdminPanel() {
             alert('Error while updating/creating the post');
         }
     };
-
-    // Manejar el envío del formulario de categorías
-    const handleCategorySubmit = async (e) => {
+    const handleCategorySubmit = async (e) => {  // Manejar el envío del formulario de categorías
         e.preventDefault();
-
         const token = localStorage.getItem('token');
-
         try {
-            const response = await fetch('http://localhost:3000/category/', { // ajusta la URL de una API
+            const response = await fetch(`${API}/category/`, { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -254,7 +259,7 @@ function AdminPanel() {
                     name: '',
                 });
                 // Recargar la lista de categorías
-                fetchCategories();
+                loadCategories();
             } else {
                 const errorData = await response.json();
                 alert(`Error: ${errorData.message}`);
@@ -264,7 +269,6 @@ function AdminPanel() {
             alert('Error while creating the category');
         }
     };
-
     const handleLogout = () => {
         window.location.href = '/logout';
     }
@@ -273,6 +277,16 @@ function AdminPanel() {
         <div className='adminpanel'>
             <section className='admin-panel__create-post'>
                 <h1>Admin Panel</h1>
+                <label>Upload a picture to use in your post:</label>
+                <form onSubmit={handleUploadPicture}>
+                    <input
+                        type="file"
+                        ref={imageInputRef}
+                        accept="image/*"
+                        onChange={(e) => setFile(e.target.files[0])}
+                    />
+                    <button type="submit">Subir Imagen</button>
+                </form>
                 {/* Formulario para crear posts */}
                 <h2>{editingPost ? 'Edit Post' : 'Create Post'}</h2>
                 <form onSubmit={handleSubmit}>
@@ -309,8 +323,8 @@ function AdminPanel() {
                         <label>Image Banner:</label>
                         <input
                             type="file"
-                            ref={fileInputRef}
-                            onChange={handleFile}
+                            ref={bannerInputRef}
+                            onChange={(e) => setBanner(e.target.files[0])}
                             accept="image/*"
                         />
                     </div>
@@ -358,7 +372,7 @@ function AdminPanel() {
                 <div className="admin-panel__posts-container">
                     {posts.length > 0 ? (
                         posts.map((post) => {
-                            const imageUrl = post.image ? `http://localhost:3000/uploads/${post.image}` : null;
+                            const imageUrl = post.image ? `${API}/uploads/${post.image}` : null;
                             return (
                                 <div key={post.id} className="admin-panel__post-card">
                                     {imageUrl && <img src={imageUrl} alt={post.title} className="admin-panel__post-image" />}

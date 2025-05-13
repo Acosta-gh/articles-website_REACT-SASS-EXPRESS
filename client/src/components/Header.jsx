@@ -61,7 +61,8 @@ const Header = () => {
     }, []);
 
     const location = useLocation();
-    const isHome = location.pathname === '/';
+    const searchRoutes = ['/', '/ourarticles', '/categories', '/myaccount'];
+    const isSearchVisiblePath = searchRoutes.includes(location.pathname);
 
     return (
         <header ref={headerRef} className={`header ${state.isAtTop ? 'at-top' : 'fixed'}`}>
@@ -104,7 +105,7 @@ const Header = () => {
                 onChange={handleSearchChange}
             />
 
-            {isHome ? (
+            {isSearchVisiblePath ? (
                 <div className='header-search_icon' onClick={() => toggleState('isSearchVisible')}>
                     <LuSearch />
                 </div>

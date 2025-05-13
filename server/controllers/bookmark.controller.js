@@ -7,7 +7,7 @@ const createBookmark = async (req, res) => {
 
         const user = await User.findByPk(userId);
         const post = await Post.findByPk(idPost);
-
+        
         if (!user || !post) {
             return res.status(404).json({ message: "Usuario o Post no encontrado" });
         }
@@ -28,13 +28,12 @@ const createBookmark = async (req, res) => {
 
 const getBookmarksByUser = async (req, res) => {
     try {
-        const userId = req.user.id; // Obtenido del token JWT
+        const userId = req.user.id; // obtenido del token JWT
 
         const user = await User.findByPk(userId, {
             include: {
                 model: Post,
                 as: "savedPosts",
-                through: { attributes: [] }, // evita mostrar datos de la tabla intermedia
             },
         });
 
@@ -48,4 +47,23 @@ const getBookmarksByUser = async (req, res) => {
     }
 };
 
-module.exports = { createBookmark, getBookmarksByUser }
+const getBookmarkByPostId = async (req, res) => {
+    try {
+        const { idPost } = req.params;
+        const userId = req.user.id; // obtenido del token JWT
+        
+        const bookmark = await Bookmark.findOne({
+            where:{
+                userId: userId,
+                postId: idPost
+            }
+        })
+
+        res.status(200).json({ bookmark });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+module.exports = { createBookmark, getBookmarkByPostId, getBookmarksByUser }

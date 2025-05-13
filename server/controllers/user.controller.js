@@ -12,23 +12,21 @@ const createUser = async (req, res) => {
         if (itExists) {
             return res.status(400).json({ error: "❌ El mail ya se encuentra registrado." });
         }
-
         const newUser = await User.create({
             name,
             email,
             password: hashedPassword,
             isAdmin: 0
         });
-
         const token = jwt.sign(
-            { id: newUser.id, name: newUser.name, email: newUser.email, isAdmin: newUser.isAdmin },
+            { id: newUser.id, isAdmin: newUser.isAdmin },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-
         res.status(200).json({
             message: "✅ Usuario creado satisfactoriamente.",
             email: newUser.email,
+            name: newUser.name,
             token
         });
     } catch (error) {
@@ -53,6 +51,7 @@ const getUserById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 // Eliminar usuario
 const deleteUser = async (req, res) => {
     try {
@@ -73,40 +72,26 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const userId = req.user.id;
-
         const name = req.body ? req.body.name : null;
         const image = req.file ? req.file.filename : null;
-        if(!name && !image){
+        if (!name && !image) {
             return res.status(400).json({ error: "❌ No se proporcionaron datos." });
         }
-
         const user = await User.findByPk(userId);
         if (!user) {
             return res.status(404).json({ error: '❌ Usuario no encontrado.' });
         }
-
         const updateData = {};
-        if (name) updateData.name = name;
-        if (image) updateData.image = image;
-
+        if (name) {
+            updateData.name = name;
+        }
+        if (image) {
+            updateData.image = image;
+        }
         await user.update(updateData);
-
-        // Generar nuevo token actualizado
-        const newToken = jwt.sign(
-            {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                isAdmin: user.isAdmin
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        );
-
         res.status(200).json({
             message: '✅ Usuario actualizado.',
             user,
-            token: newToken
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -140,4 +125,4 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { getUserById,createUser, deleteUser, loginUser, updateUser };
+module.exports = { getUserById, createUser, deleteUser, loginUser, updateUser };

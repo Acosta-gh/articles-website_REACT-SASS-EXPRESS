@@ -10,5 +10,5 @@ router.post("/", adminMiddleware, createCategory)
 router.delete("/:id", adminMiddleware, deleteCategory)
 router.get("/", getAllCategories)
 router.get("/:id", getCatoryById)
-router.put("/:id",editCategory)
+router.put("/:id", adminMiddleware, editCategory)
 module.exports = router

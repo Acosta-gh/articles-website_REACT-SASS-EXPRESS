@@ -27,7 +27,7 @@ const getPostById = async (req, res) => {
                 include: {
                     model: User,
                     as: 'authorUser', // Le damos un alias para evitar conflictos
-                    attributes: ['name'] // Solo obtenemos el nombre del autor
+                    attributes: ['name','image'] 
                 }
             }
         )
@@ -131,6 +131,27 @@ const editPost = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+
 };
 
-module.exports = { getAllPosts, getPostById, createPost, editPost, deletePost }
+const uploadImageIntoPost = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "❌ No se recibió ninguna imagen." });
+        }
+
+        const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        const markdown = `![imagen](${imageUrl})`;
+
+        return res.status(200).json({
+            message: "✅ Imagen subida correctamente.",
+            url: imageUrl,
+            markdown
+        });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+
+module.exports = { getAllPosts, getPostById, createPost, editPost, deletePost , uploadImageIntoPost}

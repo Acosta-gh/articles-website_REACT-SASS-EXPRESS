@@ -1,4 +1,21 @@
-$bg-color:#fafafa;
+$bg-color: #fafafa;
+$text-color: #3C3E3F;
+$text-color-secondary:#333;
+
+$accent-color: #ffc7b6e0;
+$border-color: #ddd;
+
+$white: #fff;
+$gray: #333;
+
+$post-background-color: #f9f9f9;
+$post-title-color: #131212;
+$post-content-color: #363636;
+$post-author-color: #777;
+$post-border-radius: 20px;
+$post-padding: 16px;
+$post-margin: 16px 6px;
+
 
 $header-padding: 0.5rem 1rem 1rem 2rem;
 $font-size-nav: 2rem;
@@ -7,7 +24,7 @@ $z-index-hidden: -1;
 $z-index-visible-nav: 20;
 $z-index-visible-search: 10;
 
-$breakpoint-sm: 576px;  // Pequeño (celulares)
-$breakpoint-md: 768px;  // Mediano (tabletas)
-$breakpoint-lg: 992px;  // Grande (monitores pequeños)
+$breakpoint-sm: 576px; // Pequeño (celulares)
+$breakpoint-md: 768px; // Mediano (tabletas)
+$breakpoint-lg: 992px; // Grande (monitores pequeños)
 $breakpoint-xl: 1300px; // Extra grande (monitores grandes)

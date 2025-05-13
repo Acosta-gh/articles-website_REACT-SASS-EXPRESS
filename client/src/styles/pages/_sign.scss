@@ -10,7 +10,7 @@
     &__form {
         margin: 1rem;
         padding: 2rem;
-        background-color: white;
+        background-color: $white;
         border-radius: 15px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -28,7 +28,7 @@
         }
 
         button{
-            background-color: #222324;
+            background-color: $text-color;
             margin: 1rem 0;
             padding: .8rem;
             border-radius: 8px;

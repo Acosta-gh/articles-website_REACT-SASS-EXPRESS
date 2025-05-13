@@ -1,14 +1,13 @@
 .adminpanel {
     display: flex;
     flex-direction: column;
-
     margin: 2rem 5%;
 
     input,
     textarea,
     select {
-        background-color: #fff;
-        border: 1px solid #ddd;
+        background-color: $white;
+        border: 1px solid $border-color;
         border-radius: 10px;
         padding: .5rem;
         width: 20rem;
@@ -24,7 +23,6 @@
     }
 
     .admin-panel__create-post {
-
         form {
             div {
                 display: flex;
@@ -34,7 +32,6 @@
     }
 
     .admin-panel__create-category {
-
         div {
             display: flex;
             flex-direction: column;
@@ -46,21 +43,16 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-
         }
 
         .admin-panel__post-card {
-            background-color: #fff;
-            border: 1px solid #ddd;
+            background-color: $white;
+            border: 1px solid $border-color;
             border-radius: 15px;
             padding: 1rem;
             width: 300px;
-
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
             transition: transform 0.2s, box-shadow 0.2s;
-
-
             word-wrap: break-word;
             overflow-wrap: break-word;
             white-space: normal;
@@ -77,22 +69,20 @@
             }
 
             p {
-                color: #555;
+                color: $text-color;
             }
 
             i {
                 display: block;
                 margin: 0.5rem 0;
-                color: #888;
+                color: $text-color;
             }
 
             .admin-panel__button-container {
                 display: flex;
                 gap: 0.5rem;
                 margin-top: 1rem;
-
             }
-
         }
     }
 
@@ -100,7 +90,7 @@
         h3 {
             margin-bottom: 1.5rem;
             font-size: 1.8rem;
-            color: #333;
+            color: $text-color;
         }
 
         .admin-panel__categories-container {
@@ -110,8 +100,8 @@
         }
 
         .admin-panel__category-card {
-            background-color: #fff;
-            border: 1px solid #ddd;
+            background-color: $white;
+            border: 1px solid $border-color;
             border-radius: 10px;
             padding: 1rem;
             width: 250px;
@@ -121,15 +111,13 @@
             h4 {
                 margin: 0;
                 font-size: 1.2rem;
-                color: #444;
+                color: $text-color;
             }
 
             .admin-panel__button-container {
                 display: flex;
                 gap: 0.5rem;
                 margin-top: 1rem;
-
-
             }
         }
     }

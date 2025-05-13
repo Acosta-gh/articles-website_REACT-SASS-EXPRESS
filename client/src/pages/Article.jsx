@@ -3,134 +3,136 @@ import { useParams } from 'react-router-dom';
 import { Fade } from "react-awesome-reveal";
 import { marked } from 'marked';
 import { jwtDecode } from 'jwt-decode';
+import { fetchPosts } from '../api/postService';
+import { fetchBookmarks } from '../api/bookmarkService';
+import { fetchComments } from '../api/commentService';
+
+import LoadingScreen from "../components/LoadingScreen"
+import { fetchCategories } from '../api/categoryService';
+
+const API = import.meta.env.VITE_API_URL;
 
 const Article = () => {
+  // Estados
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [categories, setCategories] = useState([]);
   const [comments, setComments] = useState([])
   const [isSaved, setIsSaved] = useState(false);
-  const [formData, setFormData] = useState({ comment: '' });
-  const token = localStorage.getItem('token');
+  const [commentInput, setcommentInput] = useState({ comment: '', commentId: null });
+  const [replyInputs, setReplyInputs] = useState({}); // key: commentId, value: text
 
-  const POSTS_PER_PAGE = 10;
-  const API = "http://127.0.0.1:3000";
-
+  // Carga inicial
   useEffect(() => {
-    fetch(`http://localhost:3000/post/${id}`)
-      .then(response => response.json())
-      .then(data => setPost(data))
-      .catch(error => console.error("Error fetching post:", error));
+    const token = localStorage.getItem('token');
+    loadPost(id);
+    loadComments(id);
+    loadIfBookmarked(token, id);
+  }, [id]); // este useEffect depende de 'id', se ejecuta cuando 'id' cambia
 
-    fetch(`http://localhost:3000/comment/${id}`)
-      .then(response => response.json())
-      .then(data => setComments(data))
-      .catch(error => console.error("Error fetching categories:", error));
-
-    fetch(`${API}/comment`)
-      .then(response => response.json())
-      .then(data => setComments(data))
-      .catch(error => console.error("Error fetching comments:", error))
-
-    if (token) {
-      fetch('http://localhost:3000/bookmark', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        }
-      })
-        .then(response => response.json())
-        .then(data => {
-          const bookmarkedPostIds = data.map(post => post.id);
-          if (bookmarkedPostIds.includes(Number(id))) {
-            setIsSaved(true);
-          }
-        })
-        .catch(error => console.error("Error checking bookmarks:", error));
+  // este useEffect se ejecutará una vez que tengamos el 'post' disponible
+  useEffect(() => {
+    if (post && post.categoryId) {
+      loadCategory(post.categoryId);
     }
-  }, [id]);
+  }, [post]);  // este useEffect depende de 'post', se ejecuta cuando 'post' cambia
 
+  // 📞 Fetch Functions
+  const loadCategory = async (categoryId) => {
+    const data = await fetchCategories(categoryId)
+    if (data.error) {
+      setCategories(null)
+    } else {
+      setCategories(data)
+    }
+  }
+  const loadPost = async (id) => {
+    const data = await fetchPosts(id);
+    setPost(data)
+  }
+  const loadComments = async (id) => {
+    const data = await fetchComments(id)
+    setComments(data)
+  }
+  const loadIfBookmarked = async (token, id) => {
+    if (token) {
+      const data = await fetchBookmarks(token, id);
+      if (data.bookmark != null) {
+        setIsSaved(true);
+      }
+    }
+  };
 
+  // 🖐️ Hanlders
   const handleToggleBookmark = async (postId) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('No hay token disponible. Inicia sesión.');
+        alert('You must be logged in.');
         return;
       }
       const decoded = jwtDecode(token);
       const currentTime = Math.floor(Date.now() / 1000);
-
       if (decoded.exp && decoded.exp < currentTime) {
-        alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+        alert('Your session expired.');
         localStorage.removeItem('token');
         return;
       }
-
-      // Realiza la solicitud solo si el token es válido
-      const response = await fetch(`http://localhost:3000/bookmark/${postId}`, {
+      const response = await fetch(`${API}/bookmark/${postId}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
-
-      // Verifica si la respuesta es exitosa
       if (!response.ok) {
         throw new Error('Error al guardar/eliminar el bookmark');
       }
-
       const data = await response.json();
-      console.log(data.message);
-
-      // Solo cambiar el estado si la solicitud fue exitosa
       setIsSaved((prev) => !prev);
     } catch (error) {
       console.error('Error al guardar/eliminar bookmark:', error);
-      alert('Ocurrió un error al intentar guardar/eliminar el bookmark.');
+      alert('There was an error saving/deliting this bookmark.');
     }
   };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, commentId = null) => {
     e.preventDefault();
-
     const token = localStorage.getItem('token');
-    const decoded = jwtDecode(token);
-
-    const payload = {
-      content: formData.comment,
-      postId: post.id,
-      userId: decoded.id
-    };
-
-    try {
-      const res = await fetch(`${API}/comment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) return alert(`Error: ${data.message}`);
-
-      setFormData({ comment: '' });
-      setComments(prev => [...prev, data]);
-      alert("Comentario enviado");
-    } catch (err) {
-      console.error("Error creating comment:", err);
+    if (!token) {
+      alert('You must be logged in');
+      return;
     }
+    const decoded = jwtDecode(token);
+    const content = commentId ? replyInputs[commentId] : commentInput.comment;
+    const payload = {
+      content,
+      postId: post.id,
+      userId: decoded.id,
+      commentId,
+    };
+    const res = await fetch(`${API}/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) return alert(`Error: ${data.message}`);
+    if (commentId) {
+      setReplyInputs(prev => ({ ...prev, [commentId]: '' }));
+    } else {
+      setcommentInput({ comment: '', commentId: null });
+    }
+    await loadComments(post.id); //  TEMP: actualiza la lista de comentarios
   };
 
-
-  if (!post) return <p>Loading...</p>;
+  if (!post) return <LoadingScreen></LoadingScreen>
 
   const publishedDate = post.createdAt.replace(/[_*]/g, '').replace('Publicado el ', '', 'Published on ');
-  const categoryName = categories.find(cat => cat.id === post.categoryId)?.name || 'Unknown Category';
-
-  const imageUrl = post.image ? `http://localhost:3000/uploads/${post.image}` : null;
+  const categoryName = categories ? categories.name : 'Unknown Category';
+  const imageUrl = post.image ? `${API}/uploads/${post.image}` : null;
 
   //  Markdown a HTML usando marked
   const contentHTML = post.content ? marked(post.content) : '';
@@ -146,7 +148,7 @@ const Article = () => {
           </button>
         </div>
         <div className="article__content" dangerouslySetInnerHTML={{ __html: contentHTML }} />
-        <p className="article__author">{`By: ${post.authorUser?.name}`}</p>
+        <p className="article__author">{`By: ${post.authorUser?.name || "Anonymous"}`}</p>
         <p className="article__date">{`Published on: ${new Date(publishedDate).toLocaleDateString()}`}</p>
         <p className="article__category">{`Category: ${categoryName}`}</p>
       </div>
@@ -154,18 +156,47 @@ const Article = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>comment:</label>
-          <input type="text" name="name" value={formData.comment} onChange={e => setFormData({ comment: e.target.value })} />
+          <input type="text" name="name" value={commentInput.comment} onChange={e => setcommentInput(prev => ({ ...prev, comment: e.target.value, commentId: null }))} />
         </div>
         <button className='button' type="submit">post comment</button>
       </form>
+
       <div className="comments-section">
         <h2>Comments</h2>
-        {comments.filter(comment => comment.postId === post.id).map(comment => (
-          <div key={comment.id} className="comment">
-            <p><strong>{comment.user?.name || 'Anonymous'}:</strong> {comment.content}</p>
-            <p className="comment__date">{new Date(comment.createdAt).toLocaleString()}</p>
-          </div>
-        ))}
+        {comments.filter(comment => comment.postId === post.id)
+          .map(comment => (
+            <div key={comment.id} className="comment">
+              <p><strong>{comment.author?.name || 'Anonymous'}:</strong> {comment.content}</p>
+              <img src={`${API}/uploads/${comment.author.image}`} alt="User's avatar" />
+              <p className="comment__date">{new Date(comment.createdAt).toLocaleString()}</p>
+              {comment.commentId === null && (
+                <form onSubmit={(e) => handleSubmit(e, comment.id)}>
+                  <div>
+                    <label>Reply:</label>
+                    <input
+                      value={replyInputs[comment.id] || ''}
+                      onChange={e =>
+                        setReplyInputs(prev => ({ ...prev, [comment.id]: e.target.value }))
+                      }
+                    />
+                  </div>
+                  <button className='button' type="submit">post reply</button>
+                </form>
+              )}
+              {Array.isArray(comment.childrenComment) && comment.childrenComment.length > 0 && (
+                <div>
+                  rta:
+                  {comment.childrenComment.map(comment_reply => (
+                    <div key={comment_reply.id} className="comment_reply">
+                      <p><strong>{comment_reply.author?.name || 'Anonymous'}:</strong> {comment_reply.content}</p>
+                      <img src={`${API}/uploads/${comment_reply.author.image}`} alt="User's avatar" />
+                      <p className="comment__date">{new Date(comment_reply.createdAt).toLocaleString()}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
       </div>
     </Fade>
 

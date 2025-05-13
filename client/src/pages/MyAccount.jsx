@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { Fade } from "react-awesome-reveal";
-
+import { Link } from 'react-router-dom';
 import Post from "../components/Post";
 import Pagination from "../components/Pagination";
 import Arrow from "../components/Arrow";
 import { useSearchContext } from "../context/SearchContext";
 import LoadingScreen from "../components/LoadingScreen"
+import { fetchCategories } from '../api/categoryService';
+import { fetchBookmarks } from '../api/bookmarkService';
 
 const POSTS_PER_PAGE = 10;
-const API = "http://127.0.0.1:3000";
+const API = import.meta.env.VITE_API_URL;
 
 function MyAccount() {
+  // Estados
   const { searchTerm } = useSearchContext();
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -22,19 +25,19 @@ function MyAccount() {
   const [rotation, setRotation] = useState({ category: false, order: false });
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isLoggedIn, setisLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
-
+  const [isAdmin, setIsAdmin] = useState(false);
+  // Refs
   const fileInputRef = useRef(null);
   const dropdownRefs = useRef({});
-
+  // Carga inicial
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      window.location.replace('/sign'); 
+      window.location.replace('/sign');
       return;
     }
-
     try {
       const decoded = jwtDecode(token);
       if (decoded.exp < Date.now() / 1000) {
@@ -42,24 +45,44 @@ function MyAccount() {
         return;
       }
       if (decoded.isAdmin) {
-        window.location.replace('/adminpanel');
-        return;
+        setIsAdmin(true)
       }
-
-      setUserInfo(decoded);
-      fetchCategories();
-      fetchPosts();
-      fetchProfilePicture();
-     
+      setisLoggedIn(true)
+      setUserInfo();
+      loadCategories();
+      loadBookmarks(token);
+      fetchUser();
+      const cleanup = setupOutsideClick(dropdownRefs, closeAllDropdowns);
+      return cleanup;
     } catch (err) {
       console.error("JWT Decode error:", err);
-      window.location.href = '/sign';
-    } finally{
-      
+      localStorage.removeItem('token'); // Por las dudas
+      window.location.replace('/sign');
+    } finally {
+      //
     }
   }, []);
 
-  const fetchProfilePicture = async () => {
+  // 📞 Fetch Functions
+  const loadCategories = async () => {
+    try {
+      const data = await fetchCategories()
+      setCategories(data)
+    } catch (err) {
+      console.log("Error fetching Categories:", err)
+    }
+  }
+
+  const loadBookmarks = async (token) => {
+    try {
+      const data = await fetchBookmarks(token)
+      setPosts(data)
+    } catch (err) {
+      console.log("Error fetching Posts:", err)
+    }
+  }
+
+  const fetchUser = async () => {
     try {
       const token = localStorage.getItem('token');
       const decoded = jwtDecode(token);
@@ -69,70 +92,15 @@ function MyAccount() {
         },
       });
       const data = await res.json();
-      setUserInfo(prev => ({ ...prev, profilePicture: data.user.image }));
-      console.log("Foto de perfil cargada:", data.profilePicture);
-
+      console.log(data)
+      setUserInfo(prev => ({ ...prev, email:data.user.email, name:data.user.name,  image:data.user.image }));
 
     } catch (err) {
-      console.error("Error fetching ProfilePicture:", err);
+      console.error("Error fetching User:", err);
     }
   }
 
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch(`${API}/category/`);
-      const data = await res.json();
-      setCategories(data);
-    } catch (err) {
-      console.error("Error fetching categories:", err);
-    }
-  };
-
-  const fetchPosts = async () => {
-    try {
-      const res = await fetch(`${API}/bookmark`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      const data = await res.json();
-      setPosts(data);
-    } catch (err) {
-      console.error("Error fetching posts:", err);
-    }
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
-    const formDataToSend = new FormData();
-    formDataToSend.append('name', formData.name);
-    if (file) formDataToSend.append('image', file);
-
-    try {
-      const res = await fetch(`${API}/user`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: formDataToSend,
-      });
-
-      const data = await res.json();
-      if (!res.ok) return alert(`Error: ${data.message}`);
-
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        setUserInfo(jwtDecode(data.token));
-      }
-
-      setFormData({ name: '' });
-      fetchProfilePicture();
-      alert("Nombre editado");
-    } catch (err) {
-      console.error("Error updating user:", err);
-    }
-  };
-
+  // 👷 Auxiliares
   const getFilteredSortedPosts = () => {
     const categoryMap = categories.reduce((map, c) => ({ ...map, [c.id]: c.name }), {});
     return (posts || [])
@@ -155,43 +123,86 @@ function MyAccount() {
     return filtered.slice(start, start + POSTS_PER_PAGE);
   };
 
+  const dropdownItems = {
+    category: ['All', ...categories.map(c => c.name)],
+    order: ['Newest', 'Oldest'],
+  };
+
+  const setupOutsideClick = (refs, callback) => {
+    const handleClickOutside = (event) => {
+      const isOutside = Object.values(refs.current).every(
+        ref => ref && !ref.contains(event.target)
+      );
+      if (isOutside) callback();
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  };
+
+  // 🖐️ Hanlders
   const toggleDropdown = (type) => {
     const visible = !showDropdown[type];
     setShowDropdown({ category: false, order: false, [type]: visible });
     setRotation({ category: false, order: false, [type]: visible });
   };
 
-  const closeAllDropdowns = () => {
+  const closeAllDropdowns = () => { // Cerrar dropdowns
     setShowDropdown({ category: false, order: false });
     setRotation({ category: false, order: false });
   };
 
-  const handleSelect = (type, value) => {
+  const handleSelect = (type, value) => { // Elegir categoría
     if (type === 'category') setCurrentCategory(value);
     if (type === 'order') setCurrentOrder(value);
     closeAllDropdowns();
   };
 
-  const handleLogout = () =>{
+  const handleLogout = () => {  // Cerrar Sesión
     window.location.replace('/logout');
   }
 
-  const dropdownItems = {
-    category: ['All', ...categories.map(c => c.name)],
-    order: ['Newest', 'Oldest'],
+  const handleSubmit = async e => { // Manejar la edición del usuario
+    e.preventDefault();
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', formData.name);
+    if (file) formDataToSend.append('image', file);
+    try {
+      const res = await fetch(`${API}/user`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: formDataToSend,
+      });
+      const data = await res.json();
+      if (!res.ok) return alert(`Error: ${data.message}`);
+
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        setUserInfo(formDataToSend);
+      }
+      setFormData({ name: '' });
+      fetchUser();
+      alert("User updated");
+    } catch (err) {
+      console.error("Error updating user:", err);
+    }
   };
 
+  if (!isLoggedIn) return <LoadingScreen></LoadingScreen>
+
   return (
-    <div className='home'>
+    <div className='myaccount'>
       <h5>My Bookmarks</h5>
       <p>{userInfo?.email || 'Loading...'}</p>
-      <p>{userInfo?.name || 'Loading...'}</p>
-      <img src={userInfo?.profilePicture ? `${API}/uploads/${userInfo.profilePicture}` : ''} />
+      <p>{userInfo?.name || 'Anonymous'}</p>
+      <img src={userInfo?.image ? `${API}/uploads/${userInfo.image}` : ''} />
       <button onClick={() => handleLogout()}>Logout</button>
-
       <form onSubmit={handleSubmit}>
         <div>
-          <label>New Name:</label>
+          <label>New Name (Leave blank if you want to be "Anonymous"):</label>
           <input type="text" name="name" value={formData.name} onChange={e => setFormData({ name: e.target.value })} />
         </div>
         <div>
@@ -200,8 +211,8 @@ function MyAccount() {
         </div>
         <button className='button' type="submit">Update User</button>
       </form>
-
-      <div className='home__filters'>
+      {isAdmin && <Link to='/adminpanel'>Admin Panel</Link>}
+      <div className='myaccount__filters'>
         {['category', 'order'].map(type => (
           <div key={type} className='dropdown' ref={el => dropdownRefs.current[type] = el}>
             <Arrow
@@ -221,8 +232,7 @@ function MyAccount() {
           </div>
         ))}
       </div>
-
-      <div className='home__posts'>
+      <div className='myaccount__posts'>
         <Fade triggerOnce duration={700}>
           {getCurrentPosts().length > 0 ? (
             getCurrentPosts().map(post => (
@@ -239,13 +249,12 @@ function MyAccount() {
               />
             ))
           ) : (
-            <div className='home__no-posts'>
+            <div className='myaccount__no-posts'>
               <p>No posts found matching your search criteria.</p>
             </div>
           )}
         </Fade>
       </div>
-
       <Pagination
         postsPerPage={POSTS_PER_PAGE}
         length={getFilteredSortedPosts().length}

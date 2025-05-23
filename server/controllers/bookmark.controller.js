@@ -9,18 +9,18 @@ const createBookmark = async (req, res) => {
         const post = await Post.findByPk(idPost);
         
         if (!user || !post) {
-            return res.status(404).json({ message: "Usuario o Post no encontrado" });
+            return res.status(404).json({ message: "❌ User or Post not found" });
         }
 
         const alreadySaved = await user.hasSavedPost(post);
         if (alreadySaved) {
             await user.removeSavedPost(post);
-            return res.status(200).json({ message: "Post eliminado de guardados" });
+            return res.status(200).json({ message: "✅ Post deleted from bookmarks" });
         }
 
         await user.addSavedPost(post);
 
-        return res.status(201).json({ message: "Post guardado correctamente" });
+        return res.status(201).json({ message: "✅ Post bookmarked" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -38,7 +38,7 @@ const getBookmarksByUser = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
+            return res.status(404).json({ message: "❌ User not found" });
         }
 
         res.status(200).json(user.savedPosts);

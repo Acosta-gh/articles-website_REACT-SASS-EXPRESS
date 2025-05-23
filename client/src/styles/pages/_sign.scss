@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    bottom: 7rem;
+    bottom: 3rem;
 
     &__form {
         margin: 1rem;
@@ -26,14 +26,8 @@
         &-section:not(:first-of-type) {
             margin-top: 1rem;
         }
-
         button{
-            background-color: $text-color;
-            margin: 1rem 0;
-            padding: .8rem;
-            border-radius: 8px;
-            color:#ffff;
-            font-size: 1rem;
+            margin-top: 1rem;
         }
     }
 }

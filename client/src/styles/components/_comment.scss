@@ -1,0 +1,59 @@
+.comment {
+    display: grid;
+    gap: 20px;
+    font-family: $text-font-secondary;
+    
+    &__group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 1.3rem;
+    }
+
+    .content {
+        display: grid;
+        grid-template-columns: auto 1fr 110px;
+        align-items: flex-start;
+        gap: 16px;
+        flex: 1;
+
+        &-comment {
+            flex: 1;
+            display: block;
+
+            .user {
+                gap: 12px;
+                margin-bottom: 6px;
+                align-items: center;
+                display: flex;
+            }
+        }
+
+        &-footer {
+            margin-top: 12px;
+            gap: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    .comment__button{
+        margin-top: 2px;
+    }
+}
+
+
+h5 {
+    color: #1c1c1c;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.is-mute {
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #969696;
+}
+

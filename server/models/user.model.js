@@ -34,6 +34,7 @@ const User = sequelize.define("User", {
     image: {
         type: DataTypes.STRING,
         allowNull: true,
+        defaultValue:"avatar.png",
     },
     isAdmin: {
         type: DataTypes.BOOLEAN,

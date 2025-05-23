@@ -1,24 +1,9 @@
 .contact {
-  max-width: 800px;
-  margin: 0 auto;
-  margin-bottom: 2rem;
-  padding: 2rem;
   background-color: $bg-color;
   border-radius: 8px;
   min-height: 80vh;
 
-  h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  h2 {
-    margin-top: 1.5rem;
-    font-size: 1.5rem;
-  }
-
-  p {
-    margin: 0.5rem 0;
-    line-height: 1.6;
+  &__info {
+    margin: 1rem auto;
   }
 }

@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { fetchPosts } from '../api/postService';
 import { fetchCategories } from '../api/categoryService';
+import { Link } from 'react-router-dom';
 
 //const POSTS_PER_PAGE = 10;
 const API = "http://127.0.0.1:3000";
@@ -95,6 +96,7 @@ function AdminPanel() {
 
     // 🖐️ Hanlders
     const handleEditPost = (post) => {
+        alert("Post has been loaded for editing");
         setFormData({
             title: post.title,
             content: post.content,
@@ -113,7 +115,7 @@ function AdminPanel() {
             const name = prompt("What's the new category's name?", category.name);
             if (name) {
                 try {
-                    const response = await fetch(`${API}/category/${category.id}`, { 
+                    const response = await fetch(`${API}/category/${category.id}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json"
@@ -142,6 +144,27 @@ function AdminPanel() {
             alert("Cancelled.");
         }
     };
+    const handleDeleteCategory = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this category?")) return;
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch(`${API}/category/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                }
+            });
+            if (!response.ok) {
+                throw new Error("Error deleting category");
+            }
+            setCategories(categories.filter((category) => category.id !== id));
+            alert("Category deleted!");
+        } catch (error) {
+            console.error("Error deleting category:", error);
+        }
+    }
+
     const handleChange = (e) => {  // Manejar cambios en los campos del formulario de posts
         const { name, value } = e.target; //Obtenmos name de los inputs
         setFormData({
@@ -161,6 +184,11 @@ function AdminPanel() {
         const token = localStorage.getItem('token');
         const formDataToSend = new FormData();
         formDataToSend.append('image', file);
+        formDataToSend.append('folder', 'posts');
+        for (const pair of formDataToSend.entries()) {
+            console.log(pair[0], pair[1]);
+        }
+
         try {
             const response = await fetch(`${API}/post/imageIntoPost`, {
                 method: "POST",
@@ -188,7 +216,7 @@ function AdminPanel() {
         const token = localStorage.getItem('token');
         const decoded = jwtDecode(token);
         const authorId = decoded.id;
-        const url = editingPost ? `${API}/post/${editingPost.id}` : `${API}/post/`; 
+        const url = editingPost ? `${API}/post/${editingPost.id}` : `${API}/post/`;
         const method = editingPost ? 'PUT' : 'POST';
         // Crear FormData
         const formDataToSend = new FormData();
@@ -241,7 +269,7 @@ function AdminPanel() {
         e.preventDefault();
         const token = localStorage.getItem('token');
         try {
-            const response = await fetch(`${API}/category/`, { 
+            const response = await fetch(`${API}/category/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -269,110 +297,131 @@ function AdminPanel() {
             alert('Error while creating the category');
         }
     };
-    const handleLogout = () => {
-        window.location.href = '/logout';
-    }
+
 
     return (
         <div className='adminpanel'>
             <section className='admin-panel__create-post'>
-                <h1>Admin Panel</h1>
-                <label>Upload a picture to use in your post:</label>
-                <form onSubmit={handleUploadPicture}>
-                    <input
-                        type="file"
-                        ref={imageInputRef}
-                        accept="image/*"
-                        onChange={(e) => setFile(e.target.files[0])}
-                    />
-                    <button type="submit">Subir Imagen</button>
-                </form>
-                {/* Formulario para crear posts */}
-                <h2>{editingPost ? 'Edit Post' : 'Create Post'}</h2>
-                <form onSubmit={handleSubmit}>
+                <Link to="/myaccount" className="btn btn-outline btn-secondary">
+                    Go Back
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" />
+                    </svg>
+                </Link>
+                <h1 className='title'>Admin Panel</h1>
+                <h2 className='subtitle' >{editingPost ? 'Edit Post' : 'Create Post'}</h2>
+                <div className="admin__panel__grid">
+                    {/* Formulario para crear posts */}
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label className='paragraph'>{editingPost ? 'Banner: (Leave blank if you want to keep the same) ' : 'Banner: '}</label>
+                            <input
+                                type="file"
+                                ref={bannerInputRef}
+                                onChange={(e) => setBanner(e.target.files[0])}
+                                accept="image/*"
+                            />
+                        </div>
+                        <div>
+                            <label className='paragraph'>Title:</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleChange}
+                                required
+                                maxLength={149}
+                            />
+                        </div>
+                        <div>
+                            <label className='paragraph' >Content: (Markdown)</label>
+                            <textarea
+                                name="content"
+                                value={formData.content}
+                                onChange={handleChange}
+                                required
+                                maxLength={9999}
+                            />
+                        </div>
+                        <div>
+                            <label className='paragraph' >Featured Content (Summary):</label>
+                            <textarea
+                                type="text"
+                                name="content_highligth"
+                                value={formData.content_highligth}
+                                onChange={handleChange}
+                                required
+                                maxLength={149}
+                            />
+                        </div>
+
+                        <div>
+                            <label className='paragraph'>Category:</label>
+                            <select
+                                name="categoryId"
+                                value={formData.categoryId}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option className='paragraph'>Select a category</option>
+                                {categories.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <button className='btn btn-confirm btn-outline' type="submit">{editingPost ? 'Edit Post' : 'Create Post'} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check-lg" viewBox="0 0 16 16">
+                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                        </svg></button>
+                    </form>
                     <div>
-                        <label>Title:</label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleChange}
-                            required
-                        />
+                        <p className='paragraph'>Upload a picture to use in your post:</p>
+                        <form onSubmit={handleUploadPicture}>
+                            <input
+                                type="file"
+                                ref={imageInputRef}
+                                accept="image/*"
+                                onChange={(e) => setFile(e.target.files[0])}
+                            />
+                            <button className="btn btn-confirm btn-outline" type="submit">Upload <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-upload" viewBox="0 0 16 16">
+                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
+                            </svg></button>
+                        </form>
                     </div>
-                    <div>
-                        <label>Content: (Markdown)</label>
-                        <textarea
-                            name="content"
-                            value={formData.content}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Featured Content (Summary):</label>
-                        <textarea
-                            type="text"
-                            name="content_highligth"
-                            value={formData.content_highligth}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label>Image Banner:</label>
-                        <input
-                            type="file"
-                            ref={bannerInputRef}
-                            onChange={(e) => setBanner(e.target.files[0])}
-                            accept="image/*"
-                        />
-                    </div>
-                    <div>
-                        <label>Category:</label>
-                        <select
-                            name="categoryId"
-                            value={formData.categoryId}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="">Select a category</option>
-                            {categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <button className='button' type="submit">{editingPost ? 'Edit Post' : 'Create Post'}</button>
-                </form>
+                </div>
+
             </section>
             {/* Formulario para crear categorías */}
             <section className='admin-panel__create-category'>
-                <h2>Create Category</h2>
+                <h2 className='subtitle'>Create Category</h2>
                 <form onSubmit={handleCategorySubmit}>
                     <div>
-                        <label>Category name:</label>
+                        <label className='paragraph'>Category name:</label>
                         <input
                             type="text"
                             name="name"
                             value={categoryFormData.name}
                             onChange={handleCategoryChange}
                             required
+                            maxLength={255}
                         />
                     </div>
-                    <button className='button' type="submit">Create Category</button>
+                    <button className='btn btn-confirm btn-outline' type="submit">Create Category <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check-lg" viewBox="0 0 16 16">
+                        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                    </svg></button>
                 </form>
             </section>
-            <button onClick={handleLogout}>Logout</button>
+
             <hr></hr>
             {/* Lista posts en la DB */}
-            <h2>Previously created posts</h2>
+            <h2 className='subtitle'>Previously created posts</h2>
             <section className='admin-panel__post-list'>
                 <div className="admin-panel__posts-container">
                     {posts.length > 0 ? (
                         posts.map((post) => {
-                            const imageUrl = post.image ? `${API}/uploads/${post.image}` : null;
+                            const imageUrl = post.image ? `${API}/uploads/posts/${post.image}` : null;
                             return (
                                 <div key={post.id} className="admin-panel__post-card">
                                     {imageUrl && <img src={imageUrl} alt={post.title} className="admin-panel__post-image" />}
@@ -380,33 +429,41 @@ function AdminPanel() {
                                     <p>{post.content_highligth}</p>
                                     <i>{categories.find(category => category.id === post.categoryId)?.name}</i>
                                     <div className="admin-panel__button-container">
-                                        <button className='button' onClick={() => handleEditPost(post)}>Edit</button>
-                                        <button className='button' onClick={() => deletePost(post.id)}>Delete</button>
+                                        <button className='btn btn-secondary btn-outline' onClick={() => handleEditPost(post)}>Edit <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                            <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                                        </svg></button>
+                                        <button className='btn btn-danger btn-outline' onClick={() => deletePost(post.id)}>Delete <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash-fill" viewBox="0 0 16 16">
+                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                        </svg></button>
                                     </div>
                                 </div>
                             );
                         })
                     ) : (
-                        <p>No posts available</p>
+                        <p className='paragraph'>No posts available</p>
                     )}
                 </div>
             </section>
             {/* Lista Categorias en la DB */}
             <section className='admin-panel__category-list'>
-                <h3>Previously created categories</h3>
+                <h3 className='subtitle'>Previously created categories</h3>
                 <div className="admin-panel__categories-container">
                     {categories.length > 0 ? (
                         categories.map((category) => (
                             <div key={category.id} className="admin-panel__category-card">
-                                <h4>{category.name}</h4>
+                                <h4 className='paragraph'>{category.name}</h4>
                                 <div className="admin-panel__button-container">
-                                    <button className='button' onClick={() => handleEditCategory(category)}>Edit</button>
-                                    <button className='button' onClick={() => deleteCategory(category.id)}>Delete</button>
+                                    <button className='btn btn-secondary btn-outline' onClick={() => handleEditCategory(category)}>Edit <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                        <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
+                                    </svg></button>
+                                    <button className='btn btn-danger btn-outline' onClick={() => handleDeleteCategory(category.id)}>Delete <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash-fill" viewBox="0 0 16 16">
+                                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                    </svg></button>
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <p>No categories available</p>
+                        <p className='paragraph'>No categories available</p>
                     )}
                 </div>
             </section>

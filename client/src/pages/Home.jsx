@@ -10,6 +10,7 @@ import { fetchCategories } from '../api/categoryService';
 import LoadingScreen from "../components/LoadingScreen"
 
 const POSTS_PER_PAGE = 10;
+const API = import.meta.env.VITE_API_URL;
 
 //Componente Home
 const Home = () => {
@@ -118,16 +119,15 @@ const Home = () => {
     order: ['Newest', 'Oldest']
   };
 
-
   if (isLoading) return <LoadingScreen></LoadingScreen>
-  
+
   return (
-    <div className='home'>
+    <div className='home page-container'>
       <Fade triggerOnce duration={1500}>
         <Slide triggerOnce duration={900}>
           <div className='home__greetings'>
-            <p>{getGreeting()}</p>
-            <h1>Posts-Worthy Reads</h1>
+            <p className=''>{getGreeting()}</p>
+            <h1 className='title'>Posts-Worthy Reads</h1>
             <i>Stories to Inspire Your Thoughts</i>
           </div>
         </Slide>
@@ -135,11 +135,7 @@ const Home = () => {
 
       <div className='home__filters'>
         {['category', 'order'].map(type => (
-          <div
-            key={type}
-            className='dropdown'
-            ref={el => dropdownRefs.current[type] = el}
-          >
+          <div key={type} className='dropdown' ref={el => dropdownRefs.current[type] = el}>
             <Arrow
               text={type === 'category' ? currentCategory : currentOrder}
               onClick={() => toggleDropdown(type)}
@@ -166,10 +162,11 @@ const Home = () => {
         <Fade triggerOnce duration={700}>
           {getCurrentPosts().length > 0 ? (
             getCurrentPosts().map(post => (
+              console.log(post),
               <Post
-                key={post.id}
+                id={post.id}
                 index={post.id}
-                image={post.image ? `http://localhost:3000/uploads/${post.image}` : null}
+                image={post.image ? `${API}/uploads/posts/${post.image}` : null}
                 title={post.title}
                 content={post.content}
                 content_highlight={post.content_highligth}
@@ -177,11 +174,12 @@ const Home = () => {
                 date={post.createdAt || new Date().toISOString()}
                 categoryId={post.categoryId}
                 loading={loading}
+                isBookmarked={post.isBookmarked}
               />
             ))
           ) : (
             <div className='home__no-posts'>
-              <p>No posts found matching your search criteria.</p>
+              <p className='paragraph'>No posts found matching your search criteria.</p>
             </div>
           )}
         </Fade>
@@ -192,7 +190,8 @@ const Home = () => {
         length={getFilteredSortedPosts().length}
         handlePagination={setCurrentPage}
         currentPage={currentPage}
-      />
+      /> 
+
     </div>
   );
 };

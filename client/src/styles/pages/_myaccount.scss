@@ -1,16 +1,9 @@
 .myaccount {
     margin: 2rem 5%;
     min-height: 100vh;
-    &__posts {
-        display: flex;
-        flex-wrap: wrap;
-        margin: 1rem;
-        .post {
-            width: 20rem;
-            margin: 1rem;
-        }
-    }
+    padding-top: 1%;
 
+  
     &__filters {
         font-family: "Roboto", sans-serif;
         display: flex;
@@ -18,70 +11,146 @@
         font-weight: 500;
         margin-left: 1.5rem;
         margin-top: 1.3rem;
-
+    
         position: relative;
         z-index: 1;
-
+    
         .arrow {
-            margin-right: 2rem;
+          margin-right: 2rem;
+    
+          svg {
+            margin-bottom: 0.1rem;
+            margin-left: 0.1rem;
+          }
+        }
+      }
+    
 
-            svg {
-                margin-bottom: 0.1rem;
-                margin-left: 0.1rem;
+    &__subtitle{
+        font-size: $font-size-subtitle;
+        margin: 2rem 0;
+    }
+
+    &-profile {
+        
+        border-radius: 10px;
+        overflow: hidden;
+
+        &__info {
+            text-align: center;
+            margin-bottom: 2rem;
+            h1 {
+                font-size: 26px;
+                color: $text-color;
+            }
+
+            p {
+                color: $text-color-secondary;
+                font-size: 16px;
+                line-height: 1.5;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+        &__actions{
+          display: flex;
+          button{
+            margin: 1rem 1rem 1.5rem 0;
+          }
+        }
+        &__edit{
+          @media (min-width: $breakpoint-lg) {
+          width: 15vw;
+          }
+          button{
+            margin: 1rem 0;
+          }
+        }
+        .profile-avatar {
+            position: relative;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        @media (min-width: $breakpoint-lg) {
+            margin: 10px;
+            border-radius: 0;
+
+            &__info {
+                h1 {
+                    font-size: 22px;
+                }
+
+                p {
+                    font-size: 14px;
+                }
             }
         }
     }
+    .myaccount-profile__edit-form {
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        font-family: $text-font-secondary;
 
-    &__greetings {
-        padding: 1rem;
-        margin-left: .3rem;
-        padding-top: 2rem;
-
-        p {
-            font-weight: 600;
+        div {
+          display: flex;
+          flex-direction: column;
+          margin-top: 1rem;
+          label {
+            margin-bottom: 0.5rem;
+          }
+      
+          input[type="text"],
+          input[type="file"] {
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            border: 1px solid $border-color;
+            border-radius: 0.5rem;
+            background-color: $white;
+            transition: border-color 0.3s ease;
+            
+            &:focus {
+              border-color: $border-color-focus;
+              outline: none;
+            }
+          }
         }
-
-        h1 {
-            margin-top: 1rem;
-            font-weight: 800;
+      
+        .button.button-confirm {
+          align-self: flex-start;
+          padding: 0.75rem 1.5rem;
+          background-color: green;
+          color: $white;
+          border: none;
+          border-radius: 0.5rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+      
+          &:hover {
+            background-color: rgb(0, 92, 0);
+          }
         }
-
-        i {
-            font-weight: 100;
-        }
-    }
-
-    .myaccount__no-posts {
-        margin: 1rem;
-    }
-
+      }
+      
+    // Media Queries para la sección principal
     @media (min-width: $breakpoint-lg) {
-
         margin: 0 15%;
 
-        &__greetings {
-            margin-top: 1rem;
-            margin-left: .2rem;
-        }
-
-        .myaccount__posts {
+        &__posts {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
             grid-auto-rows: 1fr;
-            /* Ensures each row is equal height */
         }
-
     }
 
     @media (min-width: $breakpoint-xl) {
-        .myaccount__posts {
+        &__posts {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 1rem;
-
         }
-
     }
-
 }

@@ -10,7 +10,7 @@ const createUser = async (req, res) => {
 
         const itExists = await User.findOne({ where: { email } });
         if (itExists) {
-            return res.status(400).json({ error: "❌ El mail ya se encuentra registrado." });
+            return res.status(400).json({ error: "❌ The email is already registered." });
         }
         const newUser = await User.create({
             name,
@@ -39,11 +39,11 @@ const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
         const user = await User.findByPk(id, {
-            attributes: { exclude: ['password'] } // Excluir el campo de contraseña
+            attributes: { exclude: ['password'] } // Excluir el campo de contraseña!
         });
 
         if (!user) {
-            return res.status(404).json({ error: "❌ Usuario no encontrado." });
+            return res.status(404).json({ error: "❌ User not found." });
         }
 
         res.status(200).json({ user });
@@ -58,11 +58,11 @@ const deleteUser = async (req, res) => {
         const { id } = req.params;
         const user = await User.findByPk(id);
         if (!user) {
-            return res.status(404).json({ error: "❌ Usuario no encontrado." });
+            return res.status(404).json({ error: "❌ User not found." });
         }
 
         await user.destroy();
-        res.status(200).json({ message: "✅ Usuario borrado satisfactoriamente." });
+        res.status(200).json({ message: "✅ User deleted successfully." });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -74,23 +74,24 @@ const updateUser = async (req, res) => {
         const userId = req.user.id;
         const name = req.body ? req.body.name : null;
         const image = req.file ? req.file.filename : null;
+
         if (!name && !image) {
-            return res.status(400).json({ error: "❌ No se proporcionaron datos." });
+            return res.status(400).json({ error: "⚠️ No data provided." });
         }
+        
         const user = await User.findByPk(userId);
         if (!user) {
-            return res.status(404).json({ error: '❌ Usuario no encontrado.' });
+            return res.status(404).json({ error: '❌ User not found.' });
         }
+
         const updateData = {};
-        if (name) {
-            updateData.name = name;
-        }
-        if (image) {
-            updateData.image = image;
-        }
+        if (name) updateData.name = name;
+        if (image) updateData.image = image;
+
         await user.update(updateData);
+
         res.status(200).json({
-            message: '✅ Usuario actualizado.',
+            message: '✅ User updated.',
             user,
         });
     } catch (error) {
@@ -105,12 +106,12 @@ const loginUser = async (req, res) => {
 
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(404).json({ error: "❌ Usuario no encontrado." });
+            return res.status(404).json({ error: "❌ User not found." });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ error: "❌ Contraseña incorrecta." });
+            return res.status(401).json({ error: "❌ Incorrect password." });
         }
 
         const token = jwt.sign(
@@ -119,7 +120,7 @@ const loginUser = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.status(200).json({ message: "✅ Inicio de sesión exitoso.", token });
+        res.status(200).json({ mensaje: "✅ Login successful.", token });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

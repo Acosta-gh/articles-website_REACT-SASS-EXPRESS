@@ -13,14 +13,14 @@ const editCategory = async (req, res) => {
         const category = await Category.findByPk(req.params.id);
 
         if (!category) {
-            return res.status(404).json({ error: "❌ Categoría no encontrada." });
+            return res.status(404).json({ error: "❌ Category not found." });
         }
 
         const { name } = req.body;
 
         await category.update({ name });
 
-        res.json({ message: "✅ Categoría actualizada correctamente.", category });
+        res.json({ message: "✅ Category updated successfully.", category });
 
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -31,7 +31,7 @@ const getCatoryById = async (req, res) => {
     try {
         const category = await Category.findByPk(req.params.id)
         if (!category) {
-            return res.status(400).json({ error: "❌ La categoría especificada no existe." })
+            return res.status(400).json({ error: "❌ The specified category does not exist." })
         }
         res.status(200).json(category)
     } catch (error) {
@@ -54,12 +54,12 @@ const deleteCategory = async (req, res) => {
         });
 
         if (!category) {
-            return res.status(400).json({ error: "❌ La categoría especificada no existe." })
+            return res.status(400).json({ error: "❌ The specified category does not exist." })
         }
 
         await category.destroy();
 
-        res.status(200).json({ message: "✅ Categoría eliminada correctamente." });
+        res.status(200).json({ message: "✅ Category deleted successfully." });
     } catch (error) {
         res.status(500).json({ error: error.message })
     }

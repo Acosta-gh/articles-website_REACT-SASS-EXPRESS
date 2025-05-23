@@ -3,6 +3,10 @@
     flex-direction: column;
     margin: 2rem 5%;
 
+    button {
+        margin: .5rem 0;
+    }
+
     input,
     textarea,
     select {
@@ -21,8 +25,13 @@
     textarea[name="content"] {
         height: 15rem;
     }
-
+    
     .admin-panel__create-post {
+        .admin__panel__grid{
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1rem;
+        }
         form {
             div {
                 display: flex;
@@ -63,15 +72,6 @@
                 width: 100%;
             }
 
-            h3 {
-                margin-top: 0;
-                font-size: 1.5rem;
-            }
-
-            p {
-                color: $text-color;
-            }
-
             i {
                 display: block;
                 margin: 0.5rem 0;
@@ -87,11 +87,6 @@
     }
 
     .admin-panel__category-list {
-        h3 {
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            color: $text-color;
-        }
 
         .admin-panel__categories-container {
             display: flex;

@@ -69,13 +69,15 @@ function LoginSignup() {
     };
 
     return (
-        <div className={`sign sign--${inOrUp}`}>
+        <div className={`sign sign--${inOrUp} page-container`}>
             <h2>{inOrUp === "in" ? "Log in" : "Sign up"}</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {error && <p style={{ color: 'red' }}>
+                {/*error*/ "❌ User not found, please try again."}
+            </p>}
             <form onSubmit={handleSubmit} className='sign__form'>
                 {inOrUp === "up" && (
                     <div className='sign__form-section'>
-                        <label>Name:</label>
+                        <label className='paragraph'>Name:</label>
                         <input
                             type="text"
                             value={name}
@@ -84,26 +86,29 @@ function LoginSignup() {
                     </div>
                 )}
                 <div className='sign__form-section'>
-                    <label>Email:</label>
+                    <label className='paragraph'>Email:</label>
                     <input
+                        className='comment__input'
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
                 <div className='sign__form-section'>
-                    <label>Password:</label>
+                    <label className='paragraph'>Password:</label>
                     <input
+                        className='comment__input'
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
-                <button type="submit">
-                    {inOrUp === "in" ? "Sign in" : "Register"}
+                
+                <button className='btn btn-outline' type="submit">
+                    {inOrUp === "in" ? "Login" : "Register"}
                 </button>
             </form>
-            <p onClick={toggleInOrUp} style={{ cursor: 'pointer', color: 'blue' }}>
+            <p className='paragraph' onClick={toggleInOrUp} style={{ cursor: 'pointer', color: 'blue' }}>
                 {inOrUp === "in" ? "Don't have an account? Sign up" : "Already have an account? Log in"}
             </p>
         </div>

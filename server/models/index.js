@@ -38,9 +38,9 @@ Post.belongsToMany(User, {
 const syncDb = async () => {
   try {
     await sequelize.sync({ force: false });
-    console.log("✅ Los modelos se sincronizaron satisfactoriamente.");
+    console.log("✅ Models synchronized successfully.");
   } catch (err) {
-    console.log("❌ Hubo un error al sincronizar los modelos: ", err);
+    console.log("❌ Error synchronizing models:", err);
   }
 };
 

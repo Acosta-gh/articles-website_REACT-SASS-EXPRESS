@@ -1,17 +1,23 @@
 const multer = require('multer');
 const path = require("path");
+const fs = require('fs');
 
-const storage = multer.diskStorage({
+const createUploader = (folderName) => multer({
+  storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      //  directorio donde se almacenarán los archivos
-      cb(null, "uploads");
+      const dir = path.join(__dirname, '..', 'uploads', folderName);
+      fs.mkdirSync(dir, { recursive: true });
+      cb(null, dir);
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
       cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
     }
+  })
 });
 
-const upload = multer({ storage: storage });
-
-module.exports = upload;
+module.exports = {
+  uploadUsers: createUploader('profiles'),
+  uploadPosts: createUploader('posts'),
+  uploadGeneric: createUploader('generic')
+};

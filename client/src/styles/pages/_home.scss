@@ -1,13 +1,11 @@
 .home {
   min-height: 100vh;
+  
   &__filters {
-    font-family: "Roboto", sans-serif;
+    font-family: $text-font-secondary;
     display: flex;
-    margin: 6px;
+    margin: 1.3rem 0 0 1.5rem;
     font-weight: 500;
-    margin-left: 1.5rem;
-    margin-top: 1.3rem;
-
     position: relative;
     z-index: 1;
 
@@ -15,16 +13,13 @@
       margin-right: 2rem;
 
       svg {
-        margin-bottom: 0.1rem;
-        margin-left: 0.1rem;
+        margin: 0 0 0.1rem 0.1rem;
       }
     }
   }
 
   &__greetings {
-    padding: 1rem;
-    margin-left: .3rem;
-    padding-top: 2rem;
+    padding: 2rem 1rem 1rem 1rem;
 
     p {
       font-weight: 600;
@@ -40,34 +35,19 @@
     }
   }
 
-
-
-  .home__no-posts {
+  &__no-posts {
     margin: 1rem;
   }
-  
-  @media (min-width: $breakpoint-lg) {
-    margin: 0 15%;
 
-    &__greetings {
-      margin-top: 1rem;
-      margin-left: .2rem;
-    }
-
-    .home__posts {
+  &__posts {
+    @media (min-width: $breakpoint-lg) {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
-      grid-auto-rows: 1fr;
     }
-  }
 
-  @media (min-width: $breakpoint-xl) {
-    .home__posts {
-      display: grid;
+    @media (min-width: $breakpoint-xl) {
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 1rem;
     }
   }
 }
-

@@ -1,9 +1,83 @@
+@use "sass:color";
+
 .button {
-    background-color: $gray;
-    margin: 1rem 0;
-    padding: .8rem;
+    appearance: none;
+    background: transparent;
+    outline: 0;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: #1c1c1c;
+    padding: 5.5px 8px 4px 8px;
+    font-size: 16px;
+    background: $white;
+    gap: 6px;
+    color: $gray;  
+    border: none;
     border-radius: 8px;
-    color: $white;
-    font-size: 1rem;
-    margin-right: 1rem;
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.30), 0px 1px 1px rgba(0, 0, 0, .4);
+    font-family: $text-font-secondary;
+    width: fit-content;
+
+    svg {
+        color: #969696;
+    }
+
+    i {
+        font-size: 16px;
+        color: #969696;
+    }
+
+    &-outline {
+        background: transparent;
+        border: 1px solid #e8e8e8;
+        box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.06);
+    }
+
+    &-confirm {
+        color: $white;
+        background: linear-gradient(color.scale(#46b123, $lightness: 15%), color.scale(#46b123, $lightness: -10%));
+    }
+
+    &-danger {
+        color: $white;
+        background: linear-gradient(color.scale(#E84A5F, $lightness: 15%), color.scale(#E84A5F, $lightness: -10%));
+
+    }
+
+    &-secondary {
+        color: $white;
+        background: linear-gradient(color.scale(#4090d1, $lightness: 15%), color.scale(#4090d1, $lightness: -10%));
+
+    }
+
+    &:hover {
+        border-color: #969696;
+    }
+}
+
+.btn.btn-danger{
+    svg{
+        color: $white;
+    }
+}
+
+.btn.btn-confirm{
+    svg{
+        color: $white;
+    }
+}
+
+.btn.btn-secondary{
+    svg{
+        color: $white;
+    }
 }

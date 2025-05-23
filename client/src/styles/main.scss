@@ -1,6 +1,9 @@
 // main.sass
+
 @import "./base/variables";
 @import "./base/reset";
+@import "./base/globals";
+@import "./base/typography";
 
 @import "./pages/error-page";
 @import "./pages/privacy";
@@ -20,4 +23,7 @@
 @import "./components/button";
 @import "./components/loading-screen";
 @import "./components/dropdown";
-
+@import "./components/profile-image";
+@import "./components/line-divider";
+@import "./components/form";
+@import "./components/comment";

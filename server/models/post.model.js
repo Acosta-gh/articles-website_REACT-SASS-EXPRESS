@@ -15,7 +15,7 @@ const Post = sequelize.define('Post', {
         allowNull: false,
         validate: {
             notEmpty: true,
-            len: [1, 255],
+            len: [1, 149],
         },
     },
     content: {
@@ -48,7 +48,7 @@ const Post = sequelize.define('Post', {
     },
     categoryId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: Category,
             key: 'id',

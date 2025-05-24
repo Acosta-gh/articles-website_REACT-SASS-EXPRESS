@@ -1,6 +1,6 @@
 .home {
   min-height: 100vh;
-  
+
   &__filters {
     font-family: $text-font-secondary;
     display: flex;
@@ -40,10 +40,18 @@
   }
 
   &__posts {
+  
+
     @media (min-width: $breakpoint-lg) {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
+      
+    }
+    @media (min-width: $breakpoint-lg) and (max-width: $breakpoint-xl) {
+      .post {
+        left: 1.5rem;
+      }
     }
 
     @media (min-width: $breakpoint-xl) {

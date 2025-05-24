@@ -1,33 +1,54 @@
-# Blog MERN  (En desarrollo)
+# 📰 Blog Personal tipo GetPocket (En desarrollo)
 
-Este proyecto es un blog desarrollado con el stack MERN. El objetivo es crear una plataforma visualmente atractiva para leer, guardar y compartir artículos, inspirada en la estética y funcionalidad de GetPocket.
+Este proyecto comenzó como un blog sencillo, pero con el tiempo evolucionó hacia una plataforma de artículos inspirada en GetPocket. Es un proyecto personal al que le tengo mucho cariño y que planeo convertir en mi blog principal. Aunque aún está en desarrollo, ya cuenta con una base sólida y suficiente funcionalidad para formar parte de mi portafolio.
 
-## Objetivo
+## ✨ Objetivo
 
-El blog tiene como objetivo proporcionar una experiencia de usuario similar a la de GetPocket, con un diseño limpio, moderno y fácil de usar, enfocado en la lectura y el descubrimiento de contenido interesante. Los usuarios pueden/podrán explorar artículos, guardarlos para leer más tarde, y categorizarlos según sus intereses.
+Crear una aplicación moderna, minimalista y enfocada en la lectura y organización de artículos interesantes. La idea es ofrecer una experiencia visualmente atractiva, fluida y fácil de usar, similar a GetPocket, donde los usuarios puedan:
 
-## Características
+- **Explorar Artículos**: Explorar artículos por categoría o búsqueda.
+- **Guardar Artículos**: Guardarlos para leer más tarde.
+- **Categorías**: Administrarlos de forma cómoda.
 
-- **Explora Artículos**: Navega por una colección de artículos, con una interfaz limpia y fácil de usar.
-- **Buscar Artículos**: Puedes buscar artículos por nombre, categoría o fecha de publicación.
-- **Categorías**: Organiza los artículos en categorías para facilitar su búsqueda.
-- **Interfaz Amigable**: Diseño inspirado en GetPocket, optimizado para una experiencia de lectura cómoda.
-- **Responsividad**: El sitio está completamente adaptado para dispositivos móviles y de escritorio.
+## 🚀 Características
 
-## Tecnologías Utilizadas
+- Explorar y buscar artículos por título, categoría o fecha.
+- Categorías personalizadas para organizar los artículos.
+- Diseño responsive, adaptado a dispositivos móviles y escritorios.
+- Interfaz limpia y amigable, centrada en la lectura.
+- Autenticación con JWT para proteger rutas y funciones personalizadas.
+- Backend funcional para manejar artículos, usuarios y categorías.
+
+## 🛠️ Tecnologías Utilizadas
 
 - **Frontend**:
   - React.js
+  - Vite
   - React Router DOM
   - CSS Modules / SASS para los estilos
  
 - **Backend**:
   - Node.js
   - Express.js
-  - **MariaDB/MySQL** (con Sequelize)
+  - Sequelize ORM
+  - MariaDB/MySQL
   - JWT para autenticación de usuarios
   
 - **Otras herramientas**:
+  - JWT para el manejo de sesiones seguras.
   - dotenv para la gestión de variables de entorno
   - bcryptjs para el cifrado de contraseñas
   - CORS para manejar solicitudes entre dominios
+
+
+## 🖼️ Capturas de Pantalla
+
+![Screenshot from 2025-05-24 04-45-21](https://github.com/user-attachments/assets/d923724a-6f09-42b8-a04b-b4d0451126ac)
+![Screenshot from 2025-05-24 05-01-11](https://github.com/user-attachments/assets/13a8d4f1-15b0-4110-b2ca-4d2b4eedea39)
+![Screenshot from 2025-05-24 05-21-55](https://github.com/user-attachments/assets/1f0a7598-e45c-4a5f-8e3f-b79ff597329d)
+![Screenshot from 2025-05-24 05-29-52](https://github.com/user-attachments/assets/ac5fed7e-5ca4-4a6c-b45d-c2ff8710f95d)
+![Screenshot from 2025-05-24 05-30-14](https://github.com/user-attachments/assets/fe942ece-89dc-4600-84c0-0f330eb68ca5)
+![Screenshot from 2025-05-24 05-31-09](https://github.com/user-attachments/assets/58de2f73-2ef0-4e3f-a57e-4622d54c9442)
+![Screenshot from 2025-05-24 05-34-37](https://github.com/user-attachments/assets/4bc39845-99b0-46ad-8f24-78a685df2f23)
+![Screenshot from 2025-05-24 05-34-41](https://github.com/user-attachments/assets/a0b711f7-c85a-4119-baa6-346460d214c5)
+![Screenshot from 2025-05-24 05-34-48](https://github.com/user-attachments/assets/9b6ac104-d337-4ed8-b22d-1aaf3c9253c4)

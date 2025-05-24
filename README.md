@@ -43,11 +43,11 @@ Crear una aplicación moderna, minimalista y enfocada en la lectura y organizaci
 
 ## 🖼️ Capturas de Pantalla
 
+![Screenshot from 2025-05-24 05-34-37](https://github.com/user-attachments/assets/4bc39845-99b0-46ad-8f24-78a685df2f23)
+![Screenshot from 2025-05-24 05-34-41](https://github.com/user-attachments/assets/a0b711f7-c85a-4119-baa6-346460d214c5)
+![Screenshot from 2025-05-24 05-34-48](https://github.com/user-attachments/assets/9b6ac104-d337-4ed8-b22d-1aaf3c9253c4)
 ![Screenshot from 2025-05-24 05-01-11](https://github.com/user-attachments/assets/13a8d4f1-15b0-4110-b2ca-4d2b4eedea39)
 ![Screenshot from 2025-05-24 05-21-55](https://github.com/user-attachments/assets/1f0a7598-e45c-4a5f-8e3f-b79ff597329d)
 ![Screenshot from 2025-05-24 05-29-52](https://github.com/user-attachments/assets/ac5fed7e-5ca4-4a6c-b45d-c2ff8710f95d)
 ![Screenshot from 2025-05-24 05-30-14](https://github.com/user-attachments/assets/fe942ece-89dc-4600-84c0-0f330eb68ca5)
 ![Screenshot from 2025-05-24 05-31-09](https://github.com/user-attachments/assets/58de2f73-2ef0-4e3f-a57e-4622d54c9442)
-![Screenshot from 2025-05-24 05-34-37](https://github.com/user-attachments/assets/4bc39845-99b0-46ad-8f24-78a685df2f23)
-![Screenshot from 2025-05-24 05-34-41](https://github.com/user-attachments/assets/a0b711f7-c85a-4119-baa6-346460d214c5)
-![Screenshot from 2025-05-24 05-34-48](https://github.com/user-attachments/assets/9b6ac104-d337-4ed8-b22d-1aaf3c9253c4)

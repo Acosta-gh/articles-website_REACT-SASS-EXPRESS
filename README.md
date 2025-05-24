@@ -43,7 +43,6 @@ Crear una aplicación moderna, minimalista y enfocada en la lectura y organizaci
 
 ## 🖼️ Capturas de Pantalla
 
-![Screenshot from 2025-05-24 04-45-21](https://github.com/user-attachments/assets/d923724a-6f09-42b8-a04b-b4d0451126ac)
 ![Screenshot from 2025-05-24 05-01-11](https://github.com/user-attachments/assets/13a8d4f1-15b0-4110-b2ca-4d2b4eedea39)
 ![Screenshot from 2025-05-24 05-21-55](https://github.com/user-attachments/assets/1f0a7598-e45c-4a5f-8e3f-b79ff597329d)
 ![Screenshot from 2025-05-24 05-29-52](https://github.com/user-attachments/assets/ac5fed7e-5ca4-4a6c-b45d-c2ff8710f95d)

@@ -34,6 +34,11 @@ const getBookmarksByUser = async (req, res) => {
             include: {
                 model: Post,
                 as: "savedPosts",
+                include: {
+                    model: User,
+                    as: 'authorUser',
+                    attributes: ['name'],
+                },
             },
         });
 

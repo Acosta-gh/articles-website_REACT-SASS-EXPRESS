@@ -82,9 +82,16 @@ const Post = ({ id, index, image, title, content, content_highlight, author, dat
           <i>{formattedDate}</i>
         </div>
       </Link>
-      <button className='article__buttons--save btn btn-outline' onClick={() => handleToggleBookmark(id)}>
+      
+      {typeof isBookmarked !== 'undefined' && (
+      <button
+        className='article__buttons--save btn btn-outline'
+        onClick={() => handleToggleBookmark(id)}
+      >
         {isSaved ? 'Saved' : 'Save'} {bookmarkIcon}
       </button>
+    )}
+
     </div>
   );
 };

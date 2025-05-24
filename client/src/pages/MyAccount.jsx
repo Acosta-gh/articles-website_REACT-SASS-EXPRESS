@@ -281,6 +281,7 @@ function MyAccount() {
           <Fade triggerOnce duration={700}>
             {getCurrentPosts().length > 0 ? (
               getCurrentPosts().map(post => (
+                console.log(post),
                 <Post
                   key={post.id}
                   index={post.id}

@@ -9,20 +9,72 @@
     align-items: center;
     color: $text-color;
 
-    &__buttons{
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 0.25rem 0;
+    }
+
+    p {
+        margin: 0.5rem 0;
+        line-height: 1.35rem;
+    }
+
+    code,
+    pre,
+    blockquote {
+        margin: 0.7rem 0;
+        padding: 0.5rem;
+        background-color: $gray;
+        border-left: 4px solid $border-color;
+        font-size: 0.9rem;
+        overflow-x: auto;
+        color: $white;
+    }
+
+    ul,
+    li,
+    ol {
+        margin: 0.5rem 0;
+        padding-left: 1rem;
+    }
+
+    table,
+    thead,
+    tbody,
+    tr,
+    th,
+    td {
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        border: 1px solid $gray;
+        border-radius: 8px;
+    }
+
+    &__buttons {
         margin-bottom: 1rem;
     }
+
     &__banner {
         display: flex;
         margin: 2rem auto;
         border-radius: 8px;
         margin-bottom: 20px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+        @media (min-width: $breakpoint-lg) {
+            width: 60rem;
+            height: 30rem;
+            object-fit: cover;
+
+        }
     }
 
     &__content {
         font-size: 1rem;
-        line-height: 1.5;
         margin-bottom: 10px;
         text-align: left;
 
@@ -32,39 +84,47 @@
             border-radius: 4px;
         }
     }
+  
+}  
 
-    @media (min-width: $breakpoint-lg) {
-        &__banner {
-            width: 60rem;
-            height: 30rem;
-            object-fit: cover;
-        }
-    }
-
-}
-.comment__item{
-    .comment{
-        .avatar{
-            img{
+.comment__item {
+    .comment {
+        .avatar {
+            img {
                 width: 80px;
                 height: 80px;
                 border: 3px solid $white;
-    
             }
         }
     }
-    .comment__replies{
-        .comment{
-            .avatar{
-                img{
+
+    .comment__replies {
+        .comment {
+            .avatar {
+                img {
                     width: 60px;
                     height: 60px;
                     border: 2px solid $white;
-        
+
                 }
             }
+
             margin: 2rem 0 0 0;
         }
+
         margin: 0 0 0 5%;
+    }
+}
+textarea.comment__input {
+    width: 90vw;
+    height: 11vh;
+    @media (min-width: $breakpoint-lg) {
+        width: 30vw;
+        height: 13vh;
+    }
+}
+input.comment__input {
+    @media (min-width: $breakpoint-lg) {
+        width: 25vw;
     }
 }

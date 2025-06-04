@@ -1,4 +1,4 @@
-# 📰 Blog Personal tipo GetPocket (En desarrollo)
+# 📰 Página de articulos tipo GetPocket (En desarrollo)
 
 Este proyecto comenzó como un blog sencillo, pero con el tiempo evolucionó hacia una plataforma de artículos inspirada en GetPocket. Es un proyecto personal al que le tengo mucho cariño y que planeo convertir en mi blog principal. Aunque aún está en desarrollo, ya cuenta con una base sólida y suficiente funcionalidad para formar parte de mi portafolio.
 

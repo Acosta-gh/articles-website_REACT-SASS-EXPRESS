@@ -3,12 +3,12 @@ import { useParams } from 'react-router-dom';
 import { Fade } from "react-awesome-reveal";
 import { marked } from 'marked';
 import { jwtDecode } from 'jwt-decode';
-import { fetchPosts } from '../api/postService';
-import { fetchBookmarks } from '../api/bookmarkService';
-import { fetchComments } from '../api/commentService';
+import { fetchPosts } from '../services/postService';
+import { fetchBookmarks } from '../services/bookmarkService';
+import { fetchComments } from '../services/commentService';
 
 import LoadingScreen from "../components/LoadingScreen"
-import { fetchCategories } from '../api/categoryService';
+import { fetchCategories } from '../services/categoryService';
 
 const API = import.meta.env.VITE_API_URL;
 

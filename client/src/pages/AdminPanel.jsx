@@ -1,12 +1,12 @@
 // Imports y constantes
 import React, { useEffect, useState, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { fetchPosts } from '../api/postService';
-import { fetchCategories } from '../api/categoryService';
+import { fetchPosts } from '../services/postService';
+import { fetchCategories } from '../services/categoryService';
 import { Link } from 'react-router-dom';
 
 //const POSTS_PER_PAGE = 10;
-const API = "http://127.0.0.1:3000";
+const API = import.meta.env.VITE_API_URL; 
 
 function AdminPanel() {
     // Estados

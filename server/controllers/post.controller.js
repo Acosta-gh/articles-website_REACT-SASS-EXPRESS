@@ -58,7 +58,7 @@ const getPostById = async (req, res) => {
             }
         )
         if (!post) {
-            return res.status(404).json({ error: "❌ Post not found." });
+            return res.status(404).json({ error: "Post not found." });
         }
         res.status(200).json(post)
     } catch (error) {
@@ -76,7 +76,7 @@ const createPost = async (req, res) => {
 
         const category = await Category.findByPk(categoryId);
         if (!category) {
-            return res.status(400).json({ error: "❌ The specified category does not exist." });
+            return res.status(400).json({ error: "The specified category does not exist." });
         }
 
         const post = await Post.create({
@@ -95,7 +95,7 @@ const deletePost = async (req, res) => {
     try {
         const post = await Post.findByPk(req.params.id)
         if (!post) {
-            return res.status(404).json({ error: "❌ Post not found." })
+            return res.status(404).json({ error: "Post not found." })
         }
 
          if (post.image) {
@@ -110,7 +110,7 @@ const deletePost = async (req, res) => {
         }
 
         await post.destroy()
-        res.status(200).json({ message: "✅ Post successfully deleted." })
+        res.status(200).json({ message: "Post successfully deleted." })
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
@@ -123,19 +123,19 @@ const editPost = async (req, res) => {
 
         const post = await Post.findByPk(req.params.id);
         if (!post) {
-            return res.status(404).json({ error: "❌ Post not found." });
+            return res.status(404).json({ error: "Post not found." });
         }
 
         const { categoryId } = req.body;
         
         if (req.file) {
-            if (post.image) { // Solo eliminamos la imagen anterior si existe y si estamos cambiando la imagen
+            if (post.image) { // Solo eliminamos la imagen (banner) anterior si existe y si estamos cambiando la imagen
                 const oldImagePath = path.join(__dirname, '..', 'uploads', post.image);
                 fs.unlink(oldImagePath, (err) => {
                     if (err) {
-                        console.error('❌ Error deleting the previous image:', err);
+                        console.error('Error deleting the previous image:', err);
                     } else {
-                        console.log('✅ Previous image successfully deleted');
+                        console.log('Previous image successfully deleted');
                     }
                 });
             }
@@ -145,7 +145,7 @@ const editPost = async (req, res) => {
 
         const category = await Category.findByPk(categoryId);
         if (!category) {
-            return res.status(400).json({ error: "❌ The specified category does not exist." });
+            return res.status(400).json({ error: "The specified category does not exist." });
         }
 
         await post.update({
@@ -166,14 +166,14 @@ const uploadImageIntoPost = async (req, res) => {
         console.log(req.file); // Aquí debe aparecer el archivo
         console.log(req.body.folder); // Aquí debe decir "posts"
         if (!req.file) {
-            return res.status(400).json({ error: "❌ No image was received." });
+            return res.status(400).json({ error: "No image was received." });
         }
 
         const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.body.folder}/${req.file.filename}`;
         const markdown = `![imagen](${imageUrl})`;
 
         return res.status(200).json({
-            mensaje: "✅ Imagen subida correctamente.",
+            mensaje: "Imagen subida correctamente.",
             url: imageUrl,
             markdown
         });

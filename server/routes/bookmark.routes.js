@@ -1,6 +1,10 @@
 const express = require("express");
 
-const { createBookmark, getBookmarkByPostId , getBookmarksByUser} = require("../controllers/bookmark.controller");
+const {
+  createBookmark,
+  getBookmarkByPostId,
+  getBookmarksByUser,
+} = require("../controllers/bookmark.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = express.Router();

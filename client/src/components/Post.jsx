@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-const API = 'http://localhost:3000';
+const API = import.meta.env.VITE_API_URL;
 
 const Post = ({ id, index, image, title, content, content_highlight, author, date, categoryId, loading, isBookmarked }) => {
   const [categories, setCategories] = useState([]);

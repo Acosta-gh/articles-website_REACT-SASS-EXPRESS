@@ -7,8 +7,8 @@ import Pagination from "../components/Pagination";
 import Arrow from "../components/Arrow";
 import { useSearchContext } from "../context/SearchContext";
 import LoadingScreen from "../components/LoadingScreen"
-import { fetchCategories } from '../api/categoryService';
-import { fetchBookmarks } from '../api/bookmarkService';
+import { fetchCategories } from '../services/categoryService';
+import { fetchBookmarks } from '../services/bookmarkService';
 
 const POSTS_PER_PAGE = 10;
 const API = import.meta.env.VITE_API_URL;
@@ -187,6 +187,8 @@ function MyAccount() {
       const data = await res.json();
       if(!res.ok){
         const errorMessage = data?.message || 'An error occurred';
+        console.error("Error updating user:", errorMessage);
+        console.error(data);
         return alert(`${errorMessage}`);
       }
 

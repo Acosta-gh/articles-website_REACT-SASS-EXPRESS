@@ -72,7 +72,7 @@ function LoginSignup() {
         <div className={`sign sign--${inOrUp} page-container`}>
             <h2>{inOrUp === "in" ? "Log in" : "Sign up"}</h2>
             {error && <p style={{ color: 'red' }}>
-                {/*error*/ "❌ User not found, please try again."}
+                {/*error*/ "User not found, please try again."}
             </p>}
             <form onSubmit={handleSubmit} className='sign__form'>
                 {inOrUp === "up" && (

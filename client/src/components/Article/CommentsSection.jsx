@@ -12,6 +12,7 @@ export default function CommentsSection({
   replyInputs,
   setReplyInputs,
   apiUrl,
+  onDelete
 }) {
   const handleReplyChange = (commentId) => (e) =>
     setReplyInputs((prev) => ({
@@ -49,6 +50,7 @@ export default function CommentsSection({
             replyValue={replyInputs[comment.id] || ""}
             handleReplyChange={handleReplyChange(comment.id)}
             handleReplySubmit={handleReplySubmit(comment.id)}
+            onDelete={() => onDelete(comment.id)}
           />
         ))}
     </div>

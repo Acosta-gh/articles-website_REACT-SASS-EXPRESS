@@ -46,6 +46,7 @@ const Post = ({ id, index, image, title, content, content_highlight, author, dat
     } catch (error) {
       console.error('Error:', error);
       alert('There was an error saving/deleting the bookmark.');
+      console.log(error, "<-- error in handleToggleBookmark");
     }
   };
 
@@ -65,7 +66,7 @@ const Post = ({ id, index, image, title, content, content_highlight, author, dat
 
   return (
     <div className='post' key={id} data-category-id={categoryId}>
-      <Link to={`/article/${index}`}>
+      <Link to={`/Article/${index}`}>
         <div>
           <div className='post-image'>
             <img src={image} alt={title} />

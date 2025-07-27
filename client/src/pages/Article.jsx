@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Fade } from "react-awesome-reveal";
 import { jwtDecode } from "jwt-decode";
-import { fetchBookmarks } from "../services/bookmarkService";
-import { fetchComments } from "../services/commentService";
+import { fetchBookmarks, toggleBookmark } from "../services/bookmarkService";
+import { fetchComments, createComment, deleteComment } from "../services/commentService";
 import LoadingScreen from "../components/LoadingScreen";
 import { fetchCategories } from "../services/categoryService";
 import { usePosts } from "../hooks/usePosts";
@@ -29,7 +29,7 @@ const Article = () => {
   const [openReplyId, setOpenReplyId] = useState(null);
 
   const { posts, isLoading } = usePosts(id);
-
+  console.log(posts, "<-- posts data");
   useEffect(() => {
     const token = localStorage.getItem("token");
     loadComments(id);
@@ -77,21 +77,17 @@ const Article = () => {
         localStorage.removeItem("token");
         return;
       }
-      const response = await fetch(`${API}/bookmark/${postId}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Error al guardar/eliminar el bookmark");
+      const success = await toggleBookmark(postId);
+      if (success) {
+        setIsSaved((prev) => !prev);
+      } else {
+        alert("There was an error saving/deleting this bookmark.");
+        console.log("Error toggling bookmark"); 
       }
-      await response.json();
-      setIsSaved((prev) => !prev);
     } catch (error) {
-      console.error("Error al guardar/eliminar bookmark:", error);
-      alert("There was an error saving/deliting this bookmark.");
+      alert("There was an error saving/deleting this bookmark.");
+      console.error("Error:", error);
+      console.log(error, "<-- error in handleToggleBookmark");
     }
   };
 
@@ -104,29 +100,39 @@ const Article = () => {
     }
     const decoded = jwtDecode(token);
     const content = commentId ? replyInputs[commentId] : commentInput.comment;
-    const payload = {
-      content,
-      postId: posts.id,
-      userId: decoded.id,
-      commentId,
-    };
-    const res = await fetch(`${API}/comment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!res.ok) return alert(`Error: ${data.message}`);
-    if (commentId) {
-      setReplyInputs((prev) => ({ ...prev, [commentId]: "" }));
-    } else {
-      setCommentInput({ comment: "", commentId: null });
+
+    try {
+      await createComment({
+        content,
+        postId: posts.id,
+        userId: decoded.id,
+        commentId,
+      });
+      if (commentId) {
+        setReplyInputs((prev) => ({ ...prev, [commentId]: "" }));
+      } else {
+        setCommentInput({ comment: "", commentId: null });
+      }
+      await loadComments(posts.id);
+    } catch (err) {
+      alert(`Error: ${err.message}`);
     }
-    await loadComments(posts.id);
   };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await deleteComment(commentId);
+      if (response) {
+        setComments((prev) => prev.filter((c) => c.id !== commentId));
+      } else {
+        alert("Failed to delete comment");
+      }
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      alert("There was an error deleting the comment.");    
+    }
+  };
+
 
   const publishedDate = new Date(posts.createdAt).toLocaleDateString();
   const categoryName = categories ? categories.name : "Unknown Category";
@@ -190,6 +196,7 @@ const Article = () => {
           replyInputs={replyInputs}
           setReplyInputs={setReplyInputs}
           apiUrl={API}
+          onDelete = {handleDeleteComment}
         />
       </Fade>
     </div>

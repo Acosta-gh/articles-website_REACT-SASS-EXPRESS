@@ -13,6 +13,7 @@ const fetchPosts = async (id = null) => {
     console.log("Response text:", text);
     try{
       const data = JSON.parse(text);
+      console.log("Parsed data:", data);
       return data;
     } catch (err) {
       console.error("Error parsing JSON:", err);

@@ -1,50 +1,50 @@
-const { Post, Category , User } = require("../models");
-const fs = require('fs');
+const { Post, Category, User } = require("../models");
+const fs = require('fs').promises;
 const path = require('path');
 
 const getAllPosts = async (req, res) => {
     try {
-      const userId = req.user?.id; // si no hay user, será undefined
-  
-      const posts = await Post.findAll({ // Busco todos los posts
-        include: {
-          model: User,
-          as: 'authorUser',
-          attributes: ['name'],
-        },
-      });
-  
-      if (!userId) { // Si no hay usuario, devuelvo los posts sin bookmark info
-        return res.status(200).json(posts);
-      }
-  
-      const user = await User.findByPk(userId, { // Busco el usuario para ver si tiene posts guardados
-        include: {
-          model: Post,
-          as: 'savedPosts', // alias definido en  modelo
-          attributes: ['id'],
-        },
-      });
-  
-      if (!user) { // Si no hay usuario, devuelvo los posts sin bookmark info
-        return res.status(200).json(posts);
-      }
-  
-      const bookmarkedPostIds = new Set(user.savedPosts.map(post => post.id)); // Mapeo los posts guardados por el usuario a un Set para facilitar la búsqueda
-  
-      const postsWithBookmarkInfo = posts.map(post => { // Mapeo los posts para agregar la info de bookmark
-        const postJSON = post.toJSON();
-        postJSON.isBookmarked = bookmarkedPostIds.has(post.id);
-        return postJSON;
-      });
-  
-      res.status(200).json(postsWithBookmarkInfo); // Devuelvo los posts con la info de bookmark
-  
+        const userId = req.user?.id; // si no hay user, será undefined
+
+        const posts = await Post.findAll({ // Busco todos los posts
+            include: {
+                model: User,
+                as: 'authorUser',
+                attributes: ['name'],
+            },
+        });
+
+        if (!userId) { // Si no hay usuario, devuelvo los posts sin bookmark info
+            return res.status(200).json(posts);
+        }
+
+        const user = await User.findByPk(userId, { // Busco el usuario para ver si tiene posts guardados
+            include: {
+                model: Post,
+                as: 'savedPosts', // alias definido en  modelo
+                attributes: ['id'],
+            },
+        });
+
+        if (!user) { // Si no hay usuario, devuelvo los posts sin bookmark info
+            return res.status(200).json(posts);
+        }
+
+        const bookmarkedPostIds = new Set(user.savedPosts.map(post => post.id)); // Mapeo los posts guardados por el usuario a un Set para facilitar la búsqueda
+
+        const postsWithBookmarkInfo = posts.map(post => { // Mapeo los posts para agregar la info de bookmark
+            const postJSON = post.toJSON();
+            postJSON.isBookmarked = bookmarkedPostIds.has(post.id);
+            return postJSON;
+        });
+
+        res.status(200).json(postsWithBookmarkInfo); // Devuelvo los posts con la info de bookmark
+
     } catch (error) {
-      res.status(500).json({ error: error.message }); // En caso de error, devuelvo el error
+        res.status(500).json({ error: error.message }); // En caso de error, devuelvo el error
     }
-  };
-  
+};
+
 
 const getPostById = async (req, res) => {
     try {
@@ -52,8 +52,8 @@ const getPostById = async (req, res) => {
             {
                 include: {
                     model: User,
-                    as: 'authorUser', 
-                    attributes: ['name','image'] 
+                    as: 'authorUser',
+                    attributes: ['name', 'image']
                 }
             }
         )
@@ -81,7 +81,7 @@ const createPost = async (req, res) => {
 
         const post = await Post.create({
             ...req.body,
-            image 
+            image
         });
 
         res.status(201).json(post);
@@ -98,7 +98,7 @@ const deletePost = async (req, res) => {
             return res.status(404).json({ error: "Post not found." })
         }
 
-         if (post.image) {
+        if (post.image) {
             const imagePath = path.join(__dirname, '..', 'uploads', post.image);
             fs.unlink(imagePath, (err) => {
                 if (err) {
@@ -118,8 +118,8 @@ const deletePost = async (req, res) => {
 
 const editPost = async (req, res) => {
     try {
-        console.log(req.file);
-        console.log(req.body);
+        console.log(req.file, "<-- editPost File data");
+        console.log(req.body, "<-- editPost Body data");
 
         const post = await Post.findByPk(req.params.id);
         if (!post) {
@@ -127,22 +127,26 @@ const editPost = async (req, res) => {
         }
 
         const { categoryId } = req.body;
-        
-        if (req.file) {
-            if (post.image) { // Solo eliminamos la imagen (banner) anterior si existe y si estamos cambiando la imagen
-                const oldImagePath = path.join(__dirname, '..', 'uploads', post.image);
-                fs.unlink(oldImagePath, (err) => {
-                    if (err) {
-                        console.error('Error deleting the previous image:', err);
-                    } else {
-                        console.log('Previous image successfully deleted');
-                    }
-                });
-            }
-        }
-        
-        const image = req.file ? req.file.filename : post.image;// si hay un archivo, usamos el nuevo, si no, mantenemos el viejo
 
+        if (req.file) {
+            // Borra la imagen anterior solo si existe y si la imagen cambia
+            if (post.image) {
+                const oldImagePath = path.join(__dirname, '..', 'uploads', 'posts', post.image);
+                try {
+                    await fs.unlink(oldImagePath);
+                    console.log('Previous image successfully deleted');
+                } catch (err) {
+                    if (err.code === 'ENOENT') {
+                        console.warn('Previous image not found, nothing to delete.');
+                    } else {
+                        console.error('Error deleting the previous image:', err);
+                    }
+                }
+            }
+            image = req.file.filename; // usa el nuevo nombre de archivo
+        }
+
+        // Verifica que la categoría exista antes de actualizar el post
         const category = await Category.findByPk(categoryId);
         if (!category) {
             return res.status(400).json({ error: "The specified category does not exist." });
@@ -161,7 +165,7 @@ const editPost = async (req, res) => {
 };
 
 const uploadImageIntoPost = async (req, res) => {
-    
+
     try {
         console.log(req.file); // Aquí debe aparecer el archivo
         console.log(req.body.folder); // Aquí debe decir "posts"
@@ -183,4 +187,4 @@ const uploadImageIntoPost = async (req, res) => {
 };
 
 
-module.exports = { getAllPosts, getPostById, createPost, editPost, deletePost , uploadImageIntoPost}
+module.exports = { getAllPosts, getPostById, createPost, editPost, deletePost, uploadImageIntoPost }

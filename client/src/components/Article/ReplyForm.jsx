@@ -8,6 +8,7 @@ export default function ReplyForm({ value, onChange, onSubmit }) {
           onChange={onChange}
         />
       </div>
+      { /* Botón enviar */}
       <button className="btn btn-outline comment__button" type="submit">
         <svg
           xmlns="http://www.w3.org/2000/svg"

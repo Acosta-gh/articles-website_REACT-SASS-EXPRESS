@@ -15,4 +15,3 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-// https://reactrouter.com/en/main/start/tutorial

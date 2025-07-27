@@ -10,19 +10,21 @@ import LoadingScreen from "../components/LoadingScreen";
 import { useDropdown } from "../hooks/useDropdown";
 import { useCategories } from "../hooks/useCategories";
 import { useFilteredPosts } from "../hooks/useFilteredPosts";
+import { usePosts } from "../hooks/usePosts";
 
 const POSTS_PER_PAGE = 10;
 const API = import.meta.env.VITE_API_URL;
 
 const Home = () => {
   const { searchTerm } = useSearchContext();
-  const [posts, setPosts] = useState([]);
   const [currentCategory, setCurrentCategory] = useState("All");
   const [currentOrder, setCurrentOrder] = useState("Newest");
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
 
   const [categories, setCategories] = useCategories();
+
+  const {posts, setPosts, isLoading, setIsLoading, error, setError} = usePosts();
+
   const {
     dropdownRefs,
     showDropdown,

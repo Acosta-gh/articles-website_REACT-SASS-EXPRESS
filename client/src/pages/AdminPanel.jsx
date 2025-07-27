@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import { fetchPosts } from '../services/postService';
 import { fetchCategories } from '../services/categoryService';
 import { Link } from 'react-router-dom';
+import { useCategories } from '../hooks/useCategories';
 
 //const POSTS_PER_PAGE = 10;
 const API = import.meta.env.VITE_API_URL; 
@@ -19,7 +20,9 @@ function AdminPanel() {
     const [categoryFormData, setCategoryFormData] = useState({
         name: '',
     });
-    const [categories, setCategories] = useState([]); // Para almacenar las categorías disponibles
+    
+    const [categories, setCategories] = useCategories();
+    
     const [posts, setPosts] = useState([]); // Para almacenar los posts disponibles
     const [editingPost, setEditingPost] = useState(null); // Para almacenar el post a editar
     const [banner, setBanner] = useState(null);

@@ -7,11 +7,14 @@ import Pagination from "../components/Pagination";
 import Arrow from "../components/Arrow";
 import { useSearchContext } from "../context/SearchContext";
 import LoadingScreen from "../components/LoadingScreen"
+
 import { fetchCategories } from '../services/categoryService';
 import { fetchBookmarks } from '../services/bookmarkService';
+import { useUser } from '../hooks/useUser';
 
 const POSTS_PER_PAGE = 10;
 const API = import.meta.env.VITE_API_URL;
+
 
 function MyAccount() {
   // Estados
@@ -25,14 +28,16 @@ function MyAccount() {
   const [rotation, setRotation] = useState({ category: false, order: false });
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
-  const [isLoggedIn, setisLoggedIn] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
+  const { userInfo, loading, error, fetchUser, updateUser } = useUser();
 
   // Refs
   const fileInputRef = useRef(null);
   const dropdownRefs = useRef({});
+
   // Carga inicial
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -46,11 +51,8 @@ function MyAccount() {
         window.location.replace('/logout');
         return;
       }
-      if (decoded.isAdmin) {
-        setIsAdmin(true)
-      }
-      setisLoggedIn(true)
-      //setUserInfo();
+      if (decoded.isAdmin) setIsAdmin(true);
+      setIsLoggedIn(true);
       loadCategories();
       loadBookmarks(token);
       fetchUser();
@@ -60,10 +62,8 @@ function MyAccount() {
       console.error("JWT Decode error:", err);
       localStorage.removeItem('token'); // Por las dudas
       window.location.replace('/sign');
-    } finally {
-      //
     }
-  }, []);
+  }, [fetchUser]);
 
   // 📞 Fetch Functions
   const loadCategories = async () => {
@@ -81,24 +81,6 @@ function MyAccount() {
       setPosts(data)
     } catch (err) {
       console.log("Error fetching Posts:", err)
-    }
-  }
-
-  const fetchUser = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const decoded = jwtDecode(token);
-      const res = await fetch(`${API}/user/${decoded.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-      console.log(data)
-      setUserInfo(prev => ({ ...prev, email: data.user.email, name: data.user.name, image: data.user.image }));
-
-    } catch (err) {
-      console.error("Error fetching User:", err);
     }
   }
 
@@ -170,42 +152,25 @@ function MyAccount() {
     console.log(isEditing)
   }
 
-  const handleSubmit = async e => { // Manejar la edición del usuario
+  const handleSubmit = async e => {
     e.preventDefault();
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
-
     if (file) formDataToSend.append('image', file);
-    try {
-      const res = await fetch(`${API}/user`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: formDataToSend,
-      });
-      const data = await res.json();
-      if(!res.ok){
-        const errorMessage = data?.message || 'An error occurred';
-        console.error("Error updating user:", errorMessage);
-        console.error(data);
-        return alert(`${errorMessage}`);
-      }
 
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        setUserInfo(formDataToSend);
-      }
-      setFormData({ name: '' });
-      fetchUser();
-      alert("User updated");
-      handleIsEditing();
-    } catch (err) {
-      console.error("Error updating user:", err);
+    const data = await updateUser(formDataToSend);
+    if (!data) {
+      alert('Error updating user');
+      return;
     }
+    if (data.token) localStorage.setItem('token', data.token);
+    setFormData({ name: '' });
+    alert("User updated");
+    setIsEditing(false);  
   };
 
-  if (!isLoggedIn) return <LoadingScreen></LoadingScreen>
+  if (!isLoggedIn || loading) return <LoadingScreen/>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <Fade triggerOnce duration={500}>

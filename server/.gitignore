@@ -35,3 +35,15 @@ debug.log
 *.sublime-workspace
 *.sublime-project
 
+# Ignorar imágenes y carpetas de perfiles y posts, pero no el avatar.svg
+uploads/profiles/
+!uploads/profiles/avatar.svg
+uploads/posts/
+
+# SQLite database
+*.sqlite
+*.sqlite3
+# Temporary files
+*.tmp
+*.temp
+

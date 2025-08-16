@@ -39,11 +39,10 @@ const Article = () => {
 
   // Auth context
   const { user, token, isAuthenticated, isTokenExpired } = useAuth();
-  try {
-    localStorage.setItem("userId", user.id);
-    console.log(localStorage.getItem("userId"));
-  } catch (err) {
-    console.error("Error setting userId in localStorage:", err);
+  
+  const userId = user ? user.id : null;
+  if (userId != null) {
+    localStorage.setItem("userId", userId);
   }
 
   useEffect(() => {

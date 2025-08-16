@@ -1,23 +1,6 @@
 import { Fade } from "react-awesome-reveal";
 import ReplyForm from "../Article/ReplyForm";
 import CommentReplies from "./CommentReplies";
-import { jwtDecode } from "jwt-decode";
-// TODO: Cambiar por un Context en un futuro
-const token = localStorage.getItem("token");
-console.log("TOKEN EN LOCALSTORAGE:", token);
-
-let currentUserId = null;
-if (token) {
-  try {
-    const decoded = jwtDecode(token);
-    console.log("DECODED TOKEN:", decoded);
-    currentUserId = decoded.id;
-    console.log("CURRENT USER ID:", currentUserId);
-  } catch (e) {
-    console.error("ERROR DECODIFICANDO TOKEN:", e);
-    currentUserId = null;
-  }
-}
 
 
 export default function CommentItem({
@@ -30,17 +13,20 @@ export default function CommentItem({
   handleReplySubmit,
   onDelete,
 }) {
+
+  // usar authContext
+  const userId = localStorage.getItem("userId") || 0;
+
   return (
     <div className="comment__item">
       <div className="comment__content">
         <div className="comment">
           <div>
             <div className="content">
-
               <div className="avatar profile-avatar">
                 <img
                   src={`${apiUrl}/uploads/profiles/${comment.author.image}`}
-                  alt={`User's avatar ${comment.id}`}
+                  alt={`User's avatar `}
                 />
               </div>
               <div className="content-comment">
@@ -49,15 +35,15 @@ export default function CommentItem({
                   <span className="is-mute">
                     {new Date(comment.createdAt).toLocaleString()}
                   </span>
-                  <p>{currentUserId + comment.author?.name}</p>
                   {/* Botón borrado solo si es el autor */}
-                  {currentUserId === comment.author.id && (
+                  {Number(userId) === comment.author.id && (
                     <button onClick={() => onDelete(comment.id)} className="btn btn-outline">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash-fill" viewBox="0 0 16 16">
                         <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
                       </svg>
                     </button>
                   )}
+
                 </div>
                 <p>{comment.content}</p>
                 <div className="content-footer">
@@ -94,7 +80,11 @@ export default function CommentItem({
           </div>
         </div>
       </div>
-      <CommentReplies replies={comment.childrenComment} apiUrl={apiUrl} onDelete={onDelete} />
+      <CommentReplies
+        replies={comment.childrenComment}
+        apiUrl={apiUrl}
+        onDelete={onDelete}
+      />
     </div>
   );
 }

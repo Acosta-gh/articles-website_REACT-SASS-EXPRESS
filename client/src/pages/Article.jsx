@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Fade } from "react-awesome-reveal";
-import { jwtDecode } from "jwt-decode";
+
+// Auth Context
+import { useAuth } from "../context/AuthContext";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -13,7 +15,7 @@ import { fetchComments, createComment, deleteComment } from "../services/comment
 import { usePosts } from "../hooks/usePosts";
 import { useCategories } from "../hooks/useCategories";
 
-// Componentes
+// Componentes  
 import ArticleBanner from "../components/Article/ArticleBanner";
 import BookmarkButton from "../components/BookmarkButton";
 import ArticleContent from "../components/Article/ArticleContent";
@@ -34,13 +36,22 @@ const Article = () => {
   const [openReplyId, setOpenReplyId] = useState(null);
 
   const { posts, isLoading } = usePosts(id);
-  console.log(posts, "<-- posts data");
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    loadComments(id);
-    loadIfBookmarked(token, id);
-  }, [id]);
 
+  // Auth context
+  const { user, token, isAuthenticated, isTokenExpired } = useAuth();
+  try {
+    localStorage.setItem("userId", user.id);
+    console.log(localStorage.getItem("userId"));
+  } catch (err) {
+    console.error("Error setting userId in localStorage:", err);
+  }
+
+  useEffect(() => {
+    loadComments(id);
+    if (token && !isTokenExpired()) {
+      loadIfBookmarked(token, id);
+    }
+  }, [id, token]);
 
   const loadComments = async (id) => {
     const data = await fetchComments(id);
@@ -60,16 +71,8 @@ const Article = () => {
 
   const handleToggleBookmark = async (postId) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
+      if (!isAuthenticated || isTokenExpired()) {
         alert("You must be logged in.");
-        return;
-      }
-      const decoded = jwtDecode(token);
-      const currentTime = Math.floor(Date.now() / 1000);
-      if (decoded.exp && decoded.exp < currentTime) {
-        alert("Your session expired.");
-        localStorage.removeItem("token");
         return;
       }
       const success = await toggleBookmark(postId);
@@ -88,19 +91,17 @@ const Article = () => {
 
   const handleSubmit = async (e, commentId = null) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!isAuthenticated || isTokenExpired()) {
       alert("You must be logged in");
       return;
     }
-    const decoded = jwtDecode(token);
     const content = commentId ? replyInputs[commentId] : commentInput.comment;
 
     try {
       await createComment({
         content,
         postId: posts.id,
-        userId: decoded.id,
+        userId: user.id,
         commentId,
       });
       if (commentId) {
@@ -138,9 +139,7 @@ const Article = () => {
       }));
   }
 
-
   if (isLoading || !posts) return <LoadingScreen />;
-
 
   const categoryObj = categories.find(cat => cat.id === posts.categoryId);
   const categoryName = categoryObj ? categoryObj.name : "Unknown Category";

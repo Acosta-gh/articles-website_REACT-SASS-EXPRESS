@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import { Link } from 'react-router-dom';
+
+// Contexto de autenticación
+import { useAuth } from "../context/AuthContext";
 
 // Hooks para manejar posts y categorías vía API
 import { useCategories } from '../hooks/useCategories';
@@ -26,6 +28,9 @@ function AdminPanel() {
     const [banner, setBanner] = useState(null);         // Imagen principal del post
     const [file, setFile] = useState(null);             // Imagen para el contenido
 
+    // Contexto de auth
+    const { user, isAuthenticated } = useAuth();
+
     // Hooks personalizados (los hooks manejan carga inicial y estado)
     const {
         posts, isLoading, error: postsError,
@@ -43,25 +48,10 @@ function AdminPanel() {
 
     // Solo permite acceso a admin autenticado
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                const currentTime = Math.floor(Date.now() / 1000);
-                if (decoded.exp && decoded.exp < currentTime) {
-                    window.location.href = '/logout';
-                    return;
-                }
-                if (!decoded.isAdmin) {
-                    window.location.href = '/';
-                }
-            } catch (error) {
-                window.location.href = '/';
-            }
-        } else {
+        if (!isAuthenticated || !user?.isAdmin) {
             window.location.href = '/';
         }
-    }, []);
+    }, [isAuthenticated, user]);
 
     // Elimina un post
     const handleDeletePost = async (id) => {
@@ -125,9 +115,7 @@ function AdminPanel() {
     // Sube imagen para insertar en el contenido del post (markdown)
     const handleUploadPicture = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('token');
-        const decoded = jwtDecode(token);
-        if (decoded.exp < Date.now() / 1000) {
+        if (!isAuthenticated || !user) {
             alert('Your session has expired. Please log in again.');
             setTimeout(() => {
                 window.location.replace('/logout');
@@ -154,9 +142,11 @@ function AdminPanel() {
     // Crea o edita post
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('token');
-        const decoded = jwtDecode(token);
-        const authorId = decoded.id;
+        if (!user) {
+            alert("User not authenticated.");
+            return;
+        }
+        const authorId = user.id;
 
         const postData = {
             title: formData.title,

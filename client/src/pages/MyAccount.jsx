@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import { Fade } from "react-awesome-reveal";
 import { Link } from 'react-router-dom';
+
+// Contexto de autenticación
+import { useAuth } from "../context/AuthContext";
 
 // Componentes
 import Post from "../components/Post";
@@ -38,9 +40,7 @@ function MyAccount() {
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
 
-  // Flags de sesión y edición de perfil
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  // Flags de edición de perfil
   const [isEditing, setIsEditing] = useState(false);
 
   // Hooks de posts, usuario, categorías y dropdowns
@@ -58,33 +58,26 @@ function MyAccount() {
   // Ref para input de archivo de perfil
   const fileInputRef = useRef(null);
 
+  // Auth context
+  const { user, isAuthenticated, logout } = useAuth();
+
+  // Estado admin
+  const isAdmin = Boolean(user?.isAdmin);
+
   // Carga inicial: verifica login, roles, carga bookmarks, categorías y usuario
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!isAuthenticated) {
       window.location.replace('/sign');
       return;
     }
-    try {
-      const decoded = jwtDecode(token);
-      if (decoded.exp < Date.now() / 1000) {
-        window.location.replace('/logout');
-        return;
-      }
-      if (decoded.isAdmin) setIsAdmin(true);
-      setIsLoggedIn(true);
-      loadCategories();
-      loadBookmarks(token);
-      fetchUser();
-      // Cierra dropdowns si se clickea fuera
-      const cleanup = setupOutsideClick(dropdownRefs, closeAllDropdowns);
-      return cleanup;
-    } catch (err) {
-      console.error("JWT Decode error:", err);
-      localStorage.removeItem('token');
-      window.location.replace('/sign');
-    }
-  }, [fetchUser]);
+    loadCategories();
+    loadBookmarks();
+    fetchUser();
+    // Cierra dropdowns si se clickea fuera
+    const cleanup = setupOutsideClick(dropdownRefs, closeAllDropdowns);
+    return cleanup;
+    // eslint-disable-next-line
+  }, [isAuthenticated, fetchUser]);
 
   // Carga categorías desde backend
   const loadCategories = async () => {
@@ -97,9 +90,11 @@ function MyAccount() {
   }
 
   // Carga bookmarks/posts guardados del usuario
-  const loadBookmarks = async (token) => {
+  const loadBookmarks = async () => {
     try {
-      const data = await fetchBookmarks(token)
+      if (!user?.id) return;
+      // fetchBookmarks espera un token, pero ahora lo tienes en el AuthContext
+      const data = await fetchBookmarks(localStorage.getItem("token"));
       setPosts(data)
     } catch (err) {
       console.log("Error fetching Posts:", err)
@@ -158,7 +153,8 @@ function MyAccount() {
   };
 
   const handleLogout = () => {
-    window.location.replace('/logout');
+    logout();
+    window.location.replace('/sign');
   }
 
   const handleIsEditing = () => {
@@ -178,13 +174,17 @@ function MyAccount() {
       alert('Error updating user');
       return;
     }
-    if (data.token) localStorage.setItem('token', data.token);
+    if (data.token) {
+      // Usa el método del contexto para actualizar el token
+      window.localStorage.setItem('token', data.token);
+      window.location.reload();
+    }
     setFormData({ name: '' });
     alert("User updated");
     setIsEditing(false);
   };
 
-  if (!isLoggedIn || loading) return <LoadingScreen />;
+  if (!isAuthenticated || loading) return <LoadingScreen />;
   if (userError) return <div>Error: {userError.message}</div>;
   if (postsError) return <div>Error: {postsError.message}</div>;
 

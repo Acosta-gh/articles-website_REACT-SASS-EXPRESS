@@ -2,43 +2,63 @@ import React, { useEffect, useState, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { Fade } from "react-awesome-reveal";
 import { Link } from 'react-router-dom';
+
+// Componentes
 import Post from "../components/Post";
 import Pagination from "../components/Pagination";
 import Arrow from "../components/Arrow";
-import { useSearchContext } from "../context/SearchContext";
 import LoadingScreen from "../components/LoadingScreen"
 
-import { fetchCategories } from '../services/categoryService';
+//Services (TODO: Cambiar a Hook)
 import { fetchBookmarks } from '../services/bookmarkService';
+
+// Hooks
+import { useSearchContext } from "../context/SearchContext";
 import { useUser } from '../hooks/useUser';
+import { useCategories } from '../hooks/useCategories';
+import { useDropdown } from "../hooks/useDropdown";
+import { usePosts } from '../hooks/usePosts';
 
 const POSTS_PER_PAGE = 10;
 const API = import.meta.env.VITE_API_URL;
 
-
+/**
+ * Página de cuenta de usuario ("MyAccount").
+ * Permite ver y editar datos de perfil, gestionar posts guardados/bookmarks,
+ * filtrar y paginar posts, y acceder al panel de admin si corresponde.
+ */
 function MyAccount() {
-  // Estados
+  // Estados de filtro y formularios
   const { searchTerm } = useSearchContext();
-  const [posts, setPosts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [formData, setFormData] = useState({ name: '' });
   const [file, setFile] = useState(null);
-  const [showDropdown, setShowDropdown] = useState({ category: false, order: false });
-  const [rotation, setRotation] = useState({ category: false, order: false });
+
+  // Filtros de posts
   const [currentCategory, setCurrentCategory] = useState('All');
   const [currentOrder, setCurrentOrder] = useState('Newest');
+
+  // Flags de sesión y edición de perfil
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { userInfo, loading, error, fetchUser, updateUser } = useUser();
+  // Hooks de posts, usuario, categorías y dropdowns
+  const { posts, setPosts, isLoading, error: postsError } = usePosts();
+  const { userInfo, loading, error: userError, fetchUser, updateUser } = useUser();
+  const { categories, setCategories } = useCategories();
+  const {
+    dropdownRefs,
+    showDropdown,
+    rotation,
+    toggleDropdown,
+    closeAllDropdowns,
+  } = useDropdown(["category", "order"]);
 
-  // Refs
+  // Ref para input de archivo de perfil
   const fileInputRef = useRef(null);
-  const dropdownRefs = useRef({});
 
-  // Carga inicial
+  // Carga inicial: verifica login, roles, carga bookmarks, categorías y usuario
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -56,16 +76,17 @@ function MyAccount() {
       loadCategories();
       loadBookmarks(token);
       fetchUser();
+      // Cierra dropdowns si se clickea fuera
       const cleanup = setupOutsideClick(dropdownRefs, closeAllDropdowns);
       return cleanup;
     } catch (err) {
       console.error("JWT Decode error:", err);
-      localStorage.removeItem('token'); // Por las dudas
+      localStorage.removeItem('token');
       window.location.replace('/sign');
     }
   }, [fetchUser]);
 
-  // 📞 Fetch Functions
+  // Carga categorías desde backend
   const loadCategories = async () => {
     try {
       const data = await fetchCategories()
@@ -75,6 +96,7 @@ function MyAccount() {
     }
   }
 
+  // Carga bookmarks/posts guardados del usuario
   const loadBookmarks = async (token) => {
     try {
       const data = await fetchBookmarks(token)
@@ -84,7 +106,7 @@ function MyAccount() {
     }
   }
 
-  // 👷 Auxiliares
+  // Filtra y ordena posts según filtros/búsqueda
   const getFilteredSortedPosts = () => {
     const categoryMap = categories.reduce((map, c) => ({ ...map, [c.id]: c.name }), {});
     return (posts || [])
@@ -101,17 +123,20 @@ function MyAccount() {
       });
   };
 
+  // Paginación de los posts filtrados
   const getCurrentPosts = () => {
     const filtered = getFilteredSortedPosts();
     const start = (currentPage - 1) * POSTS_PER_PAGE;
     return filtered.slice(start, start + POSTS_PER_PAGE);
   };
 
+  // Opciones de dropdown para filtros
   const dropdownItems = {
     category: ['All', ...categories.map(c => c.name)],
     order: ['Newest', 'Oldest'],
   };
 
+  // Detectar clicks fuera de los dropdowns para cerrarlos
   const setupOutsideClick = (refs, callback) => {
     const handleClickOutside = (event) => {
       const isOutside = Object.values(refs.current).every(
@@ -125,25 +150,14 @@ function MyAccount() {
     };
   };
 
-  // 🖐️ Hanlders
-  const toggleDropdown = (type) => {
-    const visible = !showDropdown[type];
-    setShowDropdown({ category: false, order: false, [type]: visible });
-    setRotation({ category: false, order: false, [type]: visible });
-  };
-
-  const closeAllDropdowns = () => { // Cerrar dropdowns
-    setShowDropdown({ category: false, order: false });
-    setRotation({ category: false, order: false });
-  };
-
-  const handleSelect = (type, value) => { // Elegir categoría
+  // Handlers de UI y formularios
+  const handleSelect = (type, value) => {
     if (type === 'category') setCurrentCategory(value);
     if (type === 'order') setCurrentOrder(value);
     closeAllDropdowns();
   };
 
-  const handleLogout = () => {  // Cerrar Sesión
+  const handleLogout = () => {
     window.location.replace('/logout');
   }
 
@@ -152,6 +166,7 @@ function MyAccount() {
     console.log(isEditing)
   }
 
+  // Enviar formulario de edición de usuario (nombre e imagen)
   const handleSubmit = async e => {
     e.preventDefault();
     const formDataToSend = new FormData();
@@ -166,22 +181,21 @@ function MyAccount() {
     if (data.token) localStorage.setItem('token', data.token);
     setFormData({ name: '' });
     alert("User updated");
-    setIsEditing(false);  
+    setIsEditing(false);
   };
 
-  if (!isLoggedIn || loading) return <LoadingScreen/>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (!isLoggedIn || loading) return <LoadingScreen />;
+  if (userError) return <div>Error: {userError.message}</div>;
+  if (postsError) return <div>Error: {postsError.message}</div>;
 
   return (
     <Fade triggerOnce duration={500}>
       <div className='myaccount'>
-        {/* No me preguntes por qué, ,pero este Fade me jode los z-index del dropdown  <Fade triggerOnce duration={500}>  */}
+        {/* Perfil de usuario */}
         <div className="myaccount-profile">
-
           <div className="profile-avatar">
-            <img src={userInfo?.image ? `${API}/uploads/profiles/${userInfo.image}` : ''} ></img>
+            <img src={userInfo?.image ? `${API}/uploads/profiles/${userInfo.image}` : ''} alt="" />
           </div>
-
           <span className="line-divider">My Profile</span>
           <div className="myaccount-profile__info">
             <h1 id="username">{userInfo?.name || 'Anonymous'}</h1>
@@ -189,16 +203,23 @@ function MyAccount() {
           </div>
 
           <div className='myaccount-profile__actions'>
-            <button className='button btn btn-outline' onClick={handleIsEditing}> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person-fill-gear" viewBox="0 0 16 16">
-              <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
-            </svg> Edit User</button>
-            <button className='button btn btn-danger btn-outline' onClick={() => handleLogout()}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box-arrow-left" viewBox="0 0 16 16">
-              <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z" />
-              <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z" />
-            </svg>Logout</button>
+            <button className='button btn btn-outline' onClick={handleIsEditing}>
+              {/* Edit user */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
+              </svg> Edit User
+            </button>
+            <button className='button btn btn-danger btn-outline' onClick={handleLogout}>
+              {/* Logout */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box-arrow-left" viewBox="0 0 16 16">
+                <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z" />
+                <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z" />
+              </svg>Logout
+            </button>
             {isAdmin && <button className='btn btn-secondary btn-outline'><Link to='/adminpanel'>Admin Panel</Link> </button>}
           </div>
 
+          {/* Formulario edición de usuario */}
           <div className='myaccount-profile__edit'>
             {isEditing && (
               <Fade triggerOnce duration={500}>
@@ -211,9 +232,11 @@ function MyAccount() {
                     <label>New Profile Picture:</label>
                     <input type="file" ref={fileInputRef} onChange={e => setFile(e.target.files[0])} accept="image/*" />
                   </div>
-                  <button className='btn btn-confirm btn-outline' type="submit">Confirm Changes <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check-lg" viewBox="0 0 16 16">
-                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
-                  </svg>
+                  <button className='btn btn-confirm btn-outline' type="submit">
+                    Confirm Changes
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check-lg" viewBox="0 0 16 16">
+                      <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                    </svg>
                   </button>
                 </form>
               </Fade>
@@ -221,6 +244,7 @@ function MyAccount() {
           </div>
         </div>
 
+        {/* Bookmarks y filtros */}
         <h5 className='myaccount__subtitle'>My Bookmarks</h5>
 
         <div className='myaccount__filters'>
@@ -244,11 +268,11 @@ function MyAccount() {
           ))}
         </div>
 
+        {/* Lista de posts paginados */}
         <div className='myaccount__posts'>
           <Fade triggerOnce duration={700}>
             {getCurrentPosts().length > 0 ? (
               getCurrentPosts().map(post => (
-                console.log(post),
                 <Post
                   key={post.id}
                   index={post.id}
@@ -274,7 +298,6 @@ function MyAccount() {
           handlePagination={setCurrentPage}
           currentPage={currentPage}
         />
-        {/* No me preguntes por qué, ,pero este Fade me jode los z-index del dropdown </Fade> */}
       </div>
     </Fade>
   );

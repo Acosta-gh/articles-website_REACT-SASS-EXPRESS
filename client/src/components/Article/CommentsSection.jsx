@@ -50,7 +50,7 @@ export default function CommentsSection({
             replyValue={replyInputs[comment.id] || ""}
             handleReplyChange={handleReplyChange(comment.id)}
             handleReplySubmit={handleReplySubmit(comment.id)}
-            onDelete={() => onDelete(comment.id)}
+            onDelete={onDelete}
           />
         ))}
     </div>

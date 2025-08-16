@@ -80,7 +80,7 @@ const updateUser = async (req, res) => {
         if (!name && !image) {
             return res.status(400).json({ error: "No data provided." });
         }
-        
+
         const user = await User.findByPk(userId);
         if (!user) {
             return res.status(404).json({ error: 'User not found.' });
@@ -100,13 +100,17 @@ const updateUser = async (req, res) => {
         // Si hay imagen nueva y anterior, borra la anterior del disco
         if (image && previousImage && previousImage !== 'avatar.webp') {
             const oldImagePath = path.join(__dirname, '..', 'uploads', 'profiles', previousImage);
-            fs.unlink(oldImagePath, (err) => {
-                if (err) {
-                    console.error('Error deleting the previous image:', err);
-                } else {
-                    console.log('Previous image successfully deleted');
-                }
-            });
+            try {
+                fs.unlink(oldImagePath, (err) => {
+                    if (err) {
+                        console.error('Error deleting the previous image:', err);
+                    } else {
+                        console.log('Previous image successfully deleted');
+                    }
+                });
+            } catch (error) {
+                console.error('Error deleting the previous image:', error);
+            }
         }
 
         res.status(200).json({

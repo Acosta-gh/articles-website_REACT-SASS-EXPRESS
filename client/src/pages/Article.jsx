@@ -2,23 +2,28 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Fade } from "react-awesome-reveal";
 import { jwtDecode } from "jwt-decode";
+
+const API = import.meta.env.VITE_API_URL;
+
+// Services (TODO: Cambiar por Hooks)
 import { fetchBookmarks, toggleBookmark } from "../services/bookmarkService";
 import { fetchComments, createComment, deleteComment } from "../services/commentService";
-import LoadingScreen from "../components/LoadingScreen";
-import { fetchCategories } from "../services/categoryService";
-import { usePosts } from "../hooks/usePosts";
 
+// Hooks
+import { usePosts } from "../hooks/usePosts";
+import { useCategories } from "../hooks/useCategories";
+
+// Componentes
 import ArticleBanner from "../components/Article/ArticleBanner";
 import BookmarkButton from "../components/BookmarkButton";
 import ArticleContent from "../components/Article/ArticleContent";
 import ArticleMeta from "../components/Article/ArticleMeta";
 import CommentsSection from "../components/Article/CommentsSection";
-
-const API = import.meta.env.VITE_API_URL;
+import LoadingScreen from "../components/LoadingScreen";
 
 const Article = () => {
   const { id } = useParams();
-  const [categories, setCategories] = useState([]);
+  const { categories } = useCategories();
   const [comments, setComments] = useState([]);
   const [isSaved, setIsSaved] = useState(false);
   const [commentInput, setCommentInput] = useState({
@@ -36,16 +41,6 @@ const Article = () => {
     loadIfBookmarked(token, id);
   }, [id]);
 
-  useEffect(() => {
-    if (posts && posts.categoryId) {
-      loadCategory(posts.categoryId);
-    }
-  }, [posts]);
-
-  const loadCategory = async (categoryId) => {
-    const data = await fetchCategories(categoryId);
-    setCategories(data.error ? null : data);
-  };
 
   const loadComments = async (id) => {
     const data = await fetchComments(id);
@@ -82,7 +77,7 @@ const Article = () => {
         setIsSaved((prev) => !prev);
       } else {
         alert("There was an error saving/deleting this bookmark.");
-        console.log("Error toggling bookmark"); 
+        console.log("Error toggling bookmark");
       }
     } catch (error) {
       alert("There was an error saving/deleting this bookmark.");
@@ -123,19 +118,33 @@ const Article = () => {
     try {
       const response = await deleteComment(commentId);
       if (response) {
-        setComments((prev) => prev.filter((c) => c.id !== commentId));
+        setComments(prev => removeReplyOrComment(prev, commentId));
       } else {
         alert("Failed to delete comment");
       }
     } catch (error) {
-      console.error("Error deleting comment:", error);
-      alert("There was an error deleting the comment.");    
+      alert("There was an error deleting the comment.");
     }
   };
 
+  function removeReplyOrComment(comments, idToRemove) {
+    return comments
+      .filter(comment => comment.id !== idToRemove)
+      .map(comment => ({
+        ...comment,
+        childrenComment: Array.isArray(comment.childrenComment)
+          ? comment.childrenComment.filter(reply => reply.id !== idToRemove)
+          : [],
+      }));
+  }
 
+
+  if (isLoading || !posts) return <LoadingScreen />;
+
+
+  const categoryObj = categories.find(cat => cat.id === posts.categoryId);
+  const categoryName = categoryObj ? categoryObj.name : "Unknown Category";
   const publishedDate = new Date(posts.createdAt).toLocaleDateString();
-  const categoryName = categories ? categories.name : "Unknown Category";
   const imageUrl = posts.image ? `${API}/uploads/posts/${posts.image}` : null;
 
   const bookmarkIcon = isSaved ? (
@@ -196,7 +205,7 @@ const Article = () => {
           replyInputs={replyInputs}
           setReplyInputs={setReplyInputs}
           apiUrl={API}
-          onDelete = {handleDeleteComment}
+          onDelete={handleDeleteComment}
         />
       </Fade>
     </div>

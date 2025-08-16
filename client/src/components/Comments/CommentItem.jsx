@@ -18,10 +18,11 @@ export default function CommentItem({
         <div className="comment">
           <div>
             <div className="content">
+             
               <div className="avatar profile-avatar">
                 <img
                   src={`${apiUrl}/uploads/profiles/${comment.author.image}`}
-                  alt="User's avatar"
+                  alt={`User's avatar ${comment.id}`}
                 />
               </div>
               <div className="content-comment">
@@ -70,7 +71,7 @@ export default function CommentItem({
           </div>
         </div>
       </div>
-      <CommentReplies replies={comment.childrenComment} apiUrl={apiUrl} onDelete={onDelete} commentId={comment.commentId} />
+      <CommentReplies replies={comment.childrenComment} apiUrl={apiUrl} onDelete={onDelete} />
     </div>
   );
 }

@@ -100,13 +100,17 @@ const deletePost = async (req, res) => {
 
         if (post.image) {
             const imagePath = path.join(__dirname, '..', 'uploads', post.image);
-            fs.unlink(imagePath, (err) => {
-                if (err) {
-                    console.error('Error al eliminar la imagen:', err);
-                } else {
-                    console.log('Imagen eliminada correctamente');
-                }
-            });
+            try {
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.error('Error al eliminar la imagen:', err);
+                    } else {
+                        console.log('Imagen eliminada correctamente');
+                    }
+                });
+            } catch (error) {
+                console.error('Error al eliminar la imagen:', error);
+            }
         }
 
         await post.destroy()
@@ -128,6 +132,15 @@ const editPost = async (req, res) => {
 
         const { categoryId } = req.body;
 
+        // Verifica que la categoría exista antes de actualizar el post
+        const category = await Category.findByPk(categoryId);
+        if (!category) {
+            return res.status(400).json({ error: "The specified category does not exist." });
+        }
+
+        // Preparamos los datos a actualizar
+        const updatedData = { ...req.body };
+
         if (req.file) {
             // Borra la imagen anterior solo si existe y si la imagen cambia
             if (post.image) {
@@ -143,25 +156,18 @@ const editPost = async (req, res) => {
                     }
                 }
             }
-            image = req.file.filename; // usa el nuevo nombre de archivo
+            updatedData.image = req.file.filename; // usa el nuevo nombre de archivo
+        } else {
+            // Si no hay nueva imagen, no actualices el campo image (deja la anterior)
+            delete updatedData.image;
         }
 
-        // Verifica que la categoría exista antes de actualizar el post
-        const category = await Category.findByPk(categoryId);
-        if (!category) {
-            return res.status(400).json({ error: "The specified category does not exist." });
-        }
+        await post.update(updatedData);
 
-        await post.update({
-            ...req.body,
-            image // actualizamos la imagen si hay una nueva
-        });
-
-        res.status(201).json(post);
+        res.status(200).json(post); // 200 para update
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-
 };
 
 const uploadImageIntoPost = async (req, res) => {

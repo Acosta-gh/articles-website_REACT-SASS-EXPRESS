@@ -1,5 +1,13 @@
+// URL base de la API, configurable por variable de entorno
 const API = import.meta.env.VITE_API_URL;
 
+/**
+ * Obtiene los bookmarks del usuario autenticado o de un bookmark específico (si se pasa un id).
+ * Si se provee un id, busca un bookmark de un post concreto.
+ * @param {string} token - Token JWT para autenticación.
+ * @param {string} [id] - (Opcional) ID del bookmark/post específico.
+ * @returns {Promise<Object|false>} - Datos de bookmarks o false si hay error.
+ */
 const fetchBookmarks = async (token, id) => {
     try {
         const res = await fetch(id ? `${API}/bookmark/${id}` : `${API}/bookmark`, {
@@ -17,8 +25,10 @@ const fetchBookmarks = async (token, id) => {
 };
 
 /**
- * Marca o desmarca un bookmark para un post específico.
- * Devuelve true si tuvo éxito, false si no.
+ * Marca o desmarca un bookmark para un post concreto.
+ * Realiza una petición POST al endpoint de bookmark.
+ * @param {string} postId - ID del post a marcar/desmarcar como bookmark.
+ * @returns {Promise<boolean>} - true si tuvo éxito, false si hubo error.
  */
 const toggleBookmark = async (postId) => {
     try {

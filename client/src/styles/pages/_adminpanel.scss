@@ -25,13 +25,14 @@
     textarea[name="content"] {
         height: 15rem;
     }
-    
+
     .admin-panel__create-post {
-        .admin__panel__grid{
+        .admin__panel__grid {
             display: grid;
             grid-template-columns: auto 1fr;
             gap: 1rem;
         }
+
         form {
             div {
                 display: flex;

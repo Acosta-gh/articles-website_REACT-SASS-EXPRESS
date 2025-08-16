@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+
+// Componentes UI principales
 import Post from "../components/Post";
 import Pagination from "../components/Pagination";
 import Arrow from "../components/Arrow";
 import { Fade, Slide } from "react-awesome-reveal";
 import { useSearchContext } from "../context/SearchContext";
-import { fetchPosts } from "../services/postService";
 import LoadingScreen from "../components/LoadingScreen";
 
+// Hooks 
 import { useDropdown } from "../hooks/useDropdown";
 import { useCategories } from "../hooks/useCategories";
 import { useFilteredPosts } from "../hooks/useFilteredPosts";
@@ -15,16 +17,29 @@ import { usePosts } from "../hooks/usePosts";
 const POSTS_PER_PAGE = 10;
 const API = import.meta.env.VITE_API_URL;
 
+/**
+ * Página principal Home: muestra posts filtrables y paginados.
+ * Permite filtrar por categoría/orden y buscar por término.
+ */
 const Home = () => {
+  // Estados de filtros y paginación
   const { searchTerm } = useSearchContext();
   const [currentCategory, setCurrentCategory] = useState("All");
   const [currentOrder, setCurrentOrder] = useState("Newest");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [categories, setCategories] = useCategories();
+  // Categorías y posts (hooks, datos vienen del backend)
+  const {
+    categories,
+    setCategories,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+    create, update, remove
+  } = useCategories();
 
-  const {posts, setPosts, isLoading, setIsLoading, error, setError} = usePosts();
+  const { posts, setPosts, isLoading, setIsLoading, error, setError } = usePosts();
 
+  // Dropdowns para filtros
   const {
     dropdownRefs,
     showDropdown,
@@ -33,7 +48,7 @@ const Home = () => {
     closeAllDropdowns,
   } = useDropdown(["category", "order"]);
 
-  // Filtrado y paginado de posts con custom hook
+  // Custom hook: filtra y pagina los posts para mostrar
   const [filteredSorted, currentPosts] = useFilteredPosts(
     posts,
     categories,
@@ -44,26 +59,14 @@ const Home = () => {
     POSTS_PER_PAGE
   );
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      try {
-        const data = await fetchPosts();
-        setPosts(data);
-      } catch (err) {
-        console.error("Error loading posts:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadPosts();
-  }, []);
-
+  // Selección de filtros
   const handleSelect = (type, value) => {
     if (type === "category") setCurrentCategory(value);
     if (type === "order") setCurrentOrder(value);
     closeAllDropdowns();
   };
 
+  // Mensaje de saludo dinámico
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning! 👋";
@@ -71,15 +74,18 @@ const Home = () => {
     return "Good Evening 🌆";
   };
 
+  // Opciones de dropdown para filtros
   const dropdownItems = {
     category: ["All", ...categories.map((c) => c.name)],
     order: ["Newest", "Oldest"],
   };
 
+  // Pantalla de carga mientras llegan los datos
   if (isLoading) return <LoadingScreen />;
 
   return (
     <div className="home page-container">
+      {/* Encabezado animado */}
       <Fade triggerOnce duration={1500}>
         <Slide triggerOnce duration={900}>
           <div className="home__greetings">
@@ -90,6 +96,7 @@ const Home = () => {
         </Slide>
       </Fade>
 
+      {/* Filtros por categoría y orden */}
       <div className="home__filters">
         {["category", "order"].map((type) => (
           <div
@@ -103,9 +110,7 @@ const Home = () => {
               isRotated={rotation[type]}
             />
             <div
-              className={`dropdown__menu ${
-                showDropdown[type] ? "dropdown__menu-show" : ""
-              }`}
+              className={`dropdown__menu ${showDropdown[type] ? "dropdown__menu-show" : ""}`}
             >
               {dropdownItems[type]
                 .filter(
@@ -127,6 +132,7 @@ const Home = () => {
         ))}
       </div>
 
+      {/* Listado de posts filtrados y paginados */}
       <div className="home__posts">
         <Fade triggerOnce duration={700}>
           {currentPosts.length > 0 ? (
@@ -155,6 +161,7 @@ const Home = () => {
         </Fade>
       </div>
 
+      {/* Paginador */}
       <Pagination
         postsPerPage={POSTS_PER_PAGE}
         length={filteredSorted.length}
